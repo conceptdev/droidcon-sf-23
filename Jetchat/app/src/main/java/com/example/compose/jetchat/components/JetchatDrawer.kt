@@ -70,9 +70,10 @@ fun JetchatDrawerContent(
         ChatItem("droidcon-nyc", false) { onChatClicked("droidcon-nyc") }
         DividerItem(modifier = Modifier.padding(horizontal = 28.dp))
         DrawerItemHeader("Recent Profiles")
-        ProfileItem("Ali Conors (you)", meProfile.photo) { onProfileClicked(meProfile.userId) }
-        ProfileItem("Taylor Brooks", colleagueProfile.photo) {
-            onProfileClicked(colleagueProfile.userId)
+        profiles.forEach {
+            ProfileItem(text = it.name, profilePic = it.photo) {
+                onProfileClicked(it.userId)
+            }
         }
     }
 }

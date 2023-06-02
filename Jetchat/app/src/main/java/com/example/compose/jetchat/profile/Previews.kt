@@ -18,8 +18,8 @@ package com.example.compose.jetchat.profile
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.compose.jetchat.data.colleagueProfile
 import com.example.compose.jetchat.data.meProfile
+import com.example.compose.jetchat.data.openAiProfile
 import com.example.compose.jetchat.theme.JetchatTheme
 
 @Preview(widthDp = 340, name = "340 width - Me")
@@ -42,9 +42,10 @@ fun ProfilePreview480Me() {
 @Composable
 fun ProfilePreview480Other() {
     JetchatTheme {
-        ProfileScreen(colleagueProfile)
+        ProfileScreen(openAiProfile)
     }
 }
+
 @Preview(widthDp = 340, name = "340 width - Me - Dark")
 @Composable
 fun ProfilePreview340MeDark() {
@@ -65,6 +66,6 @@ fun ProfilePreview480MeDark() {
 @Composable
 fun ProfilePreview480OtherDark() {
     JetchatTheme(isDarkTheme = true) {
-        ProfileScreen(colleagueProfile)
+        ProfileScreen(openAiProfile)
     }
 }

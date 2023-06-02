@@ -58,7 +58,7 @@ class MainViewModel : ViewModel() {
 
     fun onMessageSent(content: String) {
         // add user message to chat history
-        addMessage("me", content)
+        addMessage(meProfile, content)
 
         // start typing animation while request loads
         botIsTyping = true
@@ -78,7 +78,7 @@ class MainViewModel : ViewModel() {
                 }
 
                 botIsTyping = false
-                addMessage(author = "bot", content = responseContent, imageUrl = imageUrl)
+                addMessage(author = uiState.channelBotProfile, content = responseContent, imageUrl = imageUrl)
             } else {
                 val chatResponse = try {
                     openAIWrapper.chat(content)
@@ -87,22 +87,23 @@ class MainViewModel : ViewModel() {
                 }
 
                 botIsTyping = false
-                addMessage(author = "bot", content = chatResponse)
+                addMessage(author = uiState.channelBotProfile, content = chatResponse)
             }
         }
     }
 
-    private fun addMessage(author: String, content: String, imageUrl: String? = null) {
+    private fun addMessage(author: ProfileScreenState, content: String, imageUrl: String? = null) {
         // calculate message timestamp
         val currentTime = Calendar.getInstance().time
         val dateFormat = SimpleDateFormat("h:mm a", Locale.getDefault())
         val timeNow = dateFormat.format(currentTime)
 
         val message = Message(
-            author = author,
+            author = author.displayName,
             content = content,
             timestamp = timeNow,
-            imageUrl = imageUrl
+            imageUrl = imageUrl,
+            authorImage = author.photo
         )
 
         uiState.addMessage(message)

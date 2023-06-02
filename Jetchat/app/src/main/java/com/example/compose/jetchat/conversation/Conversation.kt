@@ -87,6 +87,8 @@ import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.JetchatAppBar
 import com.example.compose.jetchat.data.exampleUiState
+import com.example.compose.jetchat.data.meProfile
+import com.example.compose.jetchat.profile.ProfileScreenState
 import com.example.compose.jetchat.theme.JetchatTheme
 import kotlinx.coroutines.launch
 
@@ -108,9 +110,6 @@ fun ConversationContent(
     onMessageSent: (String) -> Unit,
     botIsTyping: Boolean
 ) {
-    val authorMe = stringResource(R.string.author_me)
-    val timeNow = stringResource(id = R.string.now)
-
     val scrollState = rememberLazyListState()
     val topBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topBarState)
@@ -132,13 +131,18 @@ fun ConversationContent(
             .exclude(WindowInsets.ime),
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
     ) { paddingValues ->
-        Column(Modifier.fillMaxSize().padding(paddingValues)) {
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
             Messages(
                 messages = uiState.messages,
                 navigateToProfile = navigateToProfile,
                 modifier = Modifier.weight(1f),
                 scrollState = scrollState,
-                botIsTyping = botIsTyping
+                botIsTyping = botIsTyping,
+                author = uiState.channelBotProfile
             )
             UserInput(
                 channelName = uiState.channelName,
@@ -151,7 +155,9 @@ fun ConversationContent(
                 },
                 // let this element handle the padding so that the elevation is shown behind the
                 // navigation bar
-                modifier = Modifier.navigationBarsPadding().imePadding()
+                modifier = Modifier
+                    .navigationBarsPadding()
+                    .imePadding()
             )
         }
     }
@@ -222,12 +228,11 @@ fun Messages(
     navigateToProfile: (String) -> Unit,
     scrollState: LazyListState,
     botIsTyping: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    author: ProfileScreenState,
 ) {
     val scope = rememberCoroutineScope()
     Box(modifier = modifier) {
-
-        val authorMe = stringResource(id = R.string.author_me)
         LazyColumn(
             reverseLayout = true,
             state = scrollState,
@@ -239,12 +244,16 @@ fun Messages(
                 item {
                     MessageLayout(
                         onAuthorClick = { name -> navigateToProfile(name) },
-                        msg = Message("bot", "", ""),
+                        msg = Message(author.displayName, "", "", authorImage = author.photo),
                         isUserMe = false,
                         isFirstMessageByAuthor = true,
                         isLastMessageByAuthor = true
                     ) {
-                        TypingBubbleAnimation(Modifier.width(50.dp).padding(vertical = 10.dp))
+                        TypingBubbleAnimation(
+                            Modifier
+                                .width(50.dp)
+                                .padding(vertical = 10.dp)
+                        )
                     }
                 }
             }
@@ -259,7 +268,7 @@ fun Messages(
                     Message(
                         onAuthorClick = { name -> navigateToProfile(name) },
                         msg = content,
-                        isUserMe = content.author == authorMe,
+                        isUserMe = content.author == meProfile.displayName,
                         isFirstMessageByAuthor = isFirstMessageByAuthor,
                         isLastMessageByAuthor = isLastMessageByAuthor
                     )
@@ -334,9 +343,10 @@ fun MessageLayout(
                     .border(1.5.dp, borderColor, CircleShape)
                     .border(3.dp, MaterialTheme.colorScheme.surface, CircleShape)
                     .clip(CircleShape)
+                    .padding(3.dp)
                     .align(Alignment.Top),
-                painter = painterResource(id = msg.authorImage),
-                contentScale = ContentScale.Crop,
+                painter = painterResource(id = msg.authorImage ?: R.drawable.ic_baseline_person_24),
+                contentScale = ContentScale.Fit,
                 contentDescription = null,
             )
         } else {
