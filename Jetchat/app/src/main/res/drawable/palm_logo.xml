@@ -1,0 +1,83 @@
+<!-- source: https://upload.wikimedia.org/wikipedia/commons/c/ca/Google_PaLM_Logo.svg -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="192dp"
+    android:height="192dp"
+    android:viewportWidth="192"
+    android:viewportHeight="192">
+    <group>
+        <clip-path android:pathData="M-96,96V-96H96V96H-96z" />
+        <path
+            android:fillAlpha="0.4"
+            android:fillColor="#FF000000"
+            android:pathData="M95.75,95.75v-191.5h-191.5v191.5H95.75M96,96H-96V-96H96V96L96,96z"
+            android:strokeAlpha="0.4" />
+        <path
+            android:fillAlpha="0.4"
+            android:fillColor="#00000000"
+            android:pathData="M0,0m-64,0a64,64 0,1 1,128 0a64,64 0,1 1,-128 0"
+            android:strokeWidth="0.25"
+            android:strokeAlpha="0.4"
+            android:strokeColor="#000000" />
+    </group>
+    <group>
+        <clip-path android:pathData="M-96,96V-96H96V96H-96z" />
+        <path
+            android:fillAlpha="0.4"
+            android:fillColor="#00000000"
+            android:pathData="M0,0m-88,0a88,88 0,1 1,176 0a88,88 0,1 1,-176 0"
+            android:strokeWidth="0.25"
+            android:strokeAlpha="0.4"
+            android:strokeColor="#000000" />
+    </group>
+    <group>
+        <clip-path android:pathData="M-96,96V-96H96V96H-96z" />
+        <path
+            android:fillAlpha="0.4"
+            android:fillColor="#00000000"
+            android:pathData="M64,76H-64c-6.6,0 -12,-5.4 -12,-12V-64c0,-6.6 5.4,-12 12,-12H64c6.6,0 12,5.4 12,12V64C76,70.6 70.6,76 64,76z"
+            android:strokeWidth="0.25"
+            android:strokeAlpha="0.4"
+            android:strokeColor="#000000" />
+    </group>
+    <group>
+        <clip-path android:pathData="M-96,96V-96H96V96H-96z" />
+        <path
+            android:fillAlpha="0.4"
+            android:fillColor="#00000000"
+            android:pathData="M52,88H-52c-6.6,0 -12,-5.4 -12,-12V-76c0,-6.6 5.4,-12 12,-12H52c6.6,0 12,5.4 12,12V76C64,82.6 58.6,88 52,88z"
+            android:strokeWidth="0.25"
+            android:strokeAlpha="0.4"
+            android:strokeColor="#000000" />
+    </group>
+    <group>
+        <clip-path android:pathData="M-96,96V-96H96V96H-96z" />
+        <path
+            android:fillAlpha="0.4"
+            android:fillColor="#00000000"
+            android:pathData="M76,64H-76c-6.6,0 -12,-5.4 -12,-12V-52c0,-6.6 5.4,-12 12,-12H76c6.6,0 12,5.4 12,12V52C88,58.6 82.6,64 76,64z"
+            android:strokeWidth="0.25"
+            android:strokeAlpha="0.4"
+            android:strokeColor="#000000" />
+    </group>
+    <path
+        android:fillColor="#F9AB00"
+        android:pathData="M96,181.92L96,181.92c6.63,0 12,-5.37 12,-12v-104H84v104C84,176.55 89.37,181.92 96,181.92z" />
+    <path
+        android:fillColor="#5BB974"
+        android:pathData="M143.81,103.87C130.87,90.94 111.54,88.32 96,96l51.37,51.37c2.12,2.12 5.77,1.28 6.67,-1.57C158.56,131.49 155.15,115.22 143.81,103.87z" />
+    <path
+        android:fillColor="#129EAF"
+        android:pathData="M48.19,103.87C61.13,90.94 80.46,88.32 96,96l-51.37,51.37c-2.12,2.12 -5.77,1.28 -6.67,-1.57C33.44,131.49 36.85,115.22 48.19,103.87z" />
+    <path
+        android:fillColor="#AF5CF7"
+        android:pathData="M140,64c-20.44,0 -37.79,13.4 -44,32h81.24c3.33,0 5.55,-3.52 4.04,-6.49C173.56,74.36 157.98,64 140,64z" />
+    <path
+        android:fillColor="#FF8BCB"
+        android:pathData="M104.49,42.26C90.03,56.72 87.24,78.45 96,96l57.45,-57.45c2.36,-2.36 1.44,-6.42 -1.73,-7.45C135.54,25.85 117.2,29.55 104.49,42.26z" />
+    <path
+        android:fillColor="#FA7B17"
+        android:pathData="M87.51,42.26C101.97,56.72 104.76,78.45 96,96L38.55,38.55c-2.36,-2.36 -1.44,-6.42 1.73,-7.45C56.46,25.85 74.8,29.55 87.51,42.26z" />
+    <path
+        android:fillColor="#4285F4"
+        android:pathData="M52,64c20.44,0 37.79,13.4 44,32H14.76c-3.33,0 -5.55,-3.52 -4.04,-6.49C18.44,74.36 34.02,64 52,64z" />
+</vector>

@@ -57,6 +57,7 @@ class ConversationTest {
                     navigateToProfile = { },
                     onNavIconPressed = { },
                     onMessageSent = { },
+                    botIsTyping = false
                 )
             }
         }

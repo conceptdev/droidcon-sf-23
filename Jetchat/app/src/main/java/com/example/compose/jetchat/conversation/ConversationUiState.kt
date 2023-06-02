@@ -18,11 +18,12 @@ package com.example.compose.jetchat.conversation
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.toMutableStateList
-import com.example.compose.jetchat.R
+import com.example.compose.jetchat.profile.ProfileScreenState
 
 class ConversationUiState(
     val channelName: String,
     val channelMembers: Int,
+    val channelBotProfile: ProfileScreenState,
     initialMessages: List<Message>
 ) {
     private val _messages: MutableList<Message> = initialMessages.toMutableStateList()
@@ -39,6 +40,6 @@ data class Message(
     val content: String,
     val timestamp: String,
     val image: Int? = null,
-    val authorImage: Int = if (author == "me") R.drawable.ali else R.drawable.jetchatgpt_bot,
+    val authorImage: Int? = null,
     val imageUrl: String? = null
 )

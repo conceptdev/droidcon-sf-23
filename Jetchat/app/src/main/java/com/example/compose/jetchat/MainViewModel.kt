@@ -21,8 +21,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.compose.jetchat.components.Channel
 import com.example.compose.jetchat.conversation.ConversationUiState
 import com.example.compose.jetchat.conversation.Message
+import com.example.compose.jetchat.data.initialOnnxMessages
+import com.example.compose.jetchat.data.initialOpenAiMessages
+import com.example.compose.jetchat.data.initialPalmMessages
+import com.example.compose.jetchat.data.meProfile
+import com.example.compose.jetchat.data.onnxProfile
+import com.example.compose.jetchat.data.openAiProfile
+import com.example.compose.jetchat.data.palmProfile
+import com.example.compose.jetchat.profile.ProfileScreenState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -47,18 +56,50 @@ class MainViewModel : ViewModel() {
     }
 
     //----------Below code added for OpenAI integration-------------
-    var uiState = ConversationUiState(
-        initialMessages = listOf(Message("bot", "Welcome to JetchatAI!", "8:07 pm")),
-        channelName = "#jetchat-ai",
-        channelMembers = 2
+    private val openAiUiState by mutableStateOf(
+        ConversationUiState(
+            initialMessages = initialOpenAiMessages,
+            channelName = Channel.OPENAI.label,
+            channelMembers = 2,
+            channelBotProfile = openAiProfile
+        )
     )
+
+    private val palmUiState by mutableStateOf(
+        ConversationUiState(
+            initialMessages = initialPalmMessages,
+            channelName = Channel.PALM.label,
+            channelMembers = 2,
+            channelBotProfile = palmProfile
+        )
+    )
+
+    private val onnxUiState by mutableStateOf(
+        ConversationUiState(
+            initialMessages = initialOnnxMessages,
+            channelName = Channel.ONNX.label,
+            channelMembers = 2,
+            channelBotProfile = onnxProfile
+        )
+    )
+
+    var currentChannel by mutableStateOf(Channel.OPENAI)
+
+    val uiState: ConversationUiState
+        get() {
+            return when (currentChannel) {
+                Channel.PALM -> palmUiState
+                Channel.OPENAI -> openAiUiState
+                Channel.ONNX -> onnxUiState
+            }
+        }
     private var openAIWrapper = OpenAIWrapper()
     var botIsTyping by mutableStateOf(false)
         private set
 
     fun onMessageSent(content: String) {
         // add user message to chat history
-        addMessage("me", content)
+        addMessage(meProfile, content)
 
         // start typing animation while request loads
         botIsTyping = true
@@ -78,7 +119,7 @@ class MainViewModel : ViewModel() {
                 }
 
                 botIsTyping = false
-                addMessage(author = "bot", content = responseContent, imageUrl = imageUrl)
+                addMessage(author = uiState.channelBotProfile, content = responseContent, imageUrl = imageUrl)
             } else {
                 val chatResponse = try {
                     openAIWrapper.chat(content)
@@ -87,22 +128,23 @@ class MainViewModel : ViewModel() {
                 }
 
                 botIsTyping = false
-                addMessage(author = "bot", content = chatResponse)
+                addMessage(author = uiState.channelBotProfile, content = chatResponse)
             }
         }
     }
 
-    private fun addMessage(author: String, content: String, imageUrl: String? = null) {
+    private fun addMessage(author: ProfileScreenState, content: String, imageUrl: String? = null) {
         // calculate message timestamp
         val currentTime = Calendar.getInstance().time
         val dateFormat = SimpleDateFormat("h:mm a", Locale.getDefault())
         val timeNow = dateFormat.format(currentTime)
 
         val message = Message(
-            author = author,
+            author = author.displayName,
             content = content,
             timestamp = timeNow,
-            imageUrl = imageUrl
+            imageUrl = imageUrl,
+            authorImage = author.photo
         )
 
         uiState.addMessage(message)

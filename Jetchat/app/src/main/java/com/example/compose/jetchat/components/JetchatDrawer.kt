@@ -40,6 +40,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment.Companion.CenterStart
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
@@ -49,9 +53,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetchat.R
-import com.example.compose.jetchat.data.colleagueProfile
-import com.example.compose.jetchat.data.meProfile
+import com.example.compose.jetchat.data.profiles
 import com.example.compose.jetchat.theme.JetchatTheme
+
+enum class Channel(val label: String) {
+    OPENAI("#jetchat-ai"),
+    PALM("#jetchat-palm"),
+    ONNX("#jetchat-onnx"),
+}
 
 @Composable
 fun JetchatDrawerContent(
@@ -59,20 +68,29 @@ fun JetchatDrawerContent(
     onChatClicked: (String) ->
     Unit
 ) {
+    var selectedChannel by remember { mutableStateOf(Channel.OPENAI) }
+    val updateChannel: (Channel) -> Unit = { selectedChannel = it }
+
     // Use windowInsetsTopHeight() to add a spacer which pushes the drawer content
     // below the status bar (y-axis)
-    Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
         Spacer(Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
         DrawerHeader()
         DividerItem()
         DrawerItemHeader("Chats")
-        ChatItem("composers", true) { onChatClicked("composers") }
-        ChatItem("droidcon-nyc", false) { onChatClicked("droidcon-nyc") }
+        Channel.values().forEach {
+            ChatItem(it, selectedChannel, updateChannel, onChatClicked)
+        }
         DividerItem(modifier = Modifier.padding(horizontal = 28.dp))
         DrawerItemHeader("Recent Profiles")
-        ProfileItem("Ali Conors (you)", meProfile.photo) { onProfileClicked(meProfile.userId) }
-        ProfileItem("Taylor Brooks", colleagueProfile.photo) {
-            onProfileClicked(colleagueProfile.userId)
+        profiles.forEach {
+            ProfileItem(text = it.name, profilePic = it.photo) {
+                onProfileClicked(it.userId)
+            }
         }
     }
 }
@@ -91,6 +109,7 @@ private fun DrawerHeader() {
         )
     }
 }
+
 @Composable
 private fun DrawerItemHeader(text: String) {
     Box(
@@ -108,7 +127,14 @@ private fun DrawerItemHeader(text: String) {
 }
 
 @Composable
-private fun ChatItem(text: String, selected: Boolean, onChatClicked: () -> Unit) {
+private fun ChatItem(
+    channel: Channel,
+    selectedChannel: Channel,
+    updateSelection: (Channel) -> Unit,
+    onChatClicked: (String) -> Unit
+) {
+    val selected = channel == selectedChannel
+
     val background = if (selected) {
         Modifier.background(MaterialTheme.colorScheme.primaryContainer)
     } else {
@@ -121,7 +147,10 @@ private fun ChatItem(text: String, selected: Boolean, onChatClicked: () -> Unit)
             .padding(horizontal = 12.dp)
             .clip(CircleShape)
             .then(background)
-            .clickable(onClick = onChatClicked),
+            .clickable {
+                updateSelection(channel)
+                onChatClicked(channel.name)
+            },
         verticalAlignment = CenterVertically
     ) {
         val iconTint = if (selected) {
@@ -136,7 +165,7 @@ private fun ChatItem(text: String, selected: Boolean, onChatClicked: () -> Unit)
             contentDescription = null
         )
         Text(
-            text,
+            text = channel.label,
             style = MaterialTheme.typography.bodyMedium,
             color = if (selected) {
                 MaterialTheme.colorScheme.primary
@@ -200,6 +229,7 @@ fun DrawerPreview() {
         }
     }
 }
+
 @Composable
 @Preview
 fun DrawerPreviewDark() {

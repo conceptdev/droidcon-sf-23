@@ -21,23 +21,19 @@ import androidx.compose.runtime.Immutable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.compose.jetchat.data.colleagueProfile
 import com.example.compose.jetchat.data.meProfile
+import com.example.compose.jetchat.data.profiles
 
 class ProfileViewModel : ViewModel() {
 
     private var userId: String = ""
 
     fun setUserId(newUserId: String?) {
-        if (newUserId != userId) {
-            userId = newUserId ?: meProfile.userId
+        if (newUserId != userId && newUserId != null) {
+            userId = newUserId
         }
         // Workaround for simplicity
-        _userData.value = if (userId == meProfile.userId || userId == meProfile.displayName) {
-            meProfile
-        } else {
-            colleagueProfile
-        }
+        _userData.value = profiles.first { it.userId == newUserId }
     }
 
     private val _userData = MutableLiveData<ProfileScreenState>()

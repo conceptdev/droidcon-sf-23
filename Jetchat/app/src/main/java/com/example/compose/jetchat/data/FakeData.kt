@@ -26,6 +26,69 @@ import com.example.compose.jetchat.data.EMOJIS.EMOJI_PINK_HEART
 import com.example.compose.jetchat.data.EMOJIS.EMOJI_POINTS
 import com.example.compose.jetchat.profile.ProfileScreenState
 
+val meProfile = ProfileScreenState(
+    userId = "me",
+    photo = R.drawable.conceptdev,
+    name = "Craig Dunn",
+    status = "Online",
+    displayName = "conceptdev",
+    position = "Principal SW/FW Engineer @ Microsoft",
+    twitter = "twitter.com/conceptdev",
+    timeZone = "In your timezone",
+    commonChannels = null
+)
+
+val openAiProfile = ProfileScreenState(
+    userId = "openai",
+    photo = R.drawable.openai_logomark,
+    name = "OpenAI",
+    status = "Away",
+    displayName = "OpenAI bot",
+    position = "AI research and deployment company dedicated to creating safe and powerful AI",
+    twitter = "twitter.com/OpenAI",
+    timeZone = "12:25 AM local time (Eastern Daylight Time)",
+    commonChannels = "1"
+)
+
+val palmProfile = ProfileScreenState(
+    userId = "palm",
+    photo = R.drawable.palm_logo,
+    name = "Pathways Language Model (PaLM)",
+    status = "Away",
+    displayName = "PaLM bot",
+    position = "Next generation large language model that builds on Google’s legacy of breakthrough research in machine learning and responsible AI",
+    twitter = "twitter.com/GoogleAI",
+    timeZone = "12:25 AM local time (Eastern Daylight Time)",
+    commonChannels = "1"
+)
+
+val onnxProfile = ProfileScreenState(
+    userId = "onnx",
+    photo = R.drawable.onnx_logo,
+    name = "Open Neural Network Exchange (ONNX)",
+    status = "Away",
+    displayName = "ONNX bot",
+    position = "Open format for representing machine learning models",
+    twitter = "twitter.com/onnxai",
+    timeZone = "12:25 AM local time (Eastern Daylight Time)",
+    commonChannels = "1"
+)
+
+val profiles = listOf(meProfile, openAiProfile, palmProfile, onnxProfile)
+
+val initialOpenAiMessages = listOf(
+    Message(
+        openAiProfile.displayName,
+        "Welcome to JetchatAI!",
+        "8:07 pm",
+        authorImage = openAiProfile.photo
+    )
+)
+val initialPalmMessages =
+    listOf(Message(palmProfile.displayName, "Welcome to JetchatPALM!", "8:07 pm", authorImage = palmProfile.photo))
+val initialOnnxMessages =
+    listOf(Message(onnxProfile.displayName, "Welcome to JetchatONNX!", "8:07 pm", authorImage = onnxProfile.photo))
+
 private val initialMessages = listOf(
     Message(
         "me",
@@ -64,41 +127,11 @@ private val initialMessages = listOf(
         "8:03 PM"
     )
 )
-
 val exampleUiState = ConversationUiState(
     initialMessages = initialMessages,
     channelName = "#composers",
-    channelMembers = 42
-)
-
-/**
- * Example colleague profile
- */
-val colleagueProfile = ProfileScreenState(
-    userId = "12345",
-    photo = R.drawable.someone_else,
-    name = "Taylor Brooks",
-    status = "Away",
-    displayName = "taylor",
-    position = "Senior Android Dev at Openlane",
-    twitter = "twitter.com/taylorbrookscodes",
-    timeZone = "12:25 AM local time (Eastern Daylight Time)",
-    commonChannels = "2"
-)
-
-/**
- * Example "me" profile.
- */
-val meProfile = ProfileScreenState(
-    userId = "me",
-    photo = R.drawable.ali,
-    name = "Ali Conors",
-    status = "Online",
-    displayName = "aliconors",
-    position = "Senior Android Dev at Yearin\nGoogle Developer Expert",
-    twitter = "twitter.com/aliconors",
-    timeZone = "In your timezone",
-    commonChannels = null
+    channelMembers = 42,
+    channelBotProfile = meProfile
 )
 
 object EMOJIS {
