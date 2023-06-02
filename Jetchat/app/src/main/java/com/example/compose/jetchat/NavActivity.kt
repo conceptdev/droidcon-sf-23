@@ -86,6 +86,7 @@ class NavActivity : AppCompatActivity() {
                         drawerState = drawerState,
                         onChatClicked = {
                             findNavController().popBackStack(R.id.nav_home, false)
+                            findNavController().navigate(R.id.nav_home, bundleOf("channelName" to it))
                             scope.launch {
                                 drawerState.close()
                             }

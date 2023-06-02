@@ -29,7 +29,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
 import com.example.compose.jetchat.MainViewModel
 import com.example.compose.jetchat.R
-import com.example.compose.jetchat.data.exampleUiState
+import com.example.compose.jetchat.components.Channel
 import com.example.compose.jetchat.theme.JetchatTheme
 
 class ConversationFragment : Fragment() {
@@ -42,6 +42,10 @@ class ConversationFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View = ComposeView(inflater.context).apply {
         layoutParams = LayoutParams(MATCH_PARENT, MATCH_PARENT)
+
+        arguments?.getString("channelName")?.let { channelName ->
+            activityViewModel.currentChannel = Channel.values().first { it.name == channelName }
+        }
 
         setContent {
             JetchatTheme {
