@@ -32,6 +32,7 @@ import com.example.compose.jetchat.data.onnxProfile
 import com.example.compose.jetchat.data.openAiProfile
 import com.example.compose.jetchat.data.palmProfile
 import com.example.compose.jetchat.profile.ProfileScreenState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -94,6 +95,8 @@ class MainViewModel : ViewModel() {
             }
         }
     private var openAIWrapper = OpenAIWrapper()
+    private var palmWrapper = PalmWrapper()
+
     var botIsTyping by mutableStateOf(false)
         private set
 
@@ -105,7 +108,8 @@ class MainViewModel : ViewModel() {
         botIsTyping = true
 
         // fetch openai response and add to chat history
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
+        //viewModelScope.launch {
             // if user message contains "image" keyword, target image endpoint, otherwise target chat endpoint
             if (content.contains("image", ignoreCase = true)) {
                 var responseContent: String
@@ -122,7 +126,10 @@ class MainViewModel : ViewModel() {
                 addMessage(author = uiState.channelBotProfile, content = responseContent, imageUrl = imageUrl)
             } else {
                 val chatResponse = try {
-                    openAIWrapper.chat(content)
+                    if (currentChannel == Channel.PALM)
+                        palmWrapper.chat(content)
+                    else
+                        openAIWrapper.chat(content)
                 } catch (e: Exception) {
                     "Sorry, there was an error processing your request: ${e.message}"
                 }

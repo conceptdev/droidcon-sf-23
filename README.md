@@ -10,6 +10,8 @@ Demo for droidcon talk in San Francisco, 9th June 2023
 
 [Chat API](https://platform.openai.com/docs/api-reference/chat)
 
+[Chat Playground](https://platform.openai.com/playground?mode=chat)
+
 ## Google PaLM
 
 [Overview](https://developers.generativeai.google/guide/palm_api_overview)
@@ -17,6 +19,8 @@ Demo for droidcon talk in San Francisco, 9th June 2023
 [Chat quickstart](https://developers.generativeai.google/tutorials/chat_android_quickstart)
 
 [REST API](https://developers.generativeai.google/api/rest/generativelanguage)
+
+[Chat MakerSuite](https://makersuite.google.com/app/prompts/new_multiturn)
 
 ## Blog
 

@@ -1,3 +1,5 @@
+import org.gradle.internal.impldep.bsh.commands.dir
+
 /*
  * Copyright 2020 The Android Open Source Project
  *
@@ -76,6 +78,9 @@ android {
         // our test APK to build (has no effect on our AARs)
         excludes += "/META-INF/AL2.0"
         excludes += "/META-INF/LGPL2.1"
+        excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        excludes += "META-INF/INDEX.LIST"
+        excludes += "META-INF/DEPENDENCIES"
     }
 }
 
@@ -120,4 +125,12 @@ dependencies {
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+
+    // To use generative AI
+    implementation(fileTree("libs") { include("*.jar") })
+    //implementation files("libs/gapic-google-cloud-ai-generativelanguage-v1beta2-java-0.0.0-SNAPSHOT.jar")
+    implementation("com.google.api:gax:2.25.0")
+    implementation("com.google.api:gax-grpc:2.25.0")
+    implementation("com.google.api:gax-httpjson:0.110.0")
+    implementation("io.grpc:grpc-okhttp:1.53.0")
 }
