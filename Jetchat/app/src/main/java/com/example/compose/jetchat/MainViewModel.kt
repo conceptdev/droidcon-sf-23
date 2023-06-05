@@ -109,7 +109,6 @@ class MainViewModel : ViewModel() {
 
         // fetch openai response and add to chat history
         viewModelScope.launch(Dispatchers.IO) {
-        //viewModelScope.launch {
             // if user message contains "image" keyword, target image endpoint, otherwise target chat endpoint
             if (content.contains("image", ignoreCase = true)) {
                 var responseContent: String
