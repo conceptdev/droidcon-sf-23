@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 class PalmWrapper {
     /** Matches the OpenAI implementation */
     suspend fun chat(message: String): String {
-        return sendMessage (message)
+        return sendMessage(message)
     }
 
     private val _messages = MutableStateFlow<List<Message>>(value = listOf())
