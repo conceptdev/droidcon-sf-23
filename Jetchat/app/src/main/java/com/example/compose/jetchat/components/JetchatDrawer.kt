@@ -57,9 +57,9 @@ import com.example.compose.jetchat.data.profiles
 import com.example.compose.jetchat.theme.JetchatTheme
 
 enum class Channel(val label: String) {
-    OPENAI("#jetchat-ai"),
+    OPENAI("#jetchat-openai"),
     PALM("#jetchat-palm"),
-    ONNX("#jetchat-onnx"),
+    DROIDCON("#droidcon-chat"),
 }
 
 @Composable
