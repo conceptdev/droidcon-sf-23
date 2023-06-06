@@ -97,8 +97,8 @@ val initialDroidconMessages =
     listOf(
         Message(
             openAiProfile.displayName,
-            "Welcome to #droidcon-chat!",
-            "8:07 pm",
+            "Welcome to #droidcon-chat! Ask questions about the schedule for droidcon SF 2023 🤖",
+            "9:00 am",
             authorImage = openAiProfile.photo
         )
     )
