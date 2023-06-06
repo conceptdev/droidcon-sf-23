@@ -1,0 +1,62 @@
+/*
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License.
+ */
+
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        applicationId 'com.microsoft.device.display.wm_samples.sourceeditor'
+        minSdkVersion 29
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 5
+        versionName "5.0"
+
+        testInstrumentationRunner config.testInstrumentationRunner
+    }
+    
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
+dependencies {
+    implementation googleDependencies.material
+    implementation kotlinDependencies.kotlinStdlib
+
+    implementation androidxDependencies.appCompat
+    implementation androidxDependencies.constraintLayout
+    implementation androidxDependencies.lifecycle
+    implementation androidxDependencies.ktxCore
+    implementation androidxDependencies.ktxFragment
+    implementation androidxDependencies.windowManager
+
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1'
+
+
+    testImplementation testDependencies.junit
+
+    androidTestImplementation instrumentationTestDependencies.junit
+    androidTestImplementation instrumentationTestDependencies.espressoCore
+    androidTestImplementation instrumentationTestDependencies.espressoWeb
+    androidTestImplementation instrumentationTestDependencies.testRunner
+    androidTestImplementation instrumentationTestDependencies.testRules
+    androidTestImplementation instrumentationTestDependencies.uiautomator
+    androidTestImplementation instrumentationTestDependencies.kotlinTesting
+
+    implementation("io.ktor:ktor-client-core:2.2.4")
+    implementation("io.ktor:ktor-client-android:2.2.4")
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
+}
+

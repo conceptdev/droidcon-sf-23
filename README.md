@@ -1,8 +1,22 @@
 # droidcon SF 2023
 
-Demo for droidcon talk in San Francisco, 9th June 2023
+Demos for droidcon talk in San Francisco, 9th June 2023
 
-## OpenAI
+## Source Editor (OpenAI)
+
+Summarization feature with HTML content.
+
+[Completion documentation](https://platform.openai.com/docs/api-reference/completions)
+
+[Complation API](https://platform.openai.com/docs/api-reference/completions/create)
+
+Blog: [OpenAI API endpoints](https://devblogs.microsoft.com/surface-duo/android-openai-chatgpt-3/)
+
+## JetchatAI
+
+Chat interface with LLMs back-ends.
+
+### OpenAI
 
 [Introduction](https://platform.openai.com/docs/introduction)
 
@@ -12,7 +26,7 @@ Demo for droidcon talk in San Francisco, 9th June 2023
 
 [Chat Playground](https://platform.openai.com/playground?mode=chat)
 
-## Google PaLM
+### Google PaLM
 
 [Overview](https://developers.generativeai.google/guide/palm_api_overview)
 
@@ -22,11 +36,11 @@ Demo for droidcon talk in San Francisco, 9th June 2023
 
 [Chat MakerSuite](https://makersuite.google.com/app/prompts/new_multiturn)
 
-## Blog
+### Blog
 
 Original project blogged at [Jetchat with OpenAI on Android](https://devblogs.microsoft.com/surface-duo/android-openai-chatgpt-5/) on [devblogs.microsoft.com](https://devblogs.microsoft.com/surface-duo/)
 
-## Forked from Jetpack Compose Samples
+### Forked from Jetpack Compose Samples
 
 Original source for the chat app can be found at:
 
