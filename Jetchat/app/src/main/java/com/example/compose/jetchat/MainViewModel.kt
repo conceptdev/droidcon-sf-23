@@ -24,11 +24,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.compose.jetchat.components.Channel
 import com.example.compose.jetchat.conversation.ConversationUiState
 import com.example.compose.jetchat.conversation.Message
-import com.example.compose.jetchat.data.initialOnnxMessages
+import com.example.compose.jetchat.data.initialDroidconMessages
 import com.example.compose.jetchat.data.initialOpenAiMessages
 import com.example.compose.jetchat.data.initialPalmMessages
 import com.example.compose.jetchat.data.meProfile
-import com.example.compose.jetchat.data.onnxProfile
 import com.example.compose.jetchat.data.openAiProfile
 import com.example.compose.jetchat.data.palmProfile
 import com.example.compose.jetchat.profile.ProfileScreenState
@@ -75,12 +74,12 @@ class MainViewModel : ViewModel() {
         )
     )
 
-    private val onnxUiState by mutableStateOf(
+    private val droidconUiState by mutableStateOf(
         ConversationUiState(
-            initialMessages = initialOnnxMessages,
-            channelName = Channel.ONNX.label,
+            initialMessages = initialDroidconMessages,
+            channelName = Channel.DROIDCON.label,
             channelMembers = 2,
-            channelBotProfile = onnxProfile
+            channelBotProfile = openAiProfile
         )
     )
 
@@ -91,7 +90,7 @@ class MainViewModel : ViewModel() {
             return when (currentChannel) {
                 Channel.PALM -> palmUiState
                 Channel.OPENAI -> openAiUiState
-                Channel.ONNX -> onnxUiState
+                Channel.DROIDCON -> droidconUiState
             }
         }
     private var openAIWrapper = OpenAIWrapper()

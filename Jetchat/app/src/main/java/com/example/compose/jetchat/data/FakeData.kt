@@ -79,15 +79,29 @@ val profiles = listOf(meProfile, openAiProfile, palmProfile, onnxProfile)
 val initialOpenAiMessages = listOf(
     Message(
         openAiProfile.displayName,
-        "Welcome to JetchatAI!",
+        "Welcome to #jetchat-openai!",
         "8:07 pm",
         authorImage = openAiProfile.photo
     )
 )
 val initialPalmMessages =
-    listOf(Message(palmProfile.displayName, "Welcome to JetchatPALM!", "8:07 pm", authorImage = palmProfile.photo))
-val initialOnnxMessages =
-    listOf(Message(onnxProfile.displayName, "Welcome to JetchatONNX!", "8:07 pm", authorImage = onnxProfile.photo))
+    listOf(
+        Message(
+            palmProfile.displayName,
+            "Welcome to #jetchat-palm!",
+            "8:07 pm",
+            authorImage = palmProfile.photo
+        )
+    )
+val initialDroidconMessages =
+    listOf(
+        Message(
+            openAiProfile.displayName,
+            "Welcome to #droidcon-chat!",
+            "8:07 pm",
+            authorImage = openAiProfile.photo
+        )
+    )
 
 private val initialMessages = listOf(
     Message(
