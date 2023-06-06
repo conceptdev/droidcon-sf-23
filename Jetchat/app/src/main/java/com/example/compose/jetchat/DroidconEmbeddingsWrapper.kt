@@ -14,6 +14,12 @@ import com.aallam.openai.client.OpenAI
 import com.example.compose.jetchat.data.DroidconSessionData
 import java.util.SortedMap
 
+/** dot product for comparing vector similarity */
+infix fun DoubleArray.dot(other: DoubleArray): Double {
+    var out = 0.0
+    for (i in indices) out += this[i] * other[i]
+    return out
+}
 
 /** THIS IS A COPY OF OpenAIWrapper
  *
