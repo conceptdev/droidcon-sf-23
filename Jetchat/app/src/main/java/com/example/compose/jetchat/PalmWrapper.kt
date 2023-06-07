@@ -91,16 +91,18 @@ class PalmWrapper {
             sortedVectors[v] = session.key
             Log.v("LLM", "${session.key} dot $v")
         }
-        if (sortedVectors.lastKey() > 0.8) { // arbitrary match threshold
+        if (sortedVectors.lastKey() > 0.68) { // arbitrary match threshold
             Log.i("LLM", "Top match is ${sortedVectors.lastKey()}")
 
             messagePreamble =
                 "Following are some talks/sessions scheduled for the droidcon San Francisco conference in June 2023:\n\n"
-            for (dpKey in sortedVectors.tailMap(0.8)) {
+            for ((count, dpKey) in sortedVectors.tailMap(0.68).asIterable().reversed().withIndex()) {
                 Log.i("LLM", "${dpKey.key} -> ${dpKey.value}")
 
                 messagePreamble += DroidconSessionData.droidconSessions[dpKey.value] + "\n\n"
 
+                if (count > 5) // limit to 5 results
+                    break
             }
             messagePreamble += "\n\nUse the above information to answer the following question. Summarize and provide date/time and location if appropriate.\n\n"
             Log.v("LLM", messagePreamble)
@@ -188,6 +190,7 @@ class PalmWrapper {
         request: GenerateMessageRequest
     ): String {
         try {
+            Log.i("LLM", request.prompt.toString())
             val response = client.generateMessage(request)
 
             val returnedMessage = response.candidatesList.last()
