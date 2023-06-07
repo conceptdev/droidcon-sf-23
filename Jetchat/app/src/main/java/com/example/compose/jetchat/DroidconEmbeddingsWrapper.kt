@@ -35,9 +35,11 @@ class DroidconEmbeddingsWrapper {
         conversation = mutableListOf(
             ChatMessage(
                 role = ChatRole.System,
-                content = """You are a personal assistant called JetchatAI.
-                            Your answers will be short and concise, since they will be required to fit on 
-                            a mobile device display.""".trimMargin()
+                content = """You are a personal assistant called JetchatAI. 
+                    You will answer questions about the speakers and sessions at the droidcon SF conference.
+                    The conference is on June 8th and 9th, 2023. It starts at 9am and finishes by 6pm.
+                    Your answers will be short and concise, since they will be required to fit on 
+                    a mobile device display.""".trimMargin()
             )
         )
     }
@@ -46,35 +48,7 @@ class DroidconEmbeddingsWrapper {
 
         initVectorCache() // should only run once (HACK: wait to finish)
 
-        var messagePreamble = ""
-        val embeddingRequest = EmbeddingRequest(
-            model = ModelId("text-embedding-ada-002"),
-            input = listOf(message)
-        )
-        val embedding = openAI.embeddings(embeddingRequest)
-        val messageVector = embedding.embeddings[0].embedding.toDoubleArray()
-        Log.i("LLM", "messageVector: $messageVector")
-
-        var sortedVectors: SortedMap<Double, String> = sortedMapOf()
-        // find the best match sessions
-        for (session in vectorCache) {
-            val v = messageVector dot session.value
-            sortedVectors[v] = session.key
-            Log.v("LLM", "${session.key} dot $v")
-        }
-        if (sortedVectors.lastKey() > 0.8){
-            Log.i("LLM", "Top match is ${sortedVectors.lastKey()}")
-
-            messagePreamble = "Following are some talks/sessions scheduled for the droidcon San Francisco conference in June 2023:\n\n"
-            for (dpKey in sortedVectors.tailMap(0.8)){
-                Log.i("LLM", "${dpKey.key} -> ${dpKey.value}")
-
-                messagePreamble += DroidconSessionData.droidconSessions[dpKey.value] + "\n\n"
-
-            }
-            messagePreamble += "\n\nUse the above information to answer the following question. Summarize and provide date/time and location if appropriate.\n\n"
-            Log.v("LLM", "$messagePreamble")
-        }
+        val messagePreamble = grounding(message)
 
         // add the user's message to the chat history
         conversation.add(
@@ -103,6 +77,46 @@ class DroidconEmbeddingsWrapper {
         )
 
         return chatResponse
+    }
+
+    /** Provide grounding for user query by checking
+     * message against embeddings.
+     *
+     * @return the relevant data to add to the query,
+     * along with additional prompt instructions.
+     * Empty string if no matching embeddings found. */
+    private suspend fun grounding(message: String): String {
+        var messagePreamble = ""
+        val embeddingRequest = EmbeddingRequest(
+            model = ModelId("text-embedding-ada-002"),
+            input = listOf(message)
+        )
+        val embedding = openAI.embeddings(embeddingRequest)
+        val messageVector = embedding.embeddings[0].embedding.toDoubleArray()
+        Log.i("LLM", "messageVector: $messageVector")
+
+        var sortedVectors: SortedMap<Double, String> = sortedMapOf()
+        // find the best match sessions
+        for (session in vectorCache) {
+            val v = messageVector dot session.value
+            sortedVectors[v] = session.key
+            Log.v("LLM", "${session.key} dot $v")
+        }
+        if (sortedVectors.lastKey() > 0.8) { // arbitrary match threshold
+            Log.i("LLM", "Top match is ${sortedVectors.lastKey()}")
+
+            messagePreamble =
+                "Following are some talks/sessions scheduled for the droidcon San Francisco conference in June 2023:\n\n"
+            for (dpKey in sortedVectors.tailMap(0.8)) {
+                Log.i("LLM", "${dpKey.key} -> ${dpKey.value}")
+
+                messagePreamble += DroidconSessionData.droidconSessions[dpKey.value] + "\n\n"
+
+            }
+            messagePreamble += "\n\nUse the above information to answer the following question. Summarize and provide date/time and location if appropriate.\n\n"
+            Log.v("LLM", "$messagePreamble")
+        }
+        return messagePreamble
     }
 
     suspend fun imageURL(prompt: String): String {
