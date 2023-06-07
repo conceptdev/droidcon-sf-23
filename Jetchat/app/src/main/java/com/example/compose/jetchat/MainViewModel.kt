@@ -126,12 +126,11 @@ class MainViewModel : ViewModel() {
             } else {
                 val chatResponse = try {
                     // HACK: cheat way to swap back-ends
-                    if (currentChannel == Channel.PALM)
-                        palmWrapper.chat(content)
-                    else if (currentChannel == Channel.DROIDCON)
-                        droidconWrapper.chat(content)
-                    else
-                        openAIWrapper.chat(content)
+                    when (currentChannel) {
+                        Channel.PALM -> palmWrapper.chat(content)
+                        Channel.DROIDCON -> droidconWrapper.chat(content)
+                        else -> openAIWrapper.chat(content)
+                    }
                 } catch (e: Exception) {
                     "Sorry, there was an error processing your request: ${e.message}"
                 }
