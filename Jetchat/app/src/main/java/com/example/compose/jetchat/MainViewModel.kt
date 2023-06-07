@@ -95,6 +95,7 @@ class MainViewModel : ViewModel() {
         }
     private var openAIWrapper = OpenAIWrapper()
     private var palmWrapper = PalmWrapper()
+    private var droidconWrapper = DroidconEmbeddingsWrapper()
 
     var botIsTyping by mutableStateOf(false)
         private set
@@ -124,8 +125,11 @@ class MainViewModel : ViewModel() {
                 addMessage(author = uiState.channelBotProfile, content = responseContent, imageUrl = imageUrl)
             } else {
                 val chatResponse = try {
+                    // HACK: cheat way to swap back-ends
                     if (currentChannel == Channel.PALM)
                         palmWrapper.chat(content)
+                    else if (currentChannel == Channel.DROIDCON)
+                        droidconWrapper.chat(content)
                     else
                         openAIWrapper.chat(content)
                 } catch (e: Exception) {
