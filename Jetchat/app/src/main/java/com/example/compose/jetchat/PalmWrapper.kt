@@ -210,7 +210,7 @@ class PalmWrapper {
                 mutableList.apply {
                     add(
                         Message.newBuilder()
-                            .setAuthor("500")
+                            .setAuthor("1") // was "500" but PaLM API Error: INVALID_ARGUMENT: Messages must have 0 or at most 2 authors, 3 specified
                             .setContent(e.message)
                             .build()
                     )
