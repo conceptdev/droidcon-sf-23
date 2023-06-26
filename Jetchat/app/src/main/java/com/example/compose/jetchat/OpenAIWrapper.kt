@@ -38,7 +38,7 @@ class OpenAIWrapper {
 
         // build the OpenAI network request
         val chatCompletionRequest = ChatCompletionRequest(
-            model = ModelId("gpt-3.5-turbo"),
+            model = ModelId(Constants.OPENAI_CHAT_MODEL),
             messages = conversation
         )
         val completion: ChatCompletion = openAI.chatCompletion(chatCompletionRequest)

@@ -60,7 +60,7 @@ class DroidconEmbeddingsWrapper {
 
         // build the OpenAI network request
         val chatCompletionRequest = ChatCompletionRequest(
-            model = ModelId("gpt-3.5-turbo"),
+            model = ModelId(Constants.OPENAI_CHAT_MODEL),
             messages = conversation
         )
         val completion: ChatCompletion = openAI.chatCompletion(chatCompletionRequest)
@@ -88,7 +88,7 @@ class DroidconEmbeddingsWrapper {
     private suspend fun grounding(message: String): String {
         var messagePreamble = ""
         val embeddingRequest = EmbeddingRequest(
-            model = ModelId("text-embedding-ada-002"),
+            model = ModelId(Constants.OPENAI_EMBED_MODEL),
             input = listOf(message)
         )
         val embedding = openAI.embeddings(embeddingRequest)
@@ -136,7 +136,7 @@ class DroidconEmbeddingsWrapper {
         if (vectorCache.isEmpty()) {
             for (session in DroidconSessionData.droidconSessions) {
                 val embeddingRequest = EmbeddingRequest(
-                    model = ModelId("text-embedding-ada-002"),
+                    model = ModelId(Constants.OPENAI_EMBED_MODEL),
                     input = listOf(session.value)
                 )
                 val embedding = openAI.embeddings(embeddingRequest)
