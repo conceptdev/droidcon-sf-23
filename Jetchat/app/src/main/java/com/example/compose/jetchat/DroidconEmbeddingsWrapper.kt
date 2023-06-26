@@ -27,7 +27,7 @@ infix fun DoubleArray.dot(other: DoubleArray): Double {
  * */
 @OptIn(BetaOpenAI::class)
 class DroidconEmbeddingsWrapper {
-    private val openAIToken: String = "{OPENAI-KEY}"
+    private val openAIToken: String = Constants.OPENAI_TOKEN
     private var conversation: MutableList<ChatMessage>
     private var openAI: OpenAI = OpenAI(openAIToken)
 

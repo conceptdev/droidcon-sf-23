@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.update
 import java.util.SortedMap
 
 class PalmWrapper {
-    private val apiKey = "{PALM_KEY}"
+    private val apiKey = Constants.PALM_TOKEN
 
     private val _messages = MutableStateFlow<List<Message>>(value = listOf())
     val messages: StateFlow<List<Message>>
