@@ -75,7 +75,8 @@ class OpenAIWrapper {
             {
                 val functionArgs = function.argumentsAsJson() ?: error("arguments field is missing")
                 val functionResponse = OpenAIFunctions.currentWeather(
-                    functionArgs.getValue("location").jsonPrimitive.content,
+                    functionArgs.getValue("latitude").jsonPrimitive.content,
+                    functionArgs.getValue("longitude").jsonPrimitive.content,
                     functionArgs["unit"]?.jsonPrimitive?.content ?: "fahrenheit"
                 )
 

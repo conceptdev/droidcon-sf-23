@@ -1,5 +1,6 @@
 package com.example.compose.jetchat
 
+import android.util.Log
 import com.aallam.openai.api.chat.Parameters
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
@@ -25,13 +26,14 @@ class OpenAIFunctions {
 
     @Serializable
     data class WeatherInfo(
-        val location: String,
+        val latitude: String,
+        val longitude: String,
         val temperature: String,
         val unit: String,
         val forecast: List<String>
     ) {
         fun toJson () : String {
-            return "{location:\"$location\",temperature:\"$temperature\",unit:\"$unit\",forecast:\"$forecast\"}"
+            return "{latitude:\"$latitude\",longitude:\"$longitude\",temperature:\"$temperature\",unit:\"$unit\",forecast:\"$forecast\"}"
         }
     }
 
@@ -40,8 +42,25 @@ class OpenAIFunctions {
          * Example dummy function hard coded to return the same weather
          * In production, this could be your backend API or an external API
          */
-        fun currentWeather(location: String, unit: String): String {
-            val weatherInfo = WeatherInfo(location, Random.nextInt(55, 85).toString(), unit, listOf("sunny", "foggy"))
+        fun currentWeather(latitude: String, longitude: String, unit: String): String {
+            if (true)
+            {   // hardcoded return value
+                var forecast = listOf("clear","sunny")
+                when (Random.nextInt(0,4))
+                {
+                    0 -> forecast = listOf("sunny","foggy")
+                    1 -> forecast = listOf("cloudy","rainy")
+                    2 -> forecast = listOf("rainy","stormy")
+                    3 -> forecast = listOf("sunny","foggy")
+                    else -> {
+                        forecast = listOf("clear","sunny")
+                    }
+                }
+                Log.i("GPT", "WeatherInfo $latitude, $longitude")
+                return WeatherInfo(latitude, longitude, Random.nextInt(55, 85).toString(), unit, forecast).toJson()
+            }
+
+            val weatherInfo = WeatherInfo(latitude, longitude, Random.nextInt(55, 85).toString(), unit, listOf("sunny", "foggy"))
             // HACK: hardcoded value
             // TODO: add a weather service backend
             //return Json.encodeToString(weatherInfo)
@@ -52,9 +71,13 @@ class OpenAIFunctions {
             val params = Parameters.buildJsonObject {
                 put("type", "object")
                 putJsonObject("properties") {
-                    putJsonObject("location") {
+                    putJsonObject("latitude") {
                         put("type", "string")
-                        put("description", "The city and state, e.g. San Francisco, CA")
+                        put("description", "The latitude of the requested location, e.g. 37.773972 for San Francisco, CA")
+                    }
+                    putJsonObject("longitude") {
+                        put("type", "string")
+                        put("description", "The longitude of the requested location, e.g. -122.431297 for San Francisco, CA")
                     }
                     putJsonObject("unit") {
                         put("type", "string")
@@ -65,7 +88,8 @@ class OpenAIFunctions {
                     }
                 }
                 putJsonArray("required") {
-                    add("location")
+                    add("latitude")
+                    add("longitude")
                 }
             }
             return params
