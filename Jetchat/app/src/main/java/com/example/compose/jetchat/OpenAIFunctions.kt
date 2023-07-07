@@ -112,6 +112,8 @@ class OpenAIFunctions {
                     } else {
                         Log.e("GPT", "Error: Forecast ${forecastResponse.status}")
                     }
+                } else if (gridResponse.status == HttpStatusCode.Forbidden) {
+                    Log.e("GPT", "Error: Grid ${gridResponse.status} access denied, probably need a string in the `WEATHER_USER_AGENT` in `Constants.kt` (don't leave it blank)")
                 } else if (gridResponse.status == HttpStatusCode.NotFound) {
                     Log.e("GPT", "Error: Grid ${gridResponse.status} location was not within the United States, not served by weather.gov")
                 } else {
