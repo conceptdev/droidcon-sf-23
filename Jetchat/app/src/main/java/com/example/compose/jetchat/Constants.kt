@@ -9,6 +9,12 @@ internal object Constants {
     /** Embedding model: text-embedding-ada-002 */
     internal const val OPENAI_EMBED_MODEL = "text-embedding-ada-002"
 
+    /** Weather.gov https://www.weather.gov/documentation/services-web-api asks that
+     * each application submit a unique user-agent to help with tracking and
+     * security issues. Try to include a contact email address.
+     * NOTE: weather.gov is for US locations only. */
+    internal const val WEATHER_USER_AGENT = ""
+
     internal const val PALM_TOKEN = "{PALM_TOKEN}"
 
     /** Chat model: models/chat-bison-001 */
