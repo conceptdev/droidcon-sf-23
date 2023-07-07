@@ -2,11 +2,22 @@ package com.example.compose.jetchat
 
 import android.util.Log
 import com.aallam.openai.api.chat.Parameters
+import io.ktor.client.HttpClient
+import io.ktor.client.request.get
+import io.ktor.client.request.headers
+import io.ktor.client.statement.bodyAsText
+import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.contentType
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.put
 import kotlinx.serialization.json.add
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.putJsonArray
 import kotlinx.serialization.json.putJsonObject
 import kotlin.random.Random
@@ -39,33 +50,81 @@ class OpenAIFunctions {
 
     companion object {
         /**
-         * Example dummy function hard coded to return the same weather
-         * In production, this could be your backend API or an external API
+         * Makes two HTTPS calls to determine the correct location
+         * and then get weather data from
+         * https://www.weather.gov/documentation/services-web-api
+         *
+         * @return WARNING: returns fake/random data if there's an
+         * error because this is primarily a demo. If you see
+         * "moonquakes" in the UI then the hardcoded data was used.
          */
-        fun currentWeather(latitude: String, longitude: String, unit: String): String {
-            if (true)
-            {   // hardcoded return value
-                var forecast = listOf("clear","sunny")
-                when (Random.nextInt(0,4))
-                {
-                    0 -> forecast = listOf("sunny","foggy")
-                    1 -> forecast = listOf("cloudy","rainy")
-                    2 -> forecast = listOf("rainy","stormy")
-                    3 -> forecast = listOf("sunny","foggy")
-                    else -> {
-                        forecast = listOf("clear","sunny")
+        suspend fun currentWeather(latitude: String, longitude: String, unit: String): String {
+
+            try {
+                val httpClient = HttpClient()
+                // https://www.weather.gov/documentation/services-web-api
+                val gridUrl = "https://api.weather.gov/points/$latitude,$longitude"
+                val gridResponse = httpClient.get(gridUrl) {
+                    contentType(ContentType.Application.Json)
+                    headers{
+                        append(HttpHeaders.UserAgent,Constants.WEATHER_USER_AGENT)
                     }
                 }
-                Log.i("GPT", "WeatherInfo $latitude, $longitude")
-                return WeatherInfo(latitude, longitude, Random.nextInt(55, 85).toString(), unit, forecast).toJson()
-            }
+                if (gridResponse.status == HttpStatusCode.OK) {
+                    val responseText = gridResponse.bodyAsText()
+                    val responseJson =
+                        Json.parseToJsonElement(responseText).jsonObject["properties"]!!
+                    var office = responseJson.jsonObject["gridId"]?.jsonPrimitive?.content
+                    var gridX = responseJson.jsonObject["gridX"]?.jsonPrimitive?.content
+                    var gridY = responseJson.jsonObject["gridY"]?.jsonPrimitive?.content
 
-            val weatherInfo = WeatherInfo(latitude, longitude, Random.nextInt(55, 85).toString(), unit, listOf("sunny", "foggy"))
-            // HACK: hardcoded value
-            // TODO: add a weather service backend
+                    val forecastUrl =
+                        "https://api.weather.gov/gridpoints/$office/$gridX,$gridY/forecast"
+
+                    val forecastResponse = httpClient.get(forecastUrl) {
+                        contentType(ContentType.Application.Json)
+                        headers{
+                            append(HttpHeaders.UserAgent,Constants.WEATHER_USER_AGENT)
+                        }
+                    }
+                    if (forecastResponse.status == HttpStatusCode.OK) {
+                        val responseText = forecastResponse.bodyAsText()
+                        val responseJson =
+                            Json.parseToJsonElement(responseText).jsonObject["properties"]!!
+                        val periods = responseJson.jsonObject["periods"]!!
+                        val period1 = periods.jsonArray[0]!!
+                        var name = period1.jsonObject["name"]?.jsonPrimitive?.content!!
+                        var temperature =
+                            period1.jsonObject["temperature"]?.jsonPrimitive?.content!!
+                        var unit = period1.jsonObject["temperatureUnit"]?.jsonPrimitive?.content!!
+                        var detailedForecast =
+                            period1.jsonObject["detailedForecast"]?.jsonPrimitive?.content!!
+
+                        Log.e("GPT", "Forecast ${detailedForecast}")
+                        val weatherInfo = WeatherInfo(
+                            latitude,
+                            longitude,
+                            temperature,
+                            unit,
+                            listOf(name, detailedForecast)
+                        )
+                        return weatherInfo.toJson()
+                    } else {
+                        Log.e("GPT", "Error: Forecast ${forecastResponse.status}")
+                    }
+                } else if (gridResponse.status == HttpStatusCode.NotFound) {
+                    Log.e("GPT", "Error: Grid ${gridResponse.status} location was not within the United States, not served by weather.gov")
+                } else {
+                    Log.e("GPT", "Error: Grid ${gridResponse.status}")
+                }
+            } catch (e: Exception) {
+                Log.e("GPT", "Http error: ${e.message}")
+            }
+            // HACK: hardcoded return value (with "moonquakes")
+            return hardcodedWeatherResponse(latitude, longitude, unit).toJson()
             //return Json.encodeToString(weatherInfo)
-            return weatherInfo.toJson()
         }
+
 
         fun buildParams(): Parameters {
             val params = Parameters.buildJsonObject {
@@ -93,6 +152,34 @@ class OpenAIFunctions {
                 }
             }
             return params
+        }
+
+        /** Hardcoded response to ensure demo works - includes
+         * a mention of "moonquakes" so if you see that in the
+         * app while testing, you know it was this hardcoded response */
+        private fun hardcodedWeatherResponse(
+            latitude: String,
+            longitude: String,
+            unit: String
+        ): WeatherInfo {
+            var forecast = listOf("moonquakes")
+            when (Random.nextInt(0, 4)) {
+                0 -> forecast = listOf("sunny", "foggy", "moonquakes")
+                1 -> forecast = listOf("cloudy", "rainy", "moonquakes")
+                2 -> forecast = listOf("rainy", "stormy", "moonquakes")
+                3 -> forecast = listOf("sunny", "foggy", "moonquakes")
+                else -> {
+                    forecast = listOf("clear", "sunny", "moonquakes")
+                }
+            }
+            Log.i("GPT", "WeatherInfo $latitude, $longitude")
+            return WeatherInfo(
+                latitude,
+                longitude,
+                Random.nextInt(55, 85).toString(),
+                unit,
+                forecast
+            )
         }
     }
 }
