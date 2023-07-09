@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import com.aallam.openai.api.chat.Parameters
 import com.example.compose.jetchat.data.DroidconSessionObjects
+import com.example.compose.jetchat.data.SessionInfo
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
@@ -232,64 +233,3 @@ class TimeForSessionFunctions {
     }
 }
 
-
-@Serializable
-data class SessionInfo(
-    val id: String,
-    val speaker: String,
-    val role: String = "",
-    val location: String,
-    val date: String,
-    val time: String,
-    val subject: String,
-    val description: String = ""
-) {
-    fun toJson () : String {
-        return "{id:\"$id\",speaker:\"$speaker\",location:\"$location\",date:\"$date\",time:\"$time\",subject:\"$subject\"}"
-    }
-    companion object {
-        /** Hardcoded response to ensure demo works - includes
-         * a mention of "moonquakes" so if you see that in the
-         * app while testing, you know it was this hardcoded response */
-        fun hardcodedSessionsList(
-        ): List<SessionInfo> {
-            var sessionList = mutableListOf<SessionInfo>()
-
-            sessionList.add(
-                SessionInfo(
-                    "1",
-                    "Craig Dunn",
-                    "SWE",
-                    "Robertson 1",
-                    "2023-06-09",
-                    "16:00",
-                    "Android AI"
-                )
-            )
-            sessionList.add(
-                SessionInfo(
-                    "2",
-                    "HANSON HO",
-                    "",
-                    "Robertson 2",
-                    "2023-06-08",
-                    "13:30",
-                    "Combating sampling bias in production: How to collect and interpret performance data to drive growth"
-                )
-            )
-            sessionList.add(
-                SessionInfo(
-                    "3",
-                    "ISTVÁN JUHOS",
-                    "",
-                    "Fisher West",
-                    "2023-06-09",
-                    "10:00",
-                    "Compose-View Interop in Practice"
-                )
-            )
-
-            return sessionList
-        }
-    }
-}

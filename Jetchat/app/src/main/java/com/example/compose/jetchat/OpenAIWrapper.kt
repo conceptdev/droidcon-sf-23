@@ -33,11 +33,15 @@ class OpenAIWrapper {
     }
 
     suspend fun chat(message: String): String {
+        // grounding (location)
+        // TODO: use location services to determine latitude/longitude for current location
+        val groundedMessage = "Current location is ${Constants.TEST_LOCATION}.\n\n$message"
+
         // add the user's message to the chat history
         conversation.add(
             ChatMessage(
                 role = ChatRole.User,
-                content = message
+                content = groundedMessage
             )
         )
 

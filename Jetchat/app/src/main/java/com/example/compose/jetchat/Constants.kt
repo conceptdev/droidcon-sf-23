@@ -3,11 +3,19 @@ package com.example.compose.jetchat
 internal object Constants {
     internal const val OPENAI_TOKEN = "{OPENAI_KEY}"
 
-    /** Chat model: gpt-4, was gpt-3.5-turbo-0613 */
-    internal const val OPENAI_CHAT_MODEL = "gpt-4"
+    /** Chat model: "gpt-4" or "gpt-3.5-turbo-0613" */
+    internal const val OPENAI_CHAT_MODEL = "gpt-3.5-turbo-0613"
 
     /** Embedding model: text-embedding-ada-002 */
     internal const val OPENAI_EMBED_MODEL = "text-embedding-ada-002"
+
+    /** Hardcode date "2023-06-09" for droidcon session testing, make empty string to use real date */
+    internal const val TEST_DATE = "2023-06-09"
+    /** Hardcode time "15:45" for droidcon session testing, make empty string to use real time */
+    internal const val TEST_TIME = "15:45"
+
+    /** Hardcode location to "37.773972,-122.431297" for weather API testing, make empty string to use real GPS location (NOTE: not yet implemented) */
+    internal const val TEST_LOCATION = "37.773972,-122.431297"
 
     /** Weather.gov https://www.weather.gov/documentation/services-web-api asks that
      * each application submit a unique user-agent to help with tracking and

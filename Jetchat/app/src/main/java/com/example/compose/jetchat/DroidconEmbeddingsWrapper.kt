@@ -1,6 +1,8 @@
 package com.example.compose.jetchat
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import com.aallam.openai.api.BetaOpenAI
 import com.aallam.openai.api.chat.ChatCompletion
 import com.aallam.openai.api.chat.ChatCompletionRequest
@@ -14,7 +16,10 @@ import com.aallam.openai.api.image.ImageURL
 import com.aallam.openai.api.model.ModelId
 import com.aallam.openai.client.OpenAI
 import com.example.compose.jetchat.data.DroidconSessionData
+import com.google.api.client.util.DateTime
 import kotlinx.serialization.json.jsonPrimitive
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.SortedMap
 
 /** dot product for comparing vector similarity */
@@ -44,7 +49,8 @@ class DroidconEmbeddingsWrapper {
                     It starts at 8am and finishes by 6pm.
                     Your answers will be short and concise, since they will be required to fit on 
                     a mobile device display.
-                    When showing session information, always include the subject, speaker, location, and time. Show the date and description if needed.
+                    When showing session information, always include the subject, speaker, location, and time. 
+                    ONLY show the description when responding about a single session.
                     Only use the functions you have been provided with.""".trimMargin()
             )
         )
@@ -216,9 +222,13 @@ class DroidconEmbeddingsWrapper {
     /** Provide grounding for user query by checking
      * message against embeddings.
      *
+     * Also calculates current date and time
+     * (or uses `Constant` value for testing if supplied)
+     *
      * @return the relevant data to add to the query,
      * along with additional prompt instructions.
      * Empty string if no matching embeddings found. */
+    @RequiresApi(Build.VERSION_CODES.O)
     private suspend fun grounding(message: String): String {
         var messagePreamble = ""
         val embeddingRequest = EmbeddingRequest(
@@ -234,7 +244,7 @@ class DroidconEmbeddingsWrapper {
         for (session in vectorCache) {
             val v = messageVector dot session.value
             sortedVectors[v] = session.key
-            Log.v("LLM", "${session.key} dot $v")
+            Log.v("LLM", "Comparing input to ${session.key} dot $v")
         }
         if (sortedVectors.lastKey() > 0.8) { // arbitrary match threshold
             Log.i("LLM", "Top match is ${sortedVectors.lastKey()}")
@@ -249,11 +259,21 @@ class DroidconEmbeddingsWrapper {
             }
             messagePreamble += "\n\nUse the above information to answer the following question. Summarize and provide date/time and location if appropriate.\n\n"
             Log.v("LLM", "$messagePreamble")
+        } else {
+            Log.i("LLM", "Top match was ${sortedVectors.lastKey()} which was below 0.8 and failed to meet criteria for grounding data")
         }
 
-        // ALWAYS add the date and time
+        // ALWAYS add the date and time to every prompt
+        var date = Constants.TEST_DATE
+        var time = Constants.TEST_TIME
+        if (date == "") {
+            date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+        }
+        if (time == "") {
+            time  = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))
+        }
         messagePreamble =
-            "The current date is 2023-06-09 and the time is 15:45.\n\n$messagePreamble"
+            "The current date is $date and the time (in 24 hour format) is $time.\n\n$messagePreamble"
         return messagePreamble
     }
 

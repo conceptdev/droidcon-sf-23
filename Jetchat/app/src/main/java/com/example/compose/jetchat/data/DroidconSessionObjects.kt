@@ -1,6 +1,6 @@
 package com.example.compose.jetchat.data
 
-import com.example.compose.jetchat.SessionInfo
+import com.example.compose.jetchat.data.SessionInfo
 
 class DroidconSessionObjects {
     companion object {
@@ -198,8 +198,8 @@ class DroidconSessionObjects {
             for developers of all levels and will provide valuable information
             for anyone working on location -based apps for Android."""
             ),
-            "ADAM GREENBERG" to SessionInfo(
-                id = "",
+            "adam-greenberg" to SessionInfo(
+                id = "adam-greenberg",
                 speaker = "ADAM GREENBERG",
                 role = "Senior Engineer - Pinterest",
                 location = "Fisher West",
@@ -208,8 +208,8 @@ class DroidconSessionObjects {
                 subject = "Getting rid of the REST: Migrations to GraphQL from REST",
                 description = "Tried and true strategies for how we are migrating our client from a RESTful architecture to one based primarily in GraphQL. Based in using the Apollo Kotlin framework but will be applicable for all."
             ),
-            "AKSHAY CHORDIYA" to SessionInfo(
-                id = "",
+            "akshay-chordiya" to SessionInfo(
+                id = "akshay-chordiya",
                 speaker = "AKSHAY CHORDIYA",
                 role = "Android Developer @ Tinder | Public Speaker | Kotlin Lover | Co-Author of Kotlin Blueprints",
                 location = "Fisher East",
@@ -218,8 +218,8 @@ class DroidconSessionObjects {
                 subject = "Go with the Flow",
                 description = "Kotlin Flow is an implementation of Reactive Stream specification made on top of coroutines for Kotlin. In this talk, we will look at Kotlin Flow, it’s internals, how to use it with on Android or any other platforms, and share how you can migrate to Flow. Agenda - Quick intro to Flow - Internals of Kotlin Flow - Using Flow on Android and other platforms - Why and how to migrate - Working with existing reactive streams ❤ Flow in single codebase - Effectively using Flows with Compose - Magic of multi-platform - Tests - Conclusion You’ll walk away with a clear idea of what Kotlin Flow and how it works internally and how you can level up your reactive game."
             ),
-            "ELIF BILGIN" to SessionInfo(
-                id = "",
+            "elif-bilgin" to SessionInfo(
+                id = "elif-bilgin",
                 speaker = "ELIF BILGIN",
                 role = "Google, Software Engineer",
                 location = "Fisher East",
@@ -228,8 +228,8 @@ class DroidconSessionObjects {
                 subject = "Journey to the Center of the Room: Generating Kotlin",
                 description = "For the past few months, we have been working on building an abstraction supporting both Java’s Annotation Processing API and KSP called “XProcessing” with the ultimate goal of generating Kotlin code in the AndroidX library Room. Building for two similar but different languages definitely is a logistical and technical challenge - in this talk, we will do a deep dive into the “lessons learned” and best practices, when it comes to designing and implementing such an abstraction. Software Engineer at Google on the Android Toolkit & Jetpack Team. Specifically working in the AndroidX Library called Room."
             ),
-            "ANDY BOEDO" to SessionInfo(
-                id = "",
+            "andy-boedo" to SessionInfo(
+                id = "andy-boedo",
                 speaker = "ANDY BOEDO",
                 role = "Senior Engineering Manager, CoreSDK team @RevenueCat",
                 location = "Robertson 2",
@@ -238,8 +238,8 @@ class DroidconSessionObjects {
                 subject = "The joys and challenges of building a paywall with BillingClient 5",
                 description = "The time to migrate away from Google Play Billing Library 4 (PBL4) is halfway done, and developers will need to switch to PBL5 or - assuming it’s announced at I/O - PBL6. There are good reasons to migrate sooner, rather than later, though: In this talk, you’ll learn how the flexibility offered by BillingClient 5 enables new paywall configurations and functionality, with working examples for you to implement yourself. We’ll also highlight the challenges we ran in while upgrading the RevenueCat library to support these changes, many of which are incredibly relevant if you’re one of the hundreds of thousands of Android apps that still need to migrate away from PBL4 or even 3. You’ll leave the talk with a better understanding of real-world implementations of Billing Library 5, its benefits and its challenges, setting you up for a more successful migration down the road. Depending on this year’s I/O, we’ll update this talk with examples and insights pulled from PBL6 as they become available"
             ),
-            "ARUN BABU A S P" to SessionInfo(
-                id = "",
+            "arun-babu-a-s-p" to SessionInfo(
+                id = "arun-babu-a-s-p",
                 speaker = "ARUN BABU A S P",
                 role = "Senior Staff Engineer at Uber",
                 location = "Fisher East",
@@ -248,8 +248,8 @@ class DroidconSessionObjects {
                 subject = "Mobile Feature Flags and Experiments at Uber",
                 description = "Mobile feature flag and experimentation platform at Uber provide product teams with the ability to gradually release new features, manage remote configurations, conduct controlled experiments independently of the mobile app release cycle, and empower data-driven decision-making. In this talk, we will explore the design of the mobile feature flag and experimentation SDK, the different challenges involved in delivering feature flag values and remote configurations rapidly to millions of users, and the methods utilized by Uber to protect its business during incident mitigation. Attendees will gain valuable insights into the best practices for mobile experimentation at scale, learn techniques for overcoming challenges when designing a reliable and robust system, and discover how Uber has successfully utilized experimentation to continuously enhance its mobile apps."
             ),
-            "ALEX VANYO" to SessionInfo(
-                id = "",
+            "alex-vanyo" to SessionInfo(
+                id = "alex-vanyo",
                 speaker = "ALEX VANYO",
                 role = "Android Developer Relations Engineer @ Google",
                 location = "Fisher West",
@@ -258,8 +258,8 @@ class DroidconSessionObjects {
                 subject = "Deep Dive Into Size Configuration Changes",
                 description = "Join for an in-depth look at the interesting and sometimes surprising behavior around Android’s size configuration changes for orientation, width, and height. Learn how to calculate the window size correctly, and the edge cases and drawbacks of other approaches, and how size configuration changes recreate activities, and how sometimes they don’t! I’m an Android developer with a love of details. As a Developer Relations Engineer, I’m trying to improve APIs, write samples and share knowledge so that everyone can create polished, testable and beautiful apps. My currently focus is on large screens and Compose."
             ),
-            "ALEJANDRO SANCHEZ" to SessionInfo(
-                id = "",
+            "alejandro-sanchez" to SessionInfo(
+                id = "alejandro-sanchez",
                 speaker = "ALEJANDRO SANCHEZ",
                 role = "Android @ Uber",
                 location = "Robertson 1",
@@ -268,19 +268,19 @@ class DroidconSessionObjects {
                 subject = "Panel Discussion: Adopting Jetpack Compose @ Scale",
                 description = "Over the last couple years, thousands of apps have embraced Jetpack Compose for building their Android apps. While everyone is using the same library, the approach they've taken in adopting it is really different on each team. There's a lot of nuance in how one approaches a migration of this size and the difficulty is amplified when you are doing this at scale. This panel discussion brings together engineers working on popular apps that are using Compose and their experience in coordinating it's adoption."
             ),
-            "ALEKSANDR EFREMENKOV" to SessionInfo(
-                id = "",
+            "aleksandr-efremenkov" to SessionInfo(
+                id = "aleksandr-efremenkov",
                 speaker = "ALEKSANDR EFREMENKOV",
                 role = "Software Engineer @ Bolt, Android GDE",
                 location = "Fisher West",
                 date = "2023-06-08",
                 time = "16:50",
                 subject = "Frida as debugging tool for Android",
-                description = "We all have ever used the debugger in Android Studio, but it only works in debug mode (android:debuggable=\"true\"). What if we need to debug our application in production without the ability to reproduce the problem without the presence of logs? Frida allows you to instrument applications regardless of your environment. In this session, we'll tinker with the Bolt app with a fictional bug inside and figure out how to fix it."
+                description = "We all have ever used the debugger in Android Studio, but it only works in debug mode (android:debuggable='true'). What if we need to debug our application in production without the ability to reproduce the problem without the presence of logs? Frida allows you to instrument applications regardless of your environment. In this session, we'll tinker with the Bolt app with a fictional bug inside and figure out how to fix it."
             ),
             // MISSING: ENRIQUE LOPEZ MANAS
-            "BRIAN GARDNER" to SessionInfo(
-                id = "",
+            "brian-gardner" to SessionInfo(
+                id = "brian-gardner",
                 speaker = "BRIAN GARDNER",
                 role = "Android Developer at Cash App",
                 location = "Fisher West",
@@ -289,8 +289,8 @@ class DroidconSessionObjects {
                 subject = "Find your way with GoogleMap() {}",
                 description = "Maps are a crucial piece of many mobile apps today and there is no shortage of mapping libraries one can use. If you prefer to stick with platform components, you could use the OG MapView, but its integration can be painful due to asynchronous map loading. More recently, there is a GoogleMap Composable that streamlines much of this setup. This talk will cover my experience using this map Composable to implement a new feature in Cash App, including: - Configuring the map UI and how the user can interact with the map - Displaying map markers and clusters - Pain points encountered along the way including performance issues and cluster nuances - Some open issues facing the library"
             ),
-            "CARLOS MOTA" to SessionInfo(
-                id = "",
+            "carlos-mota" to SessionInfo(
+                id = "carlos-mota",
                 speaker = "CARLOS MOTA",
                 role = "Lead Software Engineer at Avancee Software",
                 location = "Robertson 2",
@@ -299,8 +299,8 @@ class DroidconSessionObjects {
                 subject = "Going on a road trip with Android Auto",
                 description = "Android is truly everywhere. It's running on the phone, watch, TV, car, and there are even some fridges and toasters that want to be part of the family. While they're still under development, Android Auto is starting to gain a lot of adoption. In this talk, we're going to travel around the road of Android Auto, see its use cases and go through its functionalities, so you can later implement them on your app. All of this without moving your desk to be inside a car."
             ),
-            "CATHERINE CHI" to SessionInfo(
-                id = "",
+            "catherine-chi" to SessionInfo(
+                id = "catherine-chi",
                 speaker = "CATHERINE CHI",
                 role = "Android Platform @ Reddit",
                 location = "Robertson 2",
@@ -309,8 +309,8 @@ class DroidconSessionObjects {
                 subject = "Tactics for Moving the Needle on Broad Modernization Efforts-Case Study Android Platform @ Reddit",
                 description = "Successful platform teams drive major changes within their organizations but they cannot do the work alone. Explore some of the modernization efforts the Reddit platform team has driven across a large, diverse codebase, from monolith breakups to Compose adoption at scale. What worked, what challenges were faced, and learn how you can help your organization evolve successfully over time using similar tactics, no matter its scale. Key Points: * Cover modernization efforts applicable to companies of any size * Examine different approaches to large and small scale conversion efforts * Learn about some platform migration anti-patterns to avoid"
             ),
-            "CHRISTINA LEE" to SessionInfo(
-                id = "",
+            "christina-lee" to SessionInfo(
+                id = "christina-lee",
                 speaker = "CHRISTINA LEE",
                 role = "Android Engineer @ Pinterest",
                 location = "Robertson 1",
@@ -320,8 +320,8 @@ class DroidconSessionObjects {
                 description = """Over the last couple years, thousands of apps have embraced Jetpack Compose for building their Android apps. While everyone is using the same library, the approach they've taken in adopting it is really different on each team. There's a lot of nuance in how one approaches a migration of this size and the difficulty is amplified when you are doing this at scale.
         This panel discussion brings together engineers working on popular apps that are using Compose and their experience in coordinating it's adoption."""
             ), // MISSING: KURT NELSON
-            "KYLE LEHMAN" to SessionInfo(
-                id = "",
+            "kyle-lehman" to SessionInfo(
+                id = "kyle-lehman",
                 speaker = "KYLE LEHMAN",
                 role = "Principal Software Engineer, Comcast",
                 location = "Fisher West",
@@ -330,8 +330,8 @@ class DroidconSessionObjects {
                 subject = "Gaining the Benefits of Monorepo in a Polyrepo World",
                 description = "Monorepo versus Polyrepo is as debatable as tabs versus spaces is the tech community but is it possible to have your cake and eat it too? In this talk, I will demonstrate how you can employ tactics in your Gradle builds that will have your polyrepo behaving more like a monorepo. Many of these strategies can even be applied to monorepos as well. In this session, you will gain insight into: - Building convention plugins to standardize all aspects of your builds including versioning, releasing, changelogs, static analysis, test configurations, and build optimizations - Maintaining published version catalog artifacts for both your internal and external dependencies so teams can easily keep up to date on available libraries and their latest version - Set up configurable, composite builds so you can develop your libraries as if it was another module in your main application build, shortening the feedback loop that comes with publishing to maven local. - Leveraging Renovate to automate keeping all your repos up to date on the latest code"
             ),
-            "LAUREN DARCEY" to SessionInfo(
-                id = "",
+            "lauren-darcey" to SessionInfo(
+                id = "lauren-darcey",
                 speaker = "LAUREN DARCEY",
                 role = "Android Platform @ Reddit",
                 location = "Robertson 2",
@@ -340,8 +340,8 @@ class DroidconSessionObjects {
                 subject = "Tactics for Moving the Needle on Broad Modernization Efforts-Case Study: Android Platform @ Reddit",
                 description = "Successful platform teams drive major changes within their organizations but they cannot do the work alone. Explore some of the modernization efforts the Reddit platform team has driven across a large, diverse codebase, from monolith breakups to Compose adoption at scale. What worked, what challenges were faced, and learn how you can help your organization evolve successfully over time using similar tactics, no matter its scale. Key Points: * Cover modernization efforts applicable to companies of any size * Examine different approaches to large and small scale conversion efforts * Learn about some platform migration anti-patterns to avoid"
             ),
-            "MANUEL NAKAMURAKARE" to SessionInfo(
-                id = "",
+            "manual-nakamurakare" to SessionInfo(
+                id = "manual-nakamurakare",
                 speaker = "MANUEL NAKAMURAKARE",
                 role = "Pinterest, EM Mobile Builds",
                 location = "Fisher East",
@@ -350,8 +350,8 @@ class DroidconSessionObjects {
                 subject = "Build Health and Velocity Score: How Pinterest tracks the state of builds",
                 description = "In this session, I'll give a breakdown on how this score is calculated, what are some initiatives that help us make the build better and what other plans we have for the future"
             ),
-            "MAHESH HADA" to SessionInfo(
-                id = "",
+            "mahesh-hada" to SessionInfo(
+                id = "mahesh-hada",
                 speaker = "MAHESH HADA",
                 role = "Senior Software Engineer at Uber",
                 location = "Fisher East",
@@ -360,8 +360,8 @@ class DroidconSessionObjects {
                 subject = "Mobile Feature Flags and Experiments at Uber",
                 description = "Mobile feature flag and experimentation platform at Uber provide product teams with the ability to gradually release new features, manage remote configurations, conduct controlled experiments independently of the mobile app release cycle, and empower data-driven decision-making. In this talk, we will explore the design of the mobile feature flag and experimentation SDK, the different challenges involved in delivering feature flag values and remote configurations rapidly to millions of users, and the methods utilized by Uber to protect its business during incident mitigation. Attendees will gain valuable insights into the best practices for mobile experimentation at scale, learn techniques for overcoming challenges when designing a reliable and robust system, and discover how Uber has successfully utilized experimentation to continuously enhance its mobile apps."
             ),
-            "MATT RAMOTAR" to SessionInfo(
-                id = "",
+            "matt-ramotar" to SessionInfo(
+                id = "matt-ramotar",
                 speaker = "MATT RAMOTAR",
                 role = "Dropboxer",
                 location = "Robertson 1",
@@ -370,8 +370,8 @@ class DroidconSessionObjects {
                 subject = "Meet Store5 – A Kotlin Multiplatform Library For Building Network-Resilient Applications",
                 description = "Three years ago Store4, the little library that could, was released at KotlinConf'19. Store has been simplifying data loading on Android for close to a decade and was supercharged by being 100% Kotlin. Today we're here to talk about the next paradigm shift in data loading Store5 - a Kotlin Multiplatform solution for reading, writing and resolving data conflicts on any platform that Kotlin supports (Android, iOS, Web and Desktop). The Android community has embraced Store for close to a decade, Kotlin is making it possible to adopt the same patterns on other mobile platforms and beyond. With the addition of support for updating remote sources, network resilience, pain free conflict resolution, and a highly extensible api - Store5 aims to make reading and writing data effortless on all Kotlin platforms. This talk will focus on Store5 foundational concepts and usage in production and at scale. We will be covering adopting KMP, applying Google's offline-first guiding principles beyond Android and how we hope to establish a seamless way for all apps, regardless of platform, to work with local and remote data. This talk is not to be missed for folks (like us) who have battle scars from years of working on hard to fix bugs in offline first applications."
             ),
-            "MARK VILLACAMPA" to SessionInfo(
-                id = "",
+            "mark-villacampa" to SessionInfo(
+                id = "mark-villacampa",
                 speaker = "MARK VILLACAMPA",
                 role = "SDK Developer @ RevenueCat",
                 location = "Robertson 2",
@@ -381,7 +381,7 @@ class DroidconSessionObjects {
                 description = "The time to migrate away from Google Play Billing Library 4 (PBL4) is halfway done, and developers will need to switch to PBL5 or - assuming it's announced at I/O - PBL6. There are good reasons to migrate sooner, rather than later, though: In this talk, you'll learn how the flexibility offered by BillingClient 5 enables new paywall configurations and functionality, with working examples for you to implement yourself. We'll also highlight the challenges we ran in while upgrading the RevenueCat library to support these changes, many of which are incredibly relevant if you're one of the hundreds of thousands of Android apps that still need to migrate away from PBL4 or even 3. You'll leave the talk with a better understanding of real-world implementations of Billing Library 5, its benefits and its challenges, setting you up for a more successful migration down the road. Depending on this year's I/O, we'll update this talk with examples and insights pulled from PBL6 as they become available"
             ),
             "michael-krueger" to SessionInfo(
-                id = "",
+                id = "michael-krueger",
                 speaker = "MICHAEL KRUEGER",
                 role = "Sr. Director of Application Security at NowSecure",
                 location = "Robertson 2",
@@ -390,8 +390,8 @@ class DroidconSessionObjects {
                 subject = "Let Standards Light Your Way: Best Practices for App Developers",
                 description = "With an increasing focus on privacy and security, how do we avoid common app development pitfalls that get us in hot water? Common snippets on developer forums don't always consider repercussions of an action. Join us as we walk through five seemingly innocuous implementations that have real world security implications and how you can apply standards like the OWASP MASVS to design your app with a security first mindset. In this interactive and entertaining session, see how to prevent these from happening to you and take home practical security and privacy best practices with links to more resources for you and your team."
             ), // TWOTALKS
-            "MICHAEL KRUEGER2" to SessionInfo(
-                id = "",
+            "michael-krueger-2" to SessionInfo(
+                id = "michael-krueger-2",
                 speaker = "MICHAEL KRUEGER",
                 role = "Sr. Director of Application Security at NowSecure",
                 location = "Fisher West",
@@ -400,8 +400,8 @@ class DroidconSessionObjects {
                 subject = "Be Aware & Prepare: Grow Downloads & User Trust with a MASA Validation",
                 description = "Looking to set your app apart from the rest on the Google Play Store? For 88% of users, how much personal data they share depends on how much they trust a company. Show customers you safeguard their data and are transparent with your privacy practices by completing a new Independent Security Review to get the badge on your Google Play Store Data safety declaration. In this session, learn about the new App Defense Alliance (ADA) Mobile App Security Assessment (MASA), launched Fall 2022 and how it can drive your business: - Learn about the ADA MASA validation process - Get tips on secure coding practices to speed your validation - See how & why so many other top Android apps have been validated. Get the inside scoop from NowSecure experts who helped create the ADA MASA framework and who have conducted hundreds of MASA assessments."
             ),
-            "MIKE NAKHIMOVICH" to SessionInfo(
-                id = "",
+            "mike-nakhimovich" to SessionInfo(
+                id = "mike-nakhimovich",
                 speaker = "MIKE NAKHIMOVICH",
                 role = "Twitter",
                 location = "Robertson 1",
@@ -410,8 +410,8 @@ class DroidconSessionObjects {
                 subject = "Meet Store5 – A Kotlin Multiplatform Library For Building Network-Resilient Applications",
                 description = "Three years ago Store4, the little library that could, was released at KotlinConf'19. Store has been simplifying data loading on Android for close to a decade and was supercharged by being 100% Kotlin. Today we're here to talk about the next paradigm shift in data loading Store5 - a Kotlin Multiplatform solution for reading, writing and resolving data conflicts on any platform that Kotlin supports (Android, iOS, Web and Desktop). The Android community has embraced Store for close to a decade, Kotlin is making it possible to adopt the same patterns on other mobile platforms and beyond. With the addition of support for updating remote sources, network resilience, pain free conflict resolution, and a highly extensible api - Store5 aims to make reading and writing data effortless on all Kotlin platforms. This talk will focus on Store5 foundational concepts and usage in production and at scale. We will be covering adopting KMP, applying Google's offline-first guiding principles beyond Android and how we hope to establish a seamless way for all apps, regardless of platform, to work with local and remote data. This talk is not to be missed for folks (like us) who have battle scars from years of working on hard to fix bugs in offline first applications."
             ),
-            "MIKE WOLFSON" to SessionInfo(
-                id = "",
+            "mike-wolfson" to SessionInfo(
+                id = "mike-wolfson",
                 speaker = "MIKE WOLFSON",
                 role = "Lead Android Engineer for Adobe",
                 location = "Fisher West",
@@ -491,8 +491,8 @@ class DroidconSessionObjects {
                 subject = "Building a component library in Compose for a large-scale banking application",
                 description = "Last year, we started migrating to Jetpack Compose at DNB Bank for all our Banking applications. We saw that our applications had a lot of components that could be abstracted away as simple APIs in Compose, which made it easier to keep our design consistent across our domain. In this talk, I will talk about how we started this initiative and how we set up the architecture for our design system. Then, I will explain a robust approach when creating components as atoms & molecules and how this helps us to collaborate with the designers in our teams. Moreover, I will be going through how we ensured banking-level quality for our compose components and which technologies we use today to make it easier for our developers to work with these libraries. Then, I will touch upon the release and dependency management of these libraries, and how we introduced this to our developers. In the end, I will be discussing the challenges and learnings for creating a component library with Compose. Join me in this session, where we will explore the beauties of library development with Jetpack Compose!"
             ),
-            "NIKHIL RAMAKRISHNAN" to SessionInfo(
-                id = "",
+            "nikhil-ramakrishnan" to SessionInfo(
+                id = "nikhil-ramakrishnan",
                 speaker = "NIKHIL RAMAKRISHNAN",
                 role = "Senior Software Engineer at Uber",
                 location = "Robertson 1",
@@ -501,8 +501,8 @@ class DroidconSessionObjects {
                 subject = "Seamless mobile code merges",
                 description = "At Uber, we support thousands of developers contributing to Android code. If builds are rapid, and stable, developer productivity is high. You’re working on a new mobile feature. It’s taken you weeks. You’ve been running your tests on CI. Your manager is asking you if you’ll hit the deadline. You feel confident, so you say yes. The day comes when you need to land your code. You try to merge it, but everyone’s merging code on the same day. Your code fails to merge, and your feature is delayed. Everyone is frustrated. We’ve all been there before. Keeping developer productivity high with our monorepo and thousands of developers is what we do at Uber. In my presentation, I will be discussing how you can do seamless mobile code merges at scale. These are some of the key points I will be talking about: - Pre merge validation - Post merge validation - Cache freshness - Parallelism/sharding - Merge queue optimizations - Optimizing for cost vs performance - Success metrics"
             ),
-            "RALF WONDRATSCHEK" to SessionInfo(
-                id = "",
+            "ralf-wondratschek" to SessionInfo(
+                id = "ralf-wondratschek",
                 speaker = "RALF WONDRATSCHEK",
                 role = "Principal Engineer at Amazon",
                 location = "Robertson 2",
@@ -581,8 +581,8 @@ class DroidconSessionObjects {
                 subject = "Identify Android App Startup time issues",
                 description = "Reducing App startup time is crucial for improving user experience and retaining your user base in the long run. It is important for an Android developer to understand what are the common issues for slower app startup time and how to discover those using the built int tools provided by Android Studio. This talk will cover: 1. CPU flame charts. 2. CPU profiler and Memory profiler in Android Studio. 3. How to read a CPU flame chart for an Android app and discover issues with app startup time. 4. All the slides content will be explained using Kotlin code in Android Studio. Attendees will learn: 1. What is the mental model for measuring performance of an Android app. 2. How to profile an Android app. 3. How to identify and reduce app startup time in order to improve the user experience."
             ),
-            "SREEKUMAR ANJALI BHAVAN VIJAYAN" to SessionInfo(
-                id = "",
+            "sreekumar-anjali-bhavan-vijayan" to SessionInfo(
+                id = "sreekumar-anjali-bhavan-vijayan",
                 speaker = "SREEKUMAR ANJALI BHAVAN VIJAYAN",
                 role = "Lead Android Engineer @ YML",
                 location = "Fisher West",
