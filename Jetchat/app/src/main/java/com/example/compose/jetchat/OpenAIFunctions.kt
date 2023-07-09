@@ -64,6 +64,8 @@ class OpenAIFunctions {
                 val httpClient = HttpClient()
                 // https://www.weather.gov/documentation/services-web-api
                 val gridUrl = "https://api.weather.gov/points/$latitude,$longitude"
+                Log.i("LLM", "Grid URL $gridUrl")
+
                 val gridResponse = httpClient.get(gridUrl) {
                     contentType(ContentType.Application.Json)
                     headers{
@@ -80,6 +82,7 @@ class OpenAIFunctions {
 
                     val forecastUrl =
                         "https://api.weather.gov/gridpoints/$office/$gridX,$gridY/forecast"
+                    Log.i("LLM", "Forecast URL $forecastUrl")
 
                     val forecastResponse = httpClient.get(forecastUrl) {
                         contentType(ContentType.Application.Json)
@@ -100,7 +103,7 @@ class OpenAIFunctions {
                         var detailedForecast =
                             period1.jsonObject["detailedForecast"]?.jsonPrimitive?.content!!
 
-                        Log.e("LLM", "Forecast ${detailedForecast}")
+                        Log.i("LLM", "Forecast $detailedForecast")
                         val weatherInfo = WeatherInfo(
                             latitude,
                             longitude,
@@ -110,17 +113,17 @@ class OpenAIFunctions {
                         )
                         return weatherInfo.toJson()
                     } else {
-                        Log.e("LLM", "Error: Forecast ${forecastResponse.status}")
+                        Log.e("LLM", "Http error: Forecast ${forecastResponse.status}")
                     }
-                } else if (gridResponse.status == HttpStatusCode.Forbidden) {
-                    Log.e("LLM", "Error: Grid ${gridResponse.status} access denied, probably need a string in the `WEATHER_USER_AGENT` in `Constants.kt` (don't leave it blank)")
-                } else if (gridResponse.status == HttpStatusCode.NotFound) {
-                    Log.e("LLM", "Error: Grid ${gridResponse.status} location was not within the United States, not served by weather.gov")
+                } else if (gridResponse.status == HttpStatusCode.Forbidden) { // 403
+                    Log.e("LLM", "Http error: ${gridResponse.status} Grid URL access denied, probably need a string in the `WEATHER_USER_AGENT` in `Constants.kt` (don't leave it blank)")
+                } else if (gridResponse.status == HttpStatusCode.NotFound) { // 404
+                    Log.e("LLM", "Http error: ${gridResponse.status} Grid URL location was not within the United States, not served by weather.gov")
                 } else {
-                    Log.e("LLM", "Error: Grid ${gridResponse.status}")
+                    Log.e("LLM", "Http error: ${gridResponse.status} Grid URL unexpected error")
                 }
             } catch (e: Exception) {
-                Log.e("LLM", "Http error: ${e.message}")
+                Log.e("LLM", "Error: ${e.message} in `currentWeather` function")
             }
             // HACK: if it gets here, return hardcoded return value (with "moonquakes")
             return hardcodedWeatherResponse(latitude, longitude, unit).toJson()
