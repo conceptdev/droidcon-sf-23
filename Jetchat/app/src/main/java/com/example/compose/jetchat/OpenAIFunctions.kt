@@ -100,7 +100,7 @@ class OpenAIFunctions {
                         var detailedForecast =
                             period1.jsonObject["detailedForecast"]?.jsonPrimitive?.content!!
 
-                        Log.e("GPT", "Forecast ${detailedForecast}")
+                        Log.e("LLM", "Forecast ${detailedForecast}")
                         val weatherInfo = WeatherInfo(
                             latitude,
                             longitude,
@@ -110,21 +110,20 @@ class OpenAIFunctions {
                         )
                         return weatherInfo.toJson()
                     } else {
-                        Log.e("GPT", "Error: Forecast ${forecastResponse.status}")
+                        Log.e("LLM", "Error: Forecast ${forecastResponse.status}")
                     }
                 } else if (gridResponse.status == HttpStatusCode.Forbidden) {
-                    Log.e("GPT", "Error: Grid ${gridResponse.status} access denied, probably need a string in the `WEATHER_USER_AGENT` in `Constants.kt` (don't leave it blank)")
+                    Log.e("LLM", "Error: Grid ${gridResponse.status} access denied, probably need a string in the `WEATHER_USER_AGENT` in `Constants.kt` (don't leave it blank)")
                 } else if (gridResponse.status == HttpStatusCode.NotFound) {
-                    Log.e("GPT", "Error: Grid ${gridResponse.status} location was not within the United States, not served by weather.gov")
+                    Log.e("LLM", "Error: Grid ${gridResponse.status} location was not within the United States, not served by weather.gov")
                 } else {
-                    Log.e("GPT", "Error: Grid ${gridResponse.status}")
+                    Log.e("LLM", "Error: Grid ${gridResponse.status}")
                 }
             } catch (e: Exception) {
-                Log.e("GPT", "Http error: ${e.message}")
+                Log.e("LLM", "Http error: ${e.message}")
             }
-            // HACK: hardcoded return value (with "moonquakes")
+            // HACK: if it gets here, return hardcoded return value (with "moonquakes")
             return hardcodedWeatherResponse(latitude, longitude, unit).toJson()
-            //return Json.encodeToString(weatherInfo)
         }
 
 
@@ -174,7 +173,7 @@ class OpenAIFunctions {
                     forecast = listOf("clear", "sunny", "moonquakes")
                 }
             }
-            Log.i("GPT", "WeatherInfo $latitude, $longitude")
+            Log.i("LLM", "WeatherInfo $latitude, $longitude")
             return WeatherInfo(
                 latitude,
                 longitude,
