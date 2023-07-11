@@ -52,6 +52,9 @@ class DroidconEmbeddingsWrapper {
                     When showing session information, always include the subject, speaker, location, and time. 
                     ONLY show the description when responding about a single session.
                     Only use the functions you have been provided with.""".trimMargin()
+                    
+                    Answer user questions by generating SQL queries against the database function.
+                    """.trimMargin()
             )
         )
     }
@@ -86,20 +89,25 @@ class DroidconEmbeddingsWrapper {
 //                    description = TimeForSessionFunctions.description()
 //                    parameters = TimeForSessionFunctions.params()
 //                }
+//                function {
+//                    name = AddFavoriteFunction.name()
+//                    description = AddFavoriteFunction.description()
+//                    parameters = AddFavoriteFunction.params()
+//                }
+//                function {
+//                    name = RemoveFavoriteFunction.name()
+//                    description = RemoveFavoriteFunction.description()
+//                    parameters = RemoveFavoriteFunction.params()
+//                }
+//                function {
+//                    name = ListFavoritesFunction.name()
+//                    description = ListFavoritesFunction.description()
+//                    parameters = ListFavoritesFunction.params()
+//                }
                 function {
-                    name = AddFavoriteFunction.name()
-                    description = AddFavoriteFunction.description()
-                    parameters = AddFavoriteFunction.params()
-                }
-                function {
-                    name = RemoveFavoriteFunction.name()
-                    description = RemoveFavoriteFunction.description()
-                    parameters = RemoveFavoriteFunction.params()
-                }
-                function {
-                    name = ListFavoritesFunction.name()
-                    description = ListFavoritesFunction.description()
-                    parameters = ListFavoritesFunction.params()
+                    name = askDatabaseFunction.name()
+                    description = askDatabaseFunction.description()
+                    parameters = askDatabaseFunction.params()
                 }
             }
             functionCall = FunctionMode.Auto
@@ -167,6 +175,14 @@ class DroidconEmbeddingsWrapper {
 //                    val functionArgs =
 //                        function.argumentsAsJson() ?: error("arguments field is missing")
                     functionResponse = ListFavoritesFunction.function()
+                }
+                askDatabaseFunction.name() -> {
+                    val functionArgs =
+                        function.argumentsAsJson() ?: error("arguments field is missing")
+                    val query = functionArgs.getValue("query").jsonPrimitive.content
+                    Log.i("LLM", "SQL query $query")
+
+                    functionResponse = query
                 }
                 else -> {
                     Log.i("LLM", "Function ${function!!.name} does not exist")
