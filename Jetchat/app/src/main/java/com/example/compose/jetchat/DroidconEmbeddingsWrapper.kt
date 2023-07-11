@@ -51,7 +51,7 @@ class DroidconEmbeddingsWrapper {
                     a mobile device display.
                     When showing session information, always include the subject, speaker, location, and time. 
                     ONLY show the description when responding about a single session.
-                    Only use the functions you have been provided with.""".trimMargin()
+                    Only use the functions you have been provided with.
                     
                     Answer user questions by generating SQL queries against the database function.
                     """.trimMargin()
