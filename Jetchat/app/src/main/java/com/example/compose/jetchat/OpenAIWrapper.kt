@@ -54,7 +54,7 @@ class OpenAIWrapper {
                 function {
                     name = "currentWeather"
                     description = "Get the current weather in a given location"
-                    parameters = OpenAIFunctions.buildParams()
+                    parameters = OpenAIFunctions.currentWeatherParams()
                 }
             }
             functionCall = FunctionMode.Auto

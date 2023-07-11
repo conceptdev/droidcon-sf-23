@@ -130,7 +130,7 @@ class OpenAIFunctions {
         }
 
 
-        fun buildParams(): Parameters {
+        fun currentWeatherParams(): Parameters {
             val params = Parameters.buildJsonObject {
                 put("type", "object")
                 putJsonObject("properties") {
