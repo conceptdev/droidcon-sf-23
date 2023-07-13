@@ -587,7 +587,7 @@ Time: 10:00
 Subject: Opening the shutter on snapshots
 Description: Jetpack Compose shows the power of a custom compiler plugin. But not all the magic happens during compilation. A lot of Compose features are based on a runtime library that doesn't require any compiler support: the snapshot system. It might seem like magic at first, but it's just built on top of things you might already know: ThreadLocals, linked lists, and, yes, even regular old callbacks. Once you understand how Compose thinks about state, you might find ways to use its tools in your own code – even outside of Compose."""
             ,
-            "🍷PIERRE YVES RICAU" to """Speaker: PIERRE-YVES RICAU
+            "PIERRE YVES RICAU" to """Speaker: PIERRE-YVES RICAU
 Role: Android Plumber
 Location: Robertson 1
 Date: 2023-06-09

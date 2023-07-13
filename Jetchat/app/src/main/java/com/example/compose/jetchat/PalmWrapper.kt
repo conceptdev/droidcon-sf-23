@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.update
 import java.util.SortedMap
 
 class PalmWrapper {
-    private val apiKey = "{PALM_KEY}"
+    private val apiKey = Constants.PALM_TOKEN
 
     private val _messages = MutableStateFlow<List<Message>>(value = listOf())
     val messages: StateFlow<List<Message>>
@@ -76,7 +76,7 @@ class PalmWrapper {
     private suspend fun grounding(message: String): String {
         var messagePreamble = ""
         val embeddingRequest = EmbedTextRequest.newBuilder()
-            .setModel("models/embedding-gecko-001")
+            .setModel(Constants.PALM_EMBED_MODEL)
             .setText(message)
             .build()
 
@@ -120,7 +120,7 @@ class PalmWrapper {
         if (vectorCache.isEmpty()) {
             for (session in DroidconSessionData.droidconSessions) {
                 val embeddingRequest = EmbedTextRequest.newBuilder()
-                    .setModel("models/embedding-gecko-001")
+                    .setModel(Constants.PALM_EMBED_MODEL)
                     .setText(session.value)
                     .build()
 
@@ -179,7 +179,7 @@ class PalmWrapper {
 
     private suspend fun createMessageRequest(prompt: MessagePrompt): GenerateMessageRequest {
         return GenerateMessageRequest.newBuilder()
-            .setModel("models/chat-bison-001") // Required, which model to use to generate the result
+            .setModel(Constants.PALM_CHAT_MODEL) // Required, which model to use to generate the result
             .setPrompt(prompt) // Required
             .setTemperature(0.5f) // Optional, controls the randomness of the output
             .setCandidateCount(1) // Optional, the number of generated messages to return
