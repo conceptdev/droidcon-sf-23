@@ -14,18 +14,21 @@ object DroidconContract {
     // Table contents are grouped together in an anonymous object.
     object SessionEntry : BaseColumns {
         const val TABLE_NAME = "sessions"
+        const val COLUMN_NAME_SESSIONID = "session_id"
         const val COLUMN_NAME_SUBJECT = "subject"
         const val COLUMN_NAME_DESCRIPTION = "description"
     }
     object FavoriteEntry : BaseColumns {
         const val TABLE_NAME = "favorites"
+        const val COLUMN_NAME_SESSIONID = "session_id"
         const val COLUMN_NAME_ISFAVORITE = "is_favorite"
     }
 }
 
 private const val SQL_CREATE_SESSION_ENTRIES =
     "CREATE TABLE ${DroidconContract.SessionEntry.TABLE_NAME} (" +
-            "${BaseColumns._ID} TEXT PRIMARY KEY," +
+            "${BaseColumns._ID} INTEGER PRIMARY KEY," +
+            "${DroidconContract.SessionEntry.COLUMN_NAME_SESSIONID} TEXT," +
             "${DroidconContract.SessionEntry.COLUMN_NAME_SUBJECT} TEXT," +
             "${DroidconContract.SessionEntry.COLUMN_NAME_DESCRIPTION} TEXT)"
 
@@ -33,8 +36,9 @@ private const val SQL_DELETE_SESSION_ENTRIES = "DROP TABLE IF EXISTS ${DroidconC
 
 private const val SQL_CREATE_FAVORITE_ENTRIES =
     "CREATE TABLE ${DroidconContract.FavoriteEntry.TABLE_NAME} (" +
-            "${BaseColumns._ID} TEXT PRIMARY KEY," +
-            "${DroidconContract.FavoriteEntry.COLUMN_NAME_ISFAVORITE} INT)"
+            "${BaseColumns._ID} INTEGER PRIMARY KEY," +
+            "${DroidconContract.FavoriteEntry.COLUMN_NAME_SESSIONID} TEXT," +
+            "${DroidconContract.FavoriteEntry.COLUMN_NAME_ISFAVORITE} INTEGER)"
 
 private const val SQL_DELETE_FAVORITE_ENTRIES = "DROP TABLE IF EXISTS ${DroidconContract.FavoriteEntry.TABLE_NAME}"
 
@@ -57,7 +61,7 @@ class DroidconDbHelper(var context: Context?) : SQLiteOpenHelper(context, DATABA
     }
     companion object {
         // If you change the database schema, you must increment the database version.
-        const val DATABASE_VERSION = 1
+        const val DATABASE_VERSION = 2
         const val DATABASE_NAME = "Droidcon.db"
     }
 }

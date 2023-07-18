@@ -151,12 +151,13 @@ class DroidconEmbeddingsWrapper(val context: Context?) {
                     val functionArgs =
                         function.argumentsAsJson() ?: error("arguments field is missing")
                     functionResponse = RemoveFavoriteFunction.function(
+                        context,
                         functionArgs.getValue("id").jsonPrimitive.content
                     )
                 }
                 ListFavoritesFunction.name() -> {
                     // function doesn't have parameters
-                    functionResponse = ListFavoritesFunction.function()
+                    functionResponse = ListFavoritesFunction.function(context)
                 }
                 else -> {
                     Log.i("LLM", "Function ${function!!.name} does not exist")

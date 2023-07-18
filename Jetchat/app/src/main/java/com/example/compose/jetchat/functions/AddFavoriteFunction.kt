@@ -50,16 +50,17 @@ class AddFavoriteFunction {
 
             // Create a new map of values, where column names are the keys
             val values = ContentValues().apply {
-                put(BaseColumns._ID, id)
+                //put(BaseColumns._ID, id)
+                put(DroidconContract.FavoriteEntry.COLUMN_NAME_SESSIONID, id)
                 put(DroidconContract.FavoriteEntry.COLUMN_NAME_ISFAVORITE, "1")
             }
 
             // Insert the new row, returning the primary key value of the ne
             val newRowId = db?.insert(DroidconContract.FavoriteEntry.TABLE_NAME, null, values)
 
-            Log.i("LLM", "     newRowId \"$newRowId\"")
+            Log.i("LLM", "     newRowId \"$newRowId\" for $id")
 
-            return if (id != "")
+            return if (newRowId != null && newRowId>= 0)
                 "true"
             else
                 "false"

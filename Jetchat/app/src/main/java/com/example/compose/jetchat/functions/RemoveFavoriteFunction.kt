@@ -1,5 +1,6 @@
 package com.example.compose.jetchat.functions
 
+import android.content.Context
 import android.util.Log
 import com.aallam.openai.api.chat.Parameters
 import kotlinx.serialization.json.add
@@ -33,7 +34,7 @@ class RemoveFavoriteFunction {
             return params
         }
 
-        fun function(id: String): String {
+        fun function(context: Context?, id: String): String {
             Log.i("LLM", "removeFavorite ($id)")
             return if (id != "")
                 "true"
