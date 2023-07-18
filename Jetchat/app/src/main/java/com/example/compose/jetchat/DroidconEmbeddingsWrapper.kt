@@ -1,11 +1,11 @@
 package com.example.compose.jetchat
 
+import android.content.Context
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.aallam.openai.api.BetaOpenAI
 import com.aallam.openai.api.chat.ChatCompletion
-import com.aallam.openai.api.chat.ChatCompletionRequest
 import com.aallam.openai.api.chat.ChatMessage
 import com.aallam.openai.api.chat.ChatRole
 import com.aallam.openai.api.chat.FunctionMode
@@ -16,7 +16,10 @@ import com.aallam.openai.api.image.ImageURL
 import com.aallam.openai.api.model.ModelId
 import com.aallam.openai.client.OpenAI
 import com.example.compose.jetchat.data.DroidconSessionData
-import com.google.api.client.util.DateTime
+import com.example.compose.jetchat.functions.AddFavoriteFunction
+import com.example.compose.jetchat.functions.ListFavoritesFunction
+import com.example.compose.jetchat.functions.RemoveFavoriteFunction
+import com.example.compose.jetchat.functions.SessionsByTimeFunction
 import kotlinx.serialization.json.jsonPrimitive
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -34,7 +37,7 @@ infix fun DoubleArray.dot(other: DoubleArray): Double {
  * Adds embeddings to allow grounding in droidcon SF 2023 conference data
  * */
 @OptIn(BetaOpenAI::class)
-class DroidconEmbeddingsWrapper {
+class DroidconEmbeddingsWrapper(val context: Context?) {
     private val openAIToken: String = Constants.OPENAI_TOKEN
     private var conversation: MutableList<ChatMessage>
     private var openAI: OpenAI = OpenAI(openAIToken)
@@ -49,8 +52,7 @@ class DroidconEmbeddingsWrapper {
                     It starts at 8am and finishes by 6pm.
                     Your answers will be short and concise, since they will be required to fit on 
                     a mobile device display.
-                    When showing session information, always include the subject, speaker, location, and time. 
-                    ONLY show the description when responding about a single session.
+                    
                     Only use the functions you have been provided with.""".trimMargin()
             )
         )
@@ -81,11 +83,6 @@ class DroidconEmbeddingsWrapper {
                     description = SessionsByTimeFunction.description()
                     parameters = SessionsByTimeFunction.params()
                 }
-//                function {
-//                    name = TimeForSessionFunctions.name()
-//                    description = TimeForSessionFunctions.description()
-//                    parameters = TimeForSessionFunctions.params()
-//                }
                 function {
                     name = AddFavoriteFunction.name()
                     description = AddFavoriteFunction.description()
@@ -142,17 +139,11 @@ class DroidconEmbeddingsWrapper {
                         optionalLatestTime
                     )
                 }
-                TimeForSessionFunctions.name() -> {
-                    val functionArgs =
-                        function.argumentsAsJson() ?: error("arguments field is missing")
-                    functionResponse = TimeForSessionFunctions.function(
-                        functionArgs.getValue("subject").jsonPrimitive.content
-                    )
-                }
                 AddFavoriteFunction.name() -> {
                     val functionArgs =
                         function.argumentsAsJson() ?: error("arguments field is missing")
                     functionResponse = AddFavoriteFunction.function(
+                        context,
                         functionArgs.getValue("id").jsonPrimitive.content
                     )
                 }
@@ -164,8 +155,7 @@ class DroidconEmbeddingsWrapper {
                     )
                 }
                 ListFavoritesFunction.name() -> {
-//                    val functionArgs =
-//                        function.argumentsAsJson() ?: error("arguments field is missing")
+                    // function doesn't have parameters
                     functionResponse = ListFavoritesFunction.function()
                 }
                 else -> {

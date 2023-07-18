@@ -16,6 +16,7 @@
 
 package com.example.compose.jetchat
 
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -47,6 +48,11 @@ class MainViewModel : ViewModel() {
     private val _drawerShouldBeOpened = MutableStateFlow(false)
     val drawerShouldBeOpened = _drawerShouldBeOpened.asStateFlow()
 
+    private lateinit var context: Context
+    fun setContext (ctx: Context){
+        context = ctx
+        droidconWrapper = DroidconEmbeddingsWrapper(context)
+    }
     fun openDrawer() {
         _drawerShouldBeOpened.value = true
     }
@@ -95,7 +101,7 @@ class MainViewModel : ViewModel() {
         }
     private var openAIWrapper = OpenAIWrapper()
     private var palmWrapper = PalmWrapper()
-    private var droidconWrapper = DroidconEmbeddingsWrapper()
+    private var droidconWrapper = DroidconEmbeddingsWrapper(null)
 
     var botIsTyping by mutableStateOf(false)
         private set

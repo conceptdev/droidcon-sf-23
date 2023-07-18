@@ -16,6 +16,7 @@
 
 package com.example.compose.jetchat
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.compose.BackHandler
 import androidx.activity.viewModels
@@ -104,6 +105,8 @@ class NavActivity : AppCompatActivity() {
                 }
             }
         )
+
+        viewModel.setContext (this)
     }
 
     override fun onSupportNavigateUp(): Boolean {
