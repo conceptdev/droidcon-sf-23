@@ -20,7 +20,15 @@ data class SessionInfo(
         // hit some bugs in the past where long text sneaks " double-quotes in.
         // wouldn't be a problem with proper serialization probably...
         val validDescription = description.replace("\"", "'")
-        return "{id:\"$id\",speaker:\"$speaker\",role:\"$role\",location:\"$location\",date:\"$date\",time:\"$time\",subject:\"$subject\",description:\"$validDescription\"}"
+        return "{id:\"$id\",subject:\"$subject\",speaker:\"$speaker\",role:\"$role\",location:\"$location\",date:\"$date\",time:\"$time\",description:\"$validDescription\"}"
+    }
+
+    /** Omits Role and Description */
+    fun toShortJson () : String {
+        // hit some bugs in the past where long text sneaks " double-quotes in.
+        // wouldn't be a problem with proper serialization probably...
+        val validDescription = description.replace("\"", "'")
+        return "{id:\"$id\",subject:\"$subject\",speaker:\"$speaker\",location:\"$location\",date:\"$date\",time:\"$time\"}"
     }
 
     companion object {

@@ -58,7 +58,7 @@ class ListFavoritesFunction {
                     val isFavorite = getString(getColumnIndexOrThrow(DroidconContract.FavoriteEntry.COLUMN_NAME_ISFAVORITE))
                     out += ", $itemId:$sessionId:$isFavorite"
 
-                    sessionsJson += DroidconSessionObjects.droidconSessions[sessionId]?.toJson()+"\n"
+                    sessionsJson += DroidconSessionObjects.droidconSessions[sessionId]?.toShortJson()+"\n"
                 }
             }
             cursor.close()
