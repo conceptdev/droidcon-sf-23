@@ -106,6 +106,7 @@ class NavActivity : AppCompatActivity() {
             }
         )
 
+        // Pass `context` to viewModel so that DroiconEmbeddingsWrapper can use it for Sqlite database helper
         viewModel.setContext (this)
     }
 
