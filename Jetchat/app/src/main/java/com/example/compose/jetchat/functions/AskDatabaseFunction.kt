@@ -1,7 +1,9 @@
 package com.example.compose.jetchat.functions
 
+import android.database.Cursor.FIELD_TYPE_INTEGER
 import android.util.Log
 import com.aallam.openai.api.chat.Parameters
+import com.example.compose.jetchat.data.DroidconContract
 import com.example.compose.jetchat.data.DroidconDbHelper
 import kotlinx.serialization.json.add
 import kotlinx.serialization.json.put
@@ -45,7 +47,7 @@ class AskDatabaseFunction {
                             Columns: session_id, is_favorite
                             
                             Table: locations
-                            Columns: location_id, name, description
+                            Columns: location_id, directions
                             
                             The query should be returned in plain text, not in JSON.
                             """.trimIndent()
@@ -59,7 +61,8 @@ class AskDatabaseFunction {
             return params
         }
         /** hardcoded demo schema to test model's comprehension */
-        fun params_test(): Parameters {
+        @Deprecated("Method used for prototyping and observing the model's responses to schema changes")
+        fun paramsTest(): Parameters {
             val params = Parameters.buildJsonObject {
                 put("type", "object")
                 putJsonObject("properties") {
@@ -77,7 +80,7 @@ class AskDatabaseFunction {
                             Columns: session_id, is_favorite
                             
                             Table: locations
-                            Columns: location_id, name, description
+                            Columns: location_id, directions
                             
                             The query should be returned in plain text, not in JSON.
                             """.trimIndent()
@@ -97,9 +100,44 @@ class AskDatabaseFunction {
         fun function(dbHelper: DroidconDbHelper, query: String): String {
             Log.i("LLM", "askDatabase ($query)")
 
-            // TODO: implement database interaction
+            val db = dbHelper.readableDatabase
+            val cursor = db.rawQuery(query,null)
+            var rowCount = 0
+            var out = ""
+            var needOuterComma = false
+            with(cursor) {
+                // mimicking the output format from the OpenAI Cookbook
+                // eg. [('abc', 1),('def', 2)]
+                out += "["
+                var needComma = false
+                while (moveToNext()) {
+                    if (needOuterComma) out += "," else needOuterComma = true
+                    out += "("
+                    for (i in 0 until cursor.columnCount) {
+                        if (needComma) out += "," else needComma = true
+                        out += when (getType(i)) {
+                            FIELD_TYPE_INTEGER ->
+                                getString(i)
+                            else -> {
+                                "'${getString(i)}'"
+                            }
+                        }
+                    }
+                    out += ")"
+                    rowCount++
+                }
+                out += "]"
+                Log.i("LLM", "askDatabase rowCount: $rowCount")
+                Log.v("LLM", "            $out")
+            }
+            cursor.close()
 
-            return "EXECUTE $query"
+            return if (out == "") {
+                Log.i("LLM", "askDatabase rowCount: 0")
+                "0 rows affected"
+            } else {
+                out
+            }
         }
     }
 }
