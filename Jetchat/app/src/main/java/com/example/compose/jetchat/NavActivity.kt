@@ -16,6 +16,7 @@
 
 package com.example.compose.jetchat
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.compose.BackHandler
 import androidx.activity.viewModels
@@ -104,6 +105,9 @@ class NavActivity : AppCompatActivity() {
                 }
             }
         )
+
+        // Pass `context` to viewModel so that DroiconEmbeddingsWrapper can use it for Sqlite database helper
+        viewModel.setContext (this)
     }
 
     override fun onSupportNavigateUp(): Boolean {

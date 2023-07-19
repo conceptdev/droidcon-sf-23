@@ -16,6 +16,7 @@
 
 package com.example.compose.jetchat
 
+import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -47,6 +48,14 @@ class MainViewModel : ViewModel() {
     private val _drawerShouldBeOpened = MutableStateFlow(false)
     val drawerShouldBeOpened = _drawerShouldBeOpened.asStateFlow()
 
+    /** Cache the context for passing to objects wanting
+     * to instantiate database helper classes */
+    private lateinit var context: Context
+    /** Set `context` on the DroidconEmbeddingsWrapper for Sqlite database helper */
+    fun setContext (ctx: Context){
+        context = ctx
+        droidconWrapper = DroidconEmbeddingsWrapper(context)
+    }
     fun openDrawer() {
         _drawerShouldBeOpened.value = true
     }
@@ -95,7 +104,8 @@ class MainViewModel : ViewModel() {
         }
     private var openAIWrapper = OpenAIWrapper()
     private var palmWrapper = PalmWrapper()
-    private var droidconWrapper = DroidconEmbeddingsWrapper()
+    /** Requires a `context` for database operations. Set post-init with `setContext` function call */
+    private var droidconWrapper = DroidconEmbeddingsWrapper(null) // no context available for database functions in DroidconEmbeddingsWrapper, added later by `setContext` function
 
     var botIsTyping by mutableStateOf(false)
         private set
