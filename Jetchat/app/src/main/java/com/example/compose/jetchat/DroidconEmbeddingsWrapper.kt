@@ -40,12 +40,16 @@ infix fun DoubleArray.dot(other: DoubleArray): Double {
 /** THIS IS A COPY OF OpenAIWrapper
  *
  * Adds embeddings to allow grounding in droidcon SF 2023 conference data
+ *
+ * `context` comes from NavActivity > MainViewModel to
+ * enable Sqlite database helper
  * */
 @OptIn(BetaOpenAI::class)
 class DroidconEmbeddingsWrapper(val context: Context?) {
     private val openAIToken: String = Constants.OPENAI_TOKEN
     private var conversation: MutableList<ChatMessage>
     private var openAI: OpenAI = OpenAI(openAIToken)
+    /** Sqlite access for favorites, embeddings, and SQL queries */
     private val dbHelper = DroidconDbHelper(context)
     /** key'd map of session to vector - these are generated
      * via web API and stored locally in a Sqlite database,
