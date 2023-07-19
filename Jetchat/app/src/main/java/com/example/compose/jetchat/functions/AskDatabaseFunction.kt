@@ -29,7 +29,7 @@ class AskDatabaseFunction {
 
         fun params(db: DroidconDbHelper): Parameters {
             val schema = db.generateSimpleSchema()
-            Log.v("LLM", "params db schema:\n$schema")
+            //Log.v("LLM", "params db schema:\n$schema")
             val params = Parameters.buildJsonObject {
                 put("type", "object")
                 putJsonObject("properties") {

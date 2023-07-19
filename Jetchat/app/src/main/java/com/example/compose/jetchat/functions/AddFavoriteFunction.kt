@@ -21,7 +21,7 @@ class AddFavoriteFunction {
         }
 
         fun description(): String {
-            return "Add a session to a list of favorites using the unique session Id"
+            return "Add a session to a list of favorites using the unique session_id. Respond with a confirmation but do not repeat the session_id."
         }
 
         fun params(): Parameters {
@@ -30,7 +30,7 @@ class AddFavoriteFunction {
                 putJsonObject("properties") {
                     putJsonObject("id") {
                         put("type", "string")
-                        put("description", "Unique session Id")
+                        put("description", "Unique session_id. Should NOT be the session name or speaker.")
                     }
                 }
                 putJsonArray("required") {
@@ -48,7 +48,6 @@ class AddFavoriteFunction {
 
             // Create a new map of values, where column names are the keys
             val values = ContentValues().apply {
-                //put(BaseColumns._ID, id)
                 put(DroidconContract.FavoriteEntry.COLUMN_NAME_SESSIONID, id)
                 put(DroidconContract.FavoriteEntry.COLUMN_NAME_ISFAVORITE, "1")
             }

@@ -20,7 +20,7 @@ data class SessionInfo(
         // hit some bugs in the past where long text sneaks " double-quotes in.
         // wouldn't be a problem with proper serialization probably...
         val validDescription = description.replace("\"", "'")
-        return "{id:\"$id\",subject:\"$subject\",speaker:\"$speaker\",role:\"$role\",location:\"$location\",date:\"$date\",time:\"$time\",description:\"$validDescription\"}"
+        return "{session_id:\"$id\",subject:\"$subject\",speaker:\"$speaker\",role:\"$role\",location_id:\"$location\",date:\"$date\",time:\"$time\",description:\"$validDescription\"}"
     }
 
     /** Omits Role and Description */
@@ -28,7 +28,7 @@ data class SessionInfo(
         // hit some bugs in the past where long text sneaks " double-quotes in.
         // wouldn't be a problem with proper serialization probably...
         val validDescription = description.replace("\"", "'")
-        return "{id:\"$id\",subject:\"$subject\",speaker:\"$speaker\",location:\"$location\",date:\"$date\",time:\"$time\"}"
+        return "{session_id:\"$id\",subject:\"$subject\",speaker:\"$speaker\",location_id:\"$location\",date:\"$date\",time:\"$time\"}"
     }
 
     companion object {

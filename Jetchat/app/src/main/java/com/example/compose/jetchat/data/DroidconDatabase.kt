@@ -68,8 +68,11 @@ private const val SQL_DELETE_LOCATION_ENTRIES = "DROP TABLE IF EXISTS ${Droidcon
 //-- Favorites
 private const val SQL_CREATE_FAVORITE_ENTRIES =
     "CREATE TABLE ${DroidconContract.FavoriteEntry.TABLE_NAME} (" +
-            "${DroidconContract.FavoriteEntry.COLUMN_NAME_SESSIONID} TEXT PRIMARY KEY," +
-            "${DroidconContract.FavoriteEntry.COLUMN_NAME_ISFAVORITE} INTEGER)"
+            "${DroidconContract.FavoriteEntry.COLUMN_NAME_SESSIONID} TEXT PRIMARY KEY, " +
+            "${DroidconContract.FavoriteEntry.COLUMN_NAME_ISFAVORITE} INTEGER, " +
+            "FOREIGN KEY(${DroidconContract.FavoriteEntry.COLUMN_NAME_SESSIONID}) " +
+            "REFERENCES ${DroidconContract.SessionEntry.TABLE_NAME}(${DroidconContract.SessionEntry.COLUMN_NAME_SESSIONID}) " +
+            ")"
 
 private const val SQL_DELETE_FAVORITE_ENTRIES = "DROP TABLE IF EXISTS ${DroidconContract.FavoriteEntry.TABLE_NAME}"
 
@@ -111,7 +114,7 @@ class DroidconDbHelper(var context: Context?) : SQLiteOpenHelper(context, DATABA
 
     companion object {
         // If you change the database schema, you must increment the database version.
-        const val DATABASE_VERSION = 6
+        const val DATABASE_VERSION = 8
         const val DATABASE_NAME = "Droidcon.db"
     }
 
@@ -135,6 +138,7 @@ class DroidconDbHelper(var context: Context?) : SQLiteOpenHelper(context, DATABA
         Log.i("LLM", "seedSessions $rowCount rows")
     }
 
+    /** Generates the database schema for the `AskDatabaseFunction` */
     fun generateSimpleSchema(): String {
         val db = readableDatabase
         var out = ""
@@ -159,7 +163,6 @@ class DroidconDbHelper(var context: Context?) : SQLiteOpenHelper(context, DATABA
             }
         }
         tableCursor.close()
-        Log.i("LLM", "schema: $out")
         return out
     }
 }

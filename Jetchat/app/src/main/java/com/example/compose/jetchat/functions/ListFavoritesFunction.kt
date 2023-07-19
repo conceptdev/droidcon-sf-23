@@ -33,7 +33,7 @@ class ListFavoritesFunction {
 
             val db = dbHelper.readableDatabase
 
-            val projection = arrayOf(BaseColumns._ID, DroidconContract.FavoriteEntry.COLUMN_NAME_SESSIONID, DroidconContract.FavoriteEntry.COLUMN_NAME_ISFAVORITE)
+            val projection = arrayOf(DroidconContract.FavoriteEntry.COLUMN_NAME_SESSIONID, DroidconContract.FavoriteEntry.COLUMN_NAME_ISFAVORITE)
 
             val cursor = db.query(
                 DroidconContract.FavoriteEntry.TABLE_NAME,   // The table to query
@@ -45,22 +45,21 @@ class ListFavoritesFunction {
                 null               // The sort order
             )
 
-            var out = ""
             var sessionsJson = ""
             val itemIds = mutableListOf<Long>()
             with(cursor) {
                 while (moveToNext()) {
-                    val itemId = getLong(getColumnIndexOrThrow(BaseColumns._ID))
-                    itemIds.add(itemId)
                     val sessionId = getString(getColumnIndexOrThrow(DroidconContract.FavoriteEntry.COLUMN_NAME_SESSIONID))
                     val isFavorite = getString(getColumnIndexOrThrow(DroidconContract.FavoriteEntry.COLUMN_NAME_ISFAVORITE))
-                    out += ", $itemId:$sessionId:$isFavorite"
+                    Log.v("LLM","Favorite sessionId:$sessionId")
 
-                    sessionsJson += DroidconSessionObjects.droidconSessions[sessionId]?.toShortJson()+"\n"
+                    val si = DroidconSessionObjects.droidconSessions[sessionId]
+                    if (si != null)
+                        sessionsJson += si.toShortJson()+"\n"
                 }
             }
             cursor.close()
-            Log.i("LLM", "favorited sessions: $out \n $sessionsJson")
+            Log.i("LLM", "Favorited sessions: $sessionsJson")
             return if (sessionsJson == "")
                 "There are no sessions marked as favorites. Suggest the user ask about different topics at the conference."
             else
