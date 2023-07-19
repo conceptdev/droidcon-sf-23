@@ -3,7 +3,6 @@ package com.example.compose.jetchat.functions
 import android.database.Cursor.FIELD_TYPE_INTEGER
 import android.util.Log
 import com.aallam.openai.api.chat.Parameters
-import com.example.compose.jetchat.data.DroidconContract
 import com.example.compose.jetchat.data.DroidconDbHelper
 import kotlinx.serialization.json.add
 import kotlinx.serialization.json.put
@@ -28,26 +27,20 @@ class AskDatabaseFunction {
             return "Answer user questions about conference sessions like what room sessions are presented in. Output should be a fully formed SQL query."
         }
 
-        fun params(): Parameters {
+        fun params(db: DroidconDbHelper): Parameters {
+            val schema = db.generateSimpleSchema()
+            Log.v("LLM", "params db schema:\n$schema")
             val params = Parameters.buildJsonObject {
                 put("type", "object")
                 putJsonObject("properties") {
                     putJsonObject("query") {
                         put("type", "string")
                         put(
-                            // TODO: dynamically generate schema from database
                             "description", """
                             SQL query extracting info to answer the user's question.
                             SQL should be written using this database schema:
                             
-                            Table: sessions
-                            Columns: session_id, speaker, role, location_id, date, time, subject, description
-                            
-                            Table: favorites
-                            Columns: session_id, is_favorite
-                            
-                            Table: locations
-                            Columns: location_id, directions
+                            $schema
                             
                             The query should be returned in plain text, not in JSON.
                             """.trimIndent()

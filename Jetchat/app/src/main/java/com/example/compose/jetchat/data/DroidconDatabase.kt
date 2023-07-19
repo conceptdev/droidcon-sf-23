@@ -94,6 +94,7 @@ class DroidconDbHelper(var context: Context?) : SQLiteOpenHelper(context, DATABA
         seedLocations(db)
         seedSessions(db)
     }
+
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         // This database is only a cache for online data, so its upgrade policy is
         // to simply to discard the data and start over
@@ -103,24 +104,26 @@ class DroidconDbHelper(var context: Context?) : SQLiteOpenHelper(context, DATABA
         db.execSQL(SQL_DELETE_EMBEDDING_ENTRIES)
         onCreate(db)
     }
+
     override fun onDowngrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         onUpgrade(db, oldVersion, newVersion)
     }
+
     companion object {
         // If you change the database schema, you must increment the database version.
         const val DATABASE_VERSION = 6
         const val DATABASE_NAME = "Droidcon.db"
     }
 
-    private fun seedLocations (db: SQLiteDatabase) {
+    private fun seedLocations(db: SQLiteDatabase) {
         db.execSQL("INSERT INTO locations VALUES ('Robertson 1','Upstairs to the right')")
         db.execSQL("INSERT INTO locations VALUES ('Robertson 2','Upstairs to the left')")
         db.execSQL("INSERT INTO locations VALUES ('Fisher East','Outside off the courtyard')")
         db.execSQL("INSERT INTO locations VALUES ('Fisher West','Downstairs behind the sponsor tables')")
-        Log.i("LLM","seedLocations 4 rows")
+        Log.i("LLM", "seedLocations 4 rows")
     }
 
-    private fun seedSessions (db: SQLiteDatabase) {
+    private fun seedSessions(db: SQLiteDatabase) {
         var rowCount = 0
         for (session in DroidconSessionObjects.droidconSessions) {
             val s = session.value
@@ -129,6 +132,34 @@ class DroidconDbHelper(var context: Context?) : SQLiteOpenHelper(context, DATABA
             )
             rowCount++
         }
-        Log.i("LLM","seedSessions $rowCount rows")
+        Log.i("LLM", "seedSessions $rowCount rows")
+    }
+
+    fun generateSimpleSchema(): String {
+        val db = readableDatabase
+        var out = ""
+        // get_table_names
+        val tableCursor = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null)
+        with(tableCursor) {
+            while (moveToNext()) {
+                val tableName = getString(0)
+                out += "Table: $tableName\nColumns: "
+                // get_column_names
+                val columnCursor = db.rawQuery("PRAGMA table_info('$tableName');", null)
+                var needComma = false
+                with(columnCursor) {
+                    while (moveToNext()) {
+                        val columnName = getString(1)
+                        if (needComma) out += ", " else needComma = true
+                        out += "$columnName"
+                    }
+                }
+                columnCursor.close()
+                out += "\n\n"
+            }
+        }
+        tableCursor.close()
+        Log.i("LLM", "schema: $out")
+        return out
     }
 }

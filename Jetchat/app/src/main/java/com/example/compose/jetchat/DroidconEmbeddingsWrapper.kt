@@ -116,7 +116,7 @@ class DroidconEmbeddingsWrapper(val context: Context?) {
                 function {
                     name = AskDatabaseFunction.name()
                     description = AskDatabaseFunction.description()
-                    parameters = AskDatabaseFunction.params()
+                    parameters = AskDatabaseFunction.params(dbHelper)
                 }
             }
             functionCall = FunctionMode.Auto
