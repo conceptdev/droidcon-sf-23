@@ -40,10 +40,8 @@ class AddFavoriteFunction {
             return params
         }
 
-        fun function(context: Context?, id: String): String {
+        fun function(dbHelper: DroidconDbHelper, id: String): String {
             Log.i("LLM", "addFavorite \"($id)\"")
-
-            val dbHelper = DroidconDbHelper(context)
 
             // Gets the data repository in write mode
             val db = dbHelper.writableDatabase

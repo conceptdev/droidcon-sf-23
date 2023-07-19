@@ -28,10 +28,8 @@ class ListFavoritesFunction {
             return params
         }
 
-        fun function(context: Context?): String {
+        fun function(dbHelper: DroidconDbHelper): String {
             Log.i("LLM", "listFavorites ")
-
-            val dbHelper = DroidconDbHelper(context)
 
             val db = dbHelper.readableDatabase
 
