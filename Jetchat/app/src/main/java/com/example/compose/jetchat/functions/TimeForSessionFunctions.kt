@@ -14,7 +14,7 @@ import org.apache.http.annotation.Obsolete
  * have this function exposed to the prompt
  *
  * Not used but provided for reference */
-@Obsolete
+@Deprecated("Needs a full text search engine behind it; and still may not offer an advantage over embeddings")
 class TimeForSessionFunctions {
     companion object {
         fun name(): String {

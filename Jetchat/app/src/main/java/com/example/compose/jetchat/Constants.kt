@@ -3,7 +3,7 @@ package com.example.compose.jetchat
 internal object Constants {
     internal const val OPENAI_TOKEN = "{OPENAI_KEY}"
 
-    /** Chat model: "gpt-4" or "gpt-3.5-turbo-16k" */
+    /** Chat model: "gpt-4-32k" or "gpt-3.5-turbo-16k" */
     internal const val OPENAI_CHAT_MODEL = "gpt-3.5-turbo-16k"
 
     /** Embedding model: text-embedding-ada-002 */

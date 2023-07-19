@@ -50,9 +50,9 @@ class SessionsByTimeFunction {
         @RequiresApi(Build.VERSION_CODES.O)
         fun function(date: String, earliestTime: String="08:00", latestTime: String="18:00"): String {
             Log.i("LLM", "sessionsByTime ($date, $earliestTime, $latestTime)")
-            var earliestTimeCheck = earliestTime
-            if (earliestTimeCheck.trim() == "") {
-                //  model has passed empty string in the past...
+            var earliestTimeCheck = earliestTime.trim()
+            if (earliestTimeCheck.isNullOrEmpty()) {
+                //  model has passed empty string in the past... so make sure there's a default
                 earliestTimeCheck = "08:00"
             }
 
@@ -62,12 +62,12 @@ class SessionsByTimeFunction {
             earliestTimeCheck = earliestLessOneHour.format(DateTimeFormatter.ofPattern("HH:mm"))
 
             var latestTimeCheck = latestTime
-            if (latestTimeCheck == "") { // only calc later time if blank
-                val earliest = LocalDateTime.parse("$date $earliestTime", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+            if (latestTimeCheck.isNullOrEmpty()) {
+                // Calc latest time if blank, based on earliestTime plus one hour
                 val earliestPlusOneHour = earliest.plusHours(1)
                 latestTimeCheck = earliestPlusOneHour.format(DateTimeFormatter.ofPattern("HH:mm"))
             }
-            val list = SessionInfo.hardcodedSessionsList()
+
             var out: String = ""
             for (session in DroidconSessionObjects.droidconSessions.values)
             {
