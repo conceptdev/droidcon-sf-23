@@ -266,7 +266,7 @@ class DroidconSessionObjects {
                 date = "2023-06-08",
                 time = "16:50",
                 subject = "Panel Discussion: Adopting Jetpack Compose @ Scale",
-                description = "Over the last couple years, thousands of apps have embraced Jetpack Compose for building their Android apps. While everyone is using the same library, the approach they've taken in adopting it is really different on each team. There's a lot of nuance in how one approaches a migration of this size and the difficulty is amplified when you are doing this at scale. This panel discussion brings together engineers working on popular apps that are using Compose and their experience in coordinating it's adoption."
+                description = "Over the last couple years, thousands of apps have embraced Jetpack Compose for building their Android apps. While everyone is using the same library, the approach they`ve taken in adopting it is really different on each team. There`s a lot of nuance in how one approaches a migration of this size and the difficulty is amplified when you are doing this at scale. This panel discussion brings together engineers working on popular apps that are using Compose and their experience in coordinating it`s adoption."
             ),
             "aleksandr-efremenkov" to SessionInfo(
                 id = "aleksandr-efremenkov",
@@ -276,7 +276,7 @@ class DroidconSessionObjects {
                 date = "2023-06-08",
                 time = "16:50",
                 subject = "Frida as debugging tool for Android",
-                description = "We all have ever used the debugger in Android Studio, but it only works in debug mode (android:debuggable='true'). What if we need to debug our application in production without the ability to reproduce the problem without the presence of logs? Frida allows you to instrument applications regardless of your environment. In this session, we'll tinker with the Bolt app with a fictional bug inside and figure out how to fix it."
+                description = "We all have ever used the debugger in Android Studio, but it only works in debug mode (android:debuggable=`true`). What if we need to debug our application in production without the ability to reproduce the problem without the presence of logs? Frida allows you to instrument applications regardless of your environment. In this session, we`ll tinker with the Bolt app with a fictional bug inside and figure out how to fix it."
             ),
             // MISSING: ENRIQUE LOPEZ MANAS
             "brian-gardner" to SessionInfo(
@@ -297,7 +297,7 @@ class DroidconSessionObjects {
                 date = "2023-06-09",
                 time = "12:20",
                 subject = "Going on a road trip with Android Auto",
-                description = "Android is truly everywhere. It's running on the phone, watch, TV, car, and there are even some fridges and toasters that want to be part of the family. While they're still under development, Android Auto is starting to gain a lot of adoption. In this talk, we're going to travel around the road of Android Auto, see its use cases and go through its functionalities, so you can later implement them on your app. All of this without moving your desk to be inside a car."
+                description = "Android is truly everywhere. It`s running on the phone, watch, TV, car, and there are even some fridges and toasters that want to be part of the family. While they`re still under development, Android Auto is starting to gain a lot of adoption. In this talk, we`re going to travel around the road of Android Auto, see its use cases and go through its functionalities, so you can later implement them on your app. All of this without moving your desk to be inside a car."
             ),
             "catherine-chi" to SessionInfo(
                 id = "catherine-chi",
@@ -317,8 +317,8 @@ class DroidconSessionObjects {
                 date = "2023-06-08",
                 time = "16:50",
                 subject = "Panel Discussion Adopting Jetpack Compose @ Scale",
-                description = """Over the last couple years, thousands of apps have embraced Jetpack Compose for building their Android apps. While everyone is using the same library, the approach they've taken in adopting it is really different on each team. There's a lot of nuance in how one approaches a migration of this size and the difficulty is amplified when you are doing this at scale.
-        This panel discussion brings together engineers working on popular apps that are using Compose and their experience in coordinating it's adoption."""
+                description = """Over the last couple years, thousands of apps have embraced Jetpack Compose for building their Android apps. While everyone is using the same library, the approach they`ve taken in adopting it is really different on each team. There`s a lot of nuance in how one approaches a migration of this size and the difficulty is amplified when you are doing this at scale.
+        This panel discussion brings together engineers working on popular apps that are using Compose and their experience in coordinating it`s adoption."""
             ), // MISSING: KURT NELSON
             "kyle-lehman" to SessionInfo(
                 id = "kyle-lehman",
@@ -348,7 +348,7 @@ class DroidconSessionObjects {
                 date = "2023-06-08",
                 time = "13:30",
                 subject = "Build Health and Velocity Score: How Pinterest tracks the state of builds",
-                description = "In this session, I'll give a breakdown on how this score is calculated, what are some initiatives that help us make the build better and what other plans we have for the future"
+                description = "In this session, I`ll give a breakdown on how this score is calculated, what are some initiatives that help us make the build better and what other plans we have for the future"
             ),
             "mahesh-hada" to SessionInfo(
                 id = "mahesh-hada",
@@ -368,7 +368,7 @@ class DroidconSessionObjects {
                 date = "2023-06-09",
                 time = "10:00",
                 subject = "Meet Store5 – A Kotlin Multiplatform Library For Building Network-Resilient Applications",
-                description = "Three years ago Store4, the little library that could, was released at KotlinConf'19. Store has been simplifying data loading on Android for close to a decade and was supercharged by being 100% Kotlin. Today we're here to talk about the next paradigm shift in data loading Store5 - a Kotlin Multiplatform solution for reading, writing and resolving data conflicts on any platform that Kotlin supports (Android, iOS, Web and Desktop). The Android community has embraced Store for close to a decade, Kotlin is making it possible to adopt the same patterns on other mobile platforms and beyond. With the addition of support for updating remote sources, network resilience, pain free conflict resolution, and a highly extensible api - Store5 aims to make reading and writing data effortless on all Kotlin platforms. This talk will focus on Store5 foundational concepts and usage in production and at scale. We will be covering adopting KMP, applying Google's offline-first guiding principles beyond Android and how we hope to establish a seamless way for all apps, regardless of platform, to work with local and remote data. This talk is not to be missed for folks (like us) who have battle scars from years of working on hard to fix bugs in offline first applications."
+                description = "Three years ago Store4, the little library that could, was released at KotlinConf`19. Store has been simplifying data loading on Android for close to a decade and was supercharged by being 100% Kotlin. Today we`re here to talk about the next paradigm shift in data loading Store5 - a Kotlin Multiplatform solution for reading, writing and resolving data conflicts on any platform that Kotlin supports (Android, iOS, Web and Desktop). The Android community has embraced Store for close to a decade, Kotlin is making it possible to adopt the same patterns on other mobile platforms and beyond. With the addition of support for updating remote sources, network resilience, pain free conflict resolution, and a highly extensible api - Store5 aims to make reading and writing data effortless on all Kotlin platforms. This talk will focus on Store5 foundational concepts and usage in production and at scale. We will be covering adopting KMP, applying Google`s offline-first guiding principles beyond Android and how we hope to establish a seamless way for all apps, regardless of platform, to work with local and remote data. This talk is not to be missed for folks (like us) who have battle scars from years of working on hard to fix bugs in offline first applications."
             ),
             "mark-villacampa" to SessionInfo(
                 id = "mark-villacampa",
@@ -378,7 +378,7 @@ class DroidconSessionObjects {
                 date = "2023-06-08",
                 time = "11:15",
                 subject = "The joys and challenges of building a paywall with BillingClient 5",
-                description = "The time to migrate away from Google Play Billing Library 4 (PBL4) is halfway done, and developers will need to switch to PBL5 or - assuming it's announced at I/O - PBL6. There are good reasons to migrate sooner, rather than later, though: In this talk, you'll learn how the flexibility offered by BillingClient 5 enables new paywall configurations and functionality, with working examples for you to implement yourself. We'll also highlight the challenges we ran in while upgrading the RevenueCat library to support these changes, many of which are incredibly relevant if you're one of the hundreds of thousands of Android apps that still need to migrate away from PBL4 or even 3. You'll leave the talk with a better understanding of real-world implementations of Billing Library 5, its benefits and its challenges, setting you up for a more successful migration down the road. Depending on this year's I/O, we'll update this talk with examples and insights pulled from PBL6 as they become available"
+                description = "The time to migrate away from Google Play Billing Library 4 (PBL4) is halfway done, and developers will need to switch to PBL5 or - assuming it`s announced at I/O - PBL6. There are good reasons to migrate sooner, rather than later, though: In this talk, you`ll learn how the flexibility offered by BillingClient 5 enables new paywall configurations and functionality, with working examples for you to implement yourself. We`ll also highlight the challenges we ran in while upgrading the RevenueCat library to support these changes, many of which are incredibly relevant if you`re one of the hundreds of thousands of Android apps that still need to migrate away from PBL4 or even 3. You`ll leave the talk with a better understanding of real-world implementations of Billing Library 5, its benefits and its challenges, setting you up for a more successful migration down the road. Depending on this year`s I/O, we`ll update this talk with examples and insights pulled from PBL6 as they become available"
             ),
             "michael-krueger" to SessionInfo(
                 id = "michael-krueger",
@@ -388,7 +388,7 @@ class DroidconSessionObjects {
                 date = "2023-06-09",
                 time = "16:30",
                 subject = "Let Standards Light Your Way: Best Practices for App Developers",
-                description = "With an increasing focus on privacy and security, how do we avoid common app development pitfalls that get us in hot water? Common snippets on developer forums don't always consider repercussions of an action. Join us as we walk through five seemingly innocuous implementations that have real world security implications and how you can apply standards like the OWASP MASVS to design your app with a security first mindset. In this interactive and entertaining session, see how to prevent these from happening to you and take home practical security and privacy best practices with links to more resources for you and your team."
+                description = "With an increasing focus on privacy and security, how do we avoid common app development pitfalls that get us in hot water? Common snippets on developer forums don`t always consider repercussions of an action. Join us as we walk through five seemingly innocuous implementations that have real world security implications and how you can apply standards like the OWASP MASVS to design your app with a security first mindset. In this interactive and entertaining session, see how to prevent these from happening to you and take home practical security and privacy best practices with links to more resources for you and your team."
             ), // TWOTALKS
             "michael-krueger-2" to SessionInfo(
                 id = "michael-krueger-2",
@@ -408,7 +408,7 @@ class DroidconSessionObjects {
                 date = "2023-06-09",
                 time = "10:00",
                 subject = "Meet Store5 – A Kotlin Multiplatform Library For Building Network-Resilient Applications",
-                description = "Three years ago Store4, the little library that could, was released at KotlinConf'19. Store has been simplifying data loading on Android for close to a decade and was supercharged by being 100% Kotlin. Today we're here to talk about the next paradigm shift in data loading Store5 - a Kotlin Multiplatform solution for reading, writing and resolving data conflicts on any platform that Kotlin supports (Android, iOS, Web and Desktop). The Android community has embraced Store for close to a decade, Kotlin is making it possible to adopt the same patterns on other mobile platforms and beyond. With the addition of support for updating remote sources, network resilience, pain free conflict resolution, and a highly extensible api - Store5 aims to make reading and writing data effortless on all Kotlin platforms. This talk will focus on Store5 foundational concepts and usage in production and at scale. We will be covering adopting KMP, applying Google's offline-first guiding principles beyond Android and how we hope to establish a seamless way for all apps, regardless of platform, to work with local and remote data. This talk is not to be missed for folks (like us) who have battle scars from years of working on hard to fix bugs in offline first applications."
+                description = "Three years ago Store4, the little library that could, was released at KotlinConf`19. Store has been simplifying data loading on Android for close to a decade and was supercharged by being 100% Kotlin. Today we`re here to talk about the next paradigm shift in data loading Store5 - a Kotlin Multiplatform solution for reading, writing and resolving data conflicts on any platform that Kotlin supports (Android, iOS, Web and Desktop). The Android community has embraced Store for close to a decade, Kotlin is making it possible to adopt the same patterns on other mobile platforms and beyond. With the addition of support for updating remote sources, network resilience, pain free conflict resolution, and a highly extensible api - Store5 aims to make reading and writing data effortless on all Kotlin platforms. This talk will focus on Store5 foundational concepts and usage in production and at scale. We will be covering adopting KMP, applying Google`s offline-first guiding principles beyond Android and how we hope to establish a seamless way for all apps, regardless of platform, to work with local and remote data. This talk is not to be missed for folks (like us) who have battle scars from years of working on hard to fix bugs in offline first applications."
             ),
             "mike-wolfson" to SessionInfo(
                 id = "mike-wolfson",
@@ -428,7 +428,7 @@ class DroidconSessionObjects {
                 date = "2023-06-09",
                 time = "15:35",
                 subject = "What’s up with Android’s back?",
-                description = "In this session, We would walk through the history of Android's Back and its current state. - Activity's onBackPressed () and KeyEvent#KEYCODE_BACK are marked as deprecated so what's the solution? - As part of Android13, we will explore how to support the predictive back gesture in Android apps. - We will cover different scenarios to migrate to new APIs from older APIs. Or Can we still use older APIs?"
+                description = "In this session, We would walk through the history of Android`s Back and its current state. - Activity`s onBackPressed () and KeyEvent#KEYCODE_BACK are marked as deprecated so what`s the solution? - As part of Android13, we will explore how to support the predictive back gesture in Android apps. - We will cover different scenarios to migrate to new APIs from older APIs. Or Can we still use older APIs?"
             ),
             "moataz-soliman" to SessionInfo(
                 id = "moataz-soliman",
@@ -509,7 +509,7 @@ class DroidconSessionObjects {
                 date = "2023-06-08",
                 time = "10:20",
                 subject = "Managing State Beyond ViewModels and Hilt",
-                description = "Separation of concerns is a common best practice followed by all successful software projects. In Android applications, there is usually a UI layer, a data layer, and a domain layer. Given the infinite number of ways to implement these layers, it's not clear how to get started quickly. Therefore, many projects follow Google's high-level guide to app architecture, which suggests many reasonable defaults and best practices. But how do the proposed recommendations work in practice? How do you set up an architecture that is ready for your use cases with this guide in mind? Are suggestions such as using Hilt as the backbone for your architecture really a good recommendation? This talk will discuss best practices for taking ownership of your own architecture, decoupling your business logic from Android components, and creating and managing scopes for your use cases. There will be concrete advice on how to loosely couple classes in the data and domain layers, how to prevent memory and thread leaks, and how to adopt the dependency injection framework of your choice."
+                description = "Separation of concerns is a common best practice followed by all successful software projects. In Android applications, there is usually a UI layer, a data layer, and a domain layer. Given the infinite number of ways to implement these layers, it`s not clear how to get started quickly. Therefore, many projects follow Google`s high-level guide to app architecture, which suggests many reasonable defaults and best practices. But how do the proposed recommendations work in practice? How do you set up an architecture that is ready for your use cases with this guide in mind? Are suggestions such as using Hilt as the backbone for your architecture really a good recommendation? This talk will discuss best practices for taking ownership of your own architecture, decoupling your business logic from Android components, and creating and managing scopes for your use cases. There will be concrete advice on how to loosely couple classes in the data and domain layers, how to prevent memory and thread leaks, and how to adopt the dependency injection framework of your choice."
             ),
             "pavlo-stavytskyt" to SessionInfo(
                 id = "pavlo-stavytskyt",
@@ -519,7 +519,7 @@ class DroidconSessionObjects {
                 date = "2023-06-09",
                 time = "13:40",
                 subject = "How we reduced startup time of Turo Android app by 77%",
-                description = "The startup time of a mobile app is one of the most important indicators of its performance and has a significant impact on the user experience. A fast-loading app not only provides a positive first impression, but also increases engagement and retention, reduces user churn, and can improve visibility in app store rankings. In this talk, I'm going to share how the startup time of the Turo Android app was reduced by 77%. You will learn how to apply best practices and Android developer tools to improve the startup performance of your Android apps."
+                description = "The startup time of a mobile app is one of the most important indicators of its performance and has a significant impact on the user experience. A fast-loading app not only provides a positive first impression, but also increases engagement and retention, reduces user churn, and can improve visibility in app store rankings. In this talk, I`m going to share how the startup time of the Turo Android app was reduced by 77%. You will learn how to apply best practices and Android developer tools to improve the startup performance of your Android apps."
             ),
             "rooz-mohazzabi" to SessionInfo(
                 id = "rooz-mohazzabi",
@@ -529,7 +529,7 @@ class DroidconSessionObjects {
                 date = "2023-06-08",
                 time = "13:30",
                 subject = "Improving Developer Experience with Gradle Build Scans",
-                description = "As a developer, you just want your builds to work but every now and then things go wrong and you need to investigate the build which sucks up a lot of your time not to mention context switching. In this talk we show you how build scans can help save a lot of time when you need to find build performance bottlenecks, investigate/troubleshoot CI failures, build/tool chain failures, visualize your dependencies, etc. to troubleshooting/investigating build issues and accelerate your builds/tests. From this session you will learn: - Can I make my build faster? Build performance profiling with a simple UI: what are all the performance bottlenecks in my build, how well is my build cache working, the impact of heap, garbage, dependency downloads on my build times. - How well is my build parallelized? Can I get more parallelization to speed up my builds? - What's happening in my build? View the build timeline view to see what tasks/goals are being executed in which order. You can use this to see how well parallelized is your build - Git and CI integration for better workflow. Go from your CI job to your build scan and back. Go to the Git source repo, git commit id, show me all the builds on this git commit id - Troubleshoot CI failures way faster with a build scan by viewing failed taks/goal in consol log. Build scans pull out all the details pertaining to your failure out of the consol log so you don’t have to parse through thousands of lines of logs - Dependency Search: view, search through your projects dependencies and their versions in a few clicks - Triage Test failures: The test dashboard sorts your projects test failures by failure count with a nice UI. With a few clicks you can see which test classes failed the most, sort by your longest tests, test methods with the most test failures, link to your test report - Tool chain and build related failures: What’s breaking my build?"
+                description = "As a developer, you just want your builds to work but every now and then things go wrong and you need to investigate the build which sucks up a lot of your time not to mention context switching. In this talk we show you how build scans can help save a lot of time when you need to find build performance bottlenecks, investigate/troubleshoot CI failures, build/tool chain failures, visualize your dependencies, etc. to troubleshooting/investigating build issues and accelerate your builds/tests. From this session you will learn: - Can I make my build faster? Build performance profiling with a simple UI: what are all the performance bottlenecks in my build, how well is my build cache working, the impact of heap, garbage, dependency downloads on my build times. - How well is my build parallelized? Can I get more parallelization to speed up my builds? - What`s happening in my build? View the build timeline view to see what tasks/goals are being executed in which order. You can use this to see how well parallelized is your build - Git and CI integration for better workflow. Go from your CI job to your build scan and back. Go to the Git source repo, git commit id, show me all the builds on this git commit id - Troubleshoot CI failures way faster with a build scan by viewing failed taks/goal in consol log. Build scans pull out all the details pertaining to your failure out of the consol log so you don’t have to parse through thousands of lines of logs - Dependency Search: view, search through your projects dependencies and their versions in a few clicks - Triage Test failures: The test dashboard sorts your projects test failures by failure count with a nice UI. With a few clicks you can see which test classes failed the most, sort by your longest tests, test methods with the most test failures, link to your test report - Tool chain and build related failures: What’s breaking my build?"
             ),
             "rikin-marfatia" to SessionInfo(
                 id = "rikin-marfatia",
@@ -539,7 +539,7 @@ class DroidconSessionObjects {
                 date = "2023-06-09",
                 time = "9:00",
                 subject = "Unlocking the Power of Shaders in Android with AGSL and Jetpack Compose",
-                description = "Want to learn some new ways to create engaging, interactive, and visually stunning UIs?Shaders are scary but powerful tools that, when wielded correctly, can help us make some cool and complex effects. With the new AGSL, we can create custom programmable shaders that can really spruce up our Android apps and make our UIs pop! In this talk, we will dive into the world of shaders and AGSL, and explore how we can use them in a practical way. We will cover some shader basics to build a foundation. Then we will learn a bit about AGSL and how we can setup Runtime Shaders in a Compose UI app. Finally we'll look at some really cool examples of shader-driven UI in the wild. Key Takeaways: - Gain a deeper understanding of Shaders and AGSL - Learn how to integrate shaders with Compose - See some practical use-cases for shaders in an Android app - Become comfortable with complex tech and push the boundaries of Android UIs"
+                description = "Want to learn some new ways to create engaging, interactive, and visually stunning UIs?Shaders are scary but powerful tools that, when wielded correctly, can help us make some cool and complex effects. With the new AGSL, we can create custom programmable shaders that can really spruce up our Android apps and make our UIs pop! In this talk, we will dive into the world of shaders and AGSL, and explore how we can use them in a practical way. We will cover some shader basics to build a foundation. Then we will learn a bit about AGSL and how we can setup Runtime Shaders in a Compose UI app. Finally we`ll look at some really cool examples of shader-driven UI in the wild. Key Takeaways: - Gain a deeper understanding of Shaders and AGSL - Learn how to integrate shaders with Compose - See some practical use-cases for shaders in an Android app - Become comfortable with complex tech and push the boundaries of Android UIs"
             ),
             "russell-wolf" to SessionInfo(
                 id = "russell-wolf",
@@ -619,7 +619,7 @@ class DroidconSessionObjects {
                 date = "2023-06-08",
                 time = "14:55",
                 subject = "The GPT-ification of Mobile App Testing",
-                description = "It's no secret that OpenAI's ChatGPT has taken the tech industry by storm. In fact, in the tech sector, it's difficult to miss discussion about how the jobs of today will inevitably be impacted by GPT-3.5 and, recently, GPT-4. With the arrival of Microsoft 365 Copilot and the massive amount of GitHub data Microsoft has used to train it, it's evident that OpenAI's large language models will also transform the software development process. In this discussion, Sofy CEO and founder Syed Hamid will share a variety of use cases that provide insight into how this technology is changing today's software testing landscape. Syed will also discuss how Sofy has harnessed the power of GPTs to further amplify Sofy's revolutionary no-code mobile app testing approach."
+                description = "It`s no secret that OpenAI`s ChatGPT has taken the tech industry by storm. In fact, in the tech sector, it`s difficult to miss discussion about how the jobs of today will inevitably be impacted by GPT-3.5 and, recently, GPT-4. With the arrival of Microsoft 365 Copilot and the massive amount of GitHub data Microsoft has used to train it, it`s evident that OpenAI`s large language models will also transform the software development process. In this discussion, Sofy CEO and founder Syed Hamid will share a variety of use cases that provide insight into how this technology is changing today`s software testing landscape. Syed will also discuss how Sofy has harnessed the power of GPTs to further amplify Sofy`s revolutionary no-code mobile app testing approach."
             ),
             "tadeas-kriz" to SessionInfo(
                 id = "tadeas-kriz",
@@ -639,7 +639,7 @@ class DroidconSessionObjects {
                 date = "2023-06-08",
                 time = "10:20",
                 subject = "Creative Coding with Compose: The Next Chapter",
-                description = "Creative coding bridges the worlds of art and technology, offering expressive and innovative opportunities for data visualization, art installations, interaction design, and even games. Jetpack Compose makes these possibilities even more accessible on Android! Building upon a previous Droidcon New York talk, this revisits the core concepts of creative coding, focusing on generative and interactive art. We'll also venture into image processing techniques and discuss their implementation in Compose. With practical examples, we'll gain a deeper understanding of the creative coding landscape and acquire tools that can be applied to enhance UX or simply have fun exploring new artistic realms!"
+                description = "Creative coding bridges the worlds of art and technology, offering expressive and innovative opportunities for data visualization, art installations, interaction design, and even games. Jetpack Compose makes these possibilities even more accessible on Android! Building upon a previous Droidcon New York talk, this revisits the core concepts of creative coding, focusing on generative and interactive art. We`ll also venture into image processing techniques and discuss their implementation in Compose. With practical examples, we`ll gain a deeper understanding of the creative coding landscape and acquire tools that can be applied to enhance UX or simply have fun exploring new artistic realms!"
             ),
             "tatiana-solonets" to SessionInfo(
                 id = "tatiana-solonets",
@@ -659,7 +659,7 @@ class DroidconSessionObjects {
                 date = "2023-06-08",
                 time = "9:00",
                 subject = "Keynote: Android Developer Productivity",
-                description = "Android Studio is at the center of the Android developer’s universe. In this keynote, Tor Norbye will share his perspective on how to get the most out of the IDE, covering his favorite features, some hidden gems, and some recent additions. Last but not least, he'll cover some upcoming features under active development."
+                description = "Android Studio is at the center of the Android developer’s universe. In this keynote, Tor Norbye will share his perspective on how to get the most out of the IDE, covering his favorite features, some hidden gems, and some recent additions. Last but not least, he`ll cover some upcoming features under active development."
             ),
             "ty-smith" to SessionInfo(
                 id = "ty-smith",
@@ -689,7 +689,7 @@ class DroidconSessionObjects {
                 date = "2023-06-08",
                 time = "16:50",
                 subject = "Panel Discussion: Adopting Jetpack Compose @ Scale",
-                description = "Over the last couple years, thousands of apps have embraced Jetpack Compose for building their Android apps. While everyone is using the same library, the approach they've taken in adopting it is really different on each team. There's a lot of nuance in how one approaches a migration of this size and the difficulty is amplified when you are doing this at scale. This panel discussion brings together engineers working on popular apps that are using Compose and their experience in coordinating it's adoption."
+                description = "Over the last couple years, thousands of apps have embraced Jetpack Compose for building their Android apps. While everyone is using the same library, the approach they`ve taken in adopting it is really different on each team. There`s a lot of nuance in how one approaches a migration of this size and the difficulty is amplified when you are doing this at scale. This panel discussion brings together engineers working on popular apps that are using Compose and their experience in coordinating it`s adoption."
             ),
             "zachary-sweigart" to SessionInfo(
                 id = "zachary-sweigart",
@@ -709,7 +709,7 @@ class DroidconSessionObjects {
                 date = "2023-06-08",
                 time = "15:55",
                 subject = "Reimagining text fields in Compose",
-                description = "The Compose Text team is completely rethinking the text field APIs from scratch. Come learn why, how we're approaching the process, and get a sneak peak at what the future might look like."
+                description = "The Compose Text team is completely rethinking the text field APIs from scratch. Come learn why, how we`re approaching the process, and get a sneak peak at what the future might look like."
             ),
             "zhenlei-ji" to SessionInfo(
                 id = "zhenlei-ji",
@@ -719,7 +719,7 @@ class DroidconSessionObjects {
                 date = "2023-06-09",
                 time = "14:35",
                 subject = "A shortcut for your productivity in Android Studio",
-                description = "Throughout my journey as a developer, I've spent countless hours in front of Android Studio. In order to be more productive, it was important for me to know the right shortcuts and how to use them in the most effective way. In this talk, we will learn how to develop a shortcut mindset and explore many shortcuts with real world examples in order to make your life as a developer much easier. Finally, I will share my favorite plugins to help you get the most out of Android Studio. After this talk, your daily work won't be the same. These shortcuts will boost your efficiency to another level and make it less error prone, allowing you to focus on what really matters."
+                description = "Throughout my journey as a developer, I`ve spent countless hours in front of Android Studio. In order to be more productive, it was important for me to know the right shortcuts and how to use them in the most effective way. In this talk, we will learn how to develop a shortcut mindset and explore many shortcuts with real world examples in order to make your life as a developer much easier. Finally, I will share my favorite plugins to help you get the most out of Android Studio. After this talk, your daily work won`t be the same. These shortcuts will boost your efficiency to another level and make it less error prone, allowing you to focus on what really matters."
             ),
             "zach-klippenstein-speaker-2" to SessionInfo(
                 id = "zach-klippenstein-speaker-2",
@@ -729,7 +729,7 @@ class DroidconSessionObjects {
                 date = "2023-06-09",
                 time = "10:00",
                 subject = "Opening the shutter on snapshots",
-                description = "Jetpack Compose shows the power of a custom compiler plugin. But not all the magic happens during compilation. A lot of Compose features are based on a runtime library that doesn't require any compiler support: the snapshot system. It might seem like magic at first, but it's just built on top of things you might already know: ThreadLocals, linked lists, and, yes, even regular old callbacks. Once you understand how Compose thinks about state, you might find ways to use its tools in your own code – even outside of Compose."
+                description = "Jetpack Compose shows the power of a custom compiler plugin. But not all the magic happens during compilation. A lot of Compose features are based on a runtime library that doesn`t require any compiler support: the snapshot system. It might seem like magic at first, but it`s just built on top of things you might already know: ThreadLocals, linked lists, and, yes, even regular old callbacks. Once you understand how Compose thinks about state, you might find ways to use its tools in your own code – even outside of Compose."
             ),
             "pierre-yves-ricau" to SessionInfo(
                 id = "pierre-yves-ricau",

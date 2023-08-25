@@ -22,6 +22,7 @@ import com.example.compose.jetchat.data.DroidconDbHelper
 import com.example.compose.jetchat.data.DroidconSessionData
 import com.example.compose.jetchat.data.DroidconSessionObjects
 import com.example.compose.jetchat.functions.AddFavoriteFunction
+import com.example.compose.jetchat.functions.AskDatabaseFunction
 import com.example.compose.jetchat.functions.ListFavoritesFunction
 import com.example.compose.jetchat.functions.RemoveFavoriteFunction
 import com.example.compose.jetchat.functions.SessionsByTimeFunction
@@ -112,6 +113,11 @@ class DroidconEmbeddingsWrapper(val context: Context?) {
                     description = ListFavoritesFunction.description()
                     parameters = ListFavoritesFunction.params()
                 }
+                function {
+                    name = AskDatabaseFunction.name()
+                    description = AskDatabaseFunction.description()
+                    parameters = AskDatabaseFunction.params(dbHelper)
+                }
             }
             functionCall = FunctionMode.Auto
     }
@@ -157,7 +163,7 @@ class DroidconEmbeddingsWrapper(val context: Context?) {
                     val functionArgs =
                         function.argumentsAsJson() ?: error("arguments field is missing")
                     functionResponse = AddFavoriteFunction.function(
-                        context,
+                        dbHelper,
                         functionArgs.getValue("id").jsonPrimitive.content
                     )
                 }
@@ -165,14 +171,23 @@ class DroidconEmbeddingsWrapper(val context: Context?) {
                     val functionArgs =
                         function.argumentsAsJson() ?: error("arguments field is missing")
                     functionResponse = RemoveFavoriteFunction.function(
-                        context,
+                        dbHelper,
                         functionArgs.getValue("id").jsonPrimitive.content
                     )
                 }
                 ListFavoritesFunction.name() -> {
                     // function doesn't have parameters
-                    functionResponse = ListFavoritesFunction.function(context)
+                    functionResponse = ListFavoritesFunction.function(dbHelper)
                 }
+                AskDatabaseFunction.name() -> {
+                    val functionArgs =
+                        function.argumentsAsJson() ?: error("arguments field is missing")
+                    val query = functionArgs.getValue("query").jsonPrimitive.content
+                    Log.i("LLM", "SQL query $query")
+
+                    functionResponse = AskDatabaseFunction.function(dbHelper, query)
+                }
+
                 else -> {
                     Log.i("LLM", "Function ${function!!.name} does not exist")
                     handled = false
