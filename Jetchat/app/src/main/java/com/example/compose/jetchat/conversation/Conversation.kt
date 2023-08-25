@@ -19,6 +19,8 @@
 package com.example.compose.jetchat.conversation
 
 import TypingBubbleAnimation
+import android.speech.SpeechRecognizer
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -197,11 +199,17 @@ fun ChannelNameBar(
         },
         actions = {
             // Search icon
+            // TODO: temporary microphone
             Icon(
                 imageVector = Icons.Outlined.Search,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier
-                    .clickable(onClick = { functionalityNotAvailablePopupShown = true })
+                    .clickable(onClick = {
+                        //functionalityNotAvailablePopupShown = true
+                        Log.i("LLM", "start recording")
+
+
+                    })
                     .padding(horizontal = 12.dp, vertical = 16.dp)
                     .height(24.dp),
                 contentDescription = stringResource(id = R.string.search)
