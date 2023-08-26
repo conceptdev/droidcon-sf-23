@@ -138,13 +138,14 @@ class NavActivity : AppCompatActivity(), RecognitionListener, TextToSpeech.OnIni
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3)
 
-        speech.startListening(recognizerIntent);
+        viewModel.setSpeechRecognizer (speech)
+        //speech.startListening(recognizerIntent);
         // speech.stopListening();
 
         Log.d("LLM", "start TTS")
         // TextToSpeech(Context: this, OnInitListener: this)
         tts = TextToSpeech(this, this)
-
+        viewModel.setSpeechGenerator (tts)
         //tts.speak("Welcome to Jetchat AI", TextToSpeech.QUEUE_FLUSH, null,"")
 
     }
