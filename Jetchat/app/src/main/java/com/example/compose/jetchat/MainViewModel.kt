@@ -17,6 +17,7 @@
 package com.example.compose.jetchat
 
 import android.content.Context
+import android.content.Intent
 import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
 import androidx.compose.runtime.getValue
@@ -51,10 +52,22 @@ class MainViewModel : ViewModel() {
     val drawerShouldBeOpened = _drawerShouldBeOpened.asStateFlow()
 
     private lateinit var speechToText: SpeechRecognizer
+    private lateinit var speechRecognizerIntent: Intent
     private lateinit var textToSpeech: TextToSpeech
-    fun setSpeechRecognizer (speech: SpeechRecognizer){
+
+
+    /** SpeechToText class for listening to user requests */
+    fun setSpeechRecognizer (speech: SpeechRecognizer, i: Intent){
         speechToText = speech
+        speechRecognizerIntent = i
     }
+    fun listen () {
+        speechToText.startListening(speechRecognizerIntent)
+    }
+    fun setSpeech (text: String) {
+        onMessageSent(text)
+    }
+    /** TextToSpeech class for reading out bot responses */
     fun setSpeechGenerator (tts: TextToSpeech){
         textToSpeech = tts
     }
@@ -66,6 +79,7 @@ class MainViewModel : ViewModel() {
         context = ctx
         droidconWrapper = DroidconEmbeddingsWrapper(context)
     }
+
     fun openDrawer() {
         _drawerShouldBeOpened.value = true
     }

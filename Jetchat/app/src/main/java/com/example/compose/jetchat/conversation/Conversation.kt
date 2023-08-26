@@ -101,6 +101,7 @@ import kotlinx.coroutines.launch
  * @param navigateToProfile User action when navigation to a profile is requested
  * @param modifier [Modifier] to apply to this layout node
  * @param onNavIconPressed Sends an event up when the user clicks on the menu
+ * @param onListenPressed Sends an event up when the user wants to record speech
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -110,7 +111,8 @@ fun ConversationContent(
     modifier: Modifier = Modifier,
     onNavIconPressed: () -> Unit = { },
     onMessageSent: (String) -> Unit,
-    botIsTyping: Boolean
+    botIsTyping: Boolean,
+    onListenPressed: () -> Unit = { }
 ) {
     val scrollState = rememberLazyListState()
     val topBarState = rememberTopAppBarState()
@@ -124,6 +126,7 @@ fun ConversationContent(
                 channelMembers = uiState.channelMembers,
                 onNavIconPressed = onNavIconPressed,
                 scrollBehavior = scrollBehavior,
+                onListenPressed = onListenPressed
             )
         },
         // Exclude ime and navigation bar padding so this can be added by the UserInput composable
@@ -172,7 +175,8 @@ fun ChannelNameBar(
     channelMembers: Int,
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior? = null,
-    onNavIconPressed: () -> Unit = { }
+    onNavIconPressed: () -> Unit = { },
+    onListenPressed: () -> Unit = { }
 ) {
     var functionalityNotAvailablePopupShown by remember { mutableStateOf(false) }
     if (functionalityNotAvailablePopupShown) {
@@ -206,9 +210,8 @@ fun ChannelNameBar(
                 modifier = Modifier
                     .clickable(onClick = {
                         //functionalityNotAvailablePopupShown = true
-                        Log.i("LLM", "start recording")
-
-
+                        Log.i("LLM", "onListenPressed")
+                        onListenPressed()
                     })
                     .padding(horizontal = 12.dp, vertical = 16.dp)
                     .height(24.dp),
@@ -548,7 +551,8 @@ fun ConversationPreview() {
             uiState = exampleUiState,
             navigateToProfile = { },
             onMessageSent = { },
-            botIsTyping = false
+            botIsTyping = false,
+            onListenPressed = { }
         )
     }
 }

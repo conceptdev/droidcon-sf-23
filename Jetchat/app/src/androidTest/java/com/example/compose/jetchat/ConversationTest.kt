@@ -31,6 +31,8 @@ import com.example.compose.jetchat.conversation.ConversationContent
 import com.example.compose.jetchat.conversation.ConversationTestTag
 import com.example.compose.jetchat.conversation.ConversationUiState
 import com.example.compose.jetchat.data.exampleUiState
+import com.example.compose.jetchat.data.meProfile
+import com.example.compose.jetchat.profile.ProfileScreenState
 import com.example.compose.jetchat.theme.JetchatTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Before
@@ -57,7 +59,8 @@ class ConversationTest {
                     navigateToProfile = { },
                     onNavIconPressed = { },
                     onMessageSent = { },
-                    botIsTyping = false
+                    botIsTyping = false,
+                    onListenPressed = {  }
                 )
             }
         }
@@ -166,5 +169,6 @@ class ConversationTest {
 private val conversationTestUiState = ConversationUiState(
     initialMessages = (exampleUiState.messages.plus(exampleUiState.messages)),
     channelName = "#composers",
-    channelMembers = 42
+    channelMembers = 42,
+    channelBotProfile = meProfile
 )
