@@ -51,19 +51,9 @@ class MainViewModel : ViewModel() {
     private val _drawerShouldBeOpened = MutableStateFlow(false)
     val drawerShouldBeOpened = _drawerShouldBeOpened.asStateFlow()
 
-    private lateinit var speechToText: SpeechRecognizer
-    private lateinit var speechRecognizerIntent: Intent
     private lateinit var textToSpeech: TextToSpeech
 
-
-    /** SpeechToText class for listening to user requests */
-    fun setSpeechRecognizer (speech: SpeechRecognizer, i: Intent){
-        speechToText = speech
-        speechRecognizerIntent = i
-    }
-    fun listen () {
-        speechToText.startListening(speechRecognizerIntent)
-    }
+    /** Send transcribed speech to model */
     fun setSpeech (text: String) {
         onMessageSent(text)
     }

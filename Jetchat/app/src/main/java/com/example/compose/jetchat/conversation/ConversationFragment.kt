@@ -52,7 +52,6 @@ class ConversationFragment : Fragment(), RecognitionListener {
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, "US-en")
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3)
-        activityViewModel.setSpeechRecognizer (speechToText, recognizerIntent)
         // speech.startListening(recognizerIntent);
         // speech.stopListening();
     }
@@ -86,22 +85,24 @@ class ConversationFragment : Fragment(), RecognitionListener {
                     botIsTyping = activityViewModel.botIsTyping,
                     onListenPressed = {
                         Log.i("LLM", "SpeechToText start listening...")
-                        activityViewModel.listen()
+                        listen()
                     }
-
                 )
             }
         }
     }
 
-
-    private lateinit var speechToText: SpeechRecognizer
-    private lateinit var recognizerIntent: Intent
-
+    private fun listen () {
+        speechToText.startListening(recognizerIntent)
+        // calls onResults() which calls activityViewModel.setSpeech()
+    }
 
     /**
      * Implement `RecognitionListener`
      */
+    private lateinit var speechToText: SpeechRecognizer
+    private lateinit var recognizerIntent: Intent
+
     override fun onReadyForSpeech(p0: Bundle?) {
         Log.i("LLM", "onReadyForSpeech")
     }

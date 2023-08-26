@@ -128,19 +128,6 @@ class NavActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             checkPermission()
         }
 
-//        // --------------
-//        // Speech to Text
-//        var speech = SpeechRecognizer.createSpeechRecognizer(this)
-//        Log.i("LLM", "isRecognitionAvailable: " + SpeechRecognizer.isRecognitionAvailable(this))
-//        speech.setRecognitionListener(this)
-//        recognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-//        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, "US-en")
-//        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-//        recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3)
-//        viewModel.setSpeechRecognizer (speech, recognizerIntent)
-//        // speech.startListening(recognizerIntent);
-//        // speech.stopListening();
-
         // --------------
         // Text to Speech
         tts = TextToSpeech(this, this)
@@ -148,10 +135,12 @@ class NavActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         viewModel.setSpeechGenerator (tts)
         //tts.speak("Welcome to Jetchat AI", TextToSpeech.QUEUE_FLUSH, null,"")
 
+        // --------------
+        // Speech to Text
+        // is implemented in ConversationFragment.kt
     }
-    //private lateinit var speech: SpeechRecognizer
-    //private lateinit var recognizerIntent: Intent
     val RecordAudioRequestCode = 1
+    /** Check permission for speech recording */
     private fun checkPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             ActivityCompat.requestPermissions(
@@ -173,68 +162,6 @@ class NavActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         return navHostFragment.navController
     }
 
-
-    /**
-     * Implement `RecognitionListener`
-     */
-//    override fun onReadyForSpeech(p0: Bundle?) {
-//        Log.i("LLM", "onReadyForSpeech")
-//    }
-//
-//    override fun onBeginningOfSpeech() {
-//        Log.i("LLM", "onBeginningOfSpeech")
-//    }
-//
-//    override fun onRmsChanged(p0: Float) {
-//        //Log.d("LLM", "onRmsChanged")
-//    }
-//
-//    override fun onBufferReceived(p0: ByteArray?) {
-//        Log.d("LLM", "onBufferReceived")
-//    }
-//
-//    override fun onEndOfSpeech() {
-//        Log.d("LLM", "onEndOfSpeech")
-//    }
-//
-//    override fun onError(p0: Int) {
-//        val errorMessage: String = getErrorMessage(p0)
-//        Log.e("LLM", "onError FAILED $errorMessage")
-//    }
-//
-//    override fun onResults(p0: Bundle?) {
-//        Log.i("LLM", "onResults")
-//        val matches = p0!!.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-//        var text = ""
-//        if (matches != null) { // seems to repeat, grab one
-//            for (result in matches) text = result
-//        }
-//        Log.i("LLM", "heard: $text")
-//    }
-//
-//    override fun onPartialResults(p0: Bundle?) {
-//        Log.d("LLM", "onPartialResults")
-//    }
-//
-//    override fun onEvent(p0: Int, p1: Bundle?) {
-//        Log.d("LLM", "onEvent")
-//    }
-//
-//    private fun getErrorMessage(error: Int): String {
-//        return when (error) {
-//            SpeechRecognizer.ERROR_AUDIO -> "Audio error"
-//            SpeechRecognizer.ERROR_CLIENT -> "Client error"
-//            SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS -> "Insufficient permissions error"
-//            SpeechRecognizer.ERROR_NETWORK -> "Network error"
-//            SpeechRecognizer.ERROR_NETWORK_TIMEOUT -> "Network timeout error"
-//            SpeechRecognizer.ERROR_NO_MATCH -> "No match error"
-//            SpeechRecognizer.ERROR_RECOGNIZER_BUSY -> "Recognizer busy error"
-//            SpeechRecognizer.ERROR_SERVER -> "Server error"
-//            SpeechRecognizer.ERROR_SPEECH_TIMEOUT -> "Speech timeout error"
-//            else -> "Unknown speech recognizer error"
-//        }
-//    }
-
     /**
      * Implement speech output
      */
@@ -248,7 +175,6 @@ class NavActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
                 Log.e("LLM","language not supported...")
             } else {
                 // can speak! wait to get called...
-                //tts.speak("Welcome to Jetchat AI", TextToSpeech.QUEUE_FLUSH, null,"")
             }
         } else {
             Log.e("LLM","Some TTS error $p0")
