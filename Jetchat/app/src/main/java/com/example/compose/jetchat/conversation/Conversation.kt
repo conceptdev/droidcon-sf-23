@@ -207,7 +207,7 @@ fun ChannelNameBar(
             }
         },
         actions = {
-            // Microphone icon
+            // "Microphone" icon
             Icon(
                 imageVector = Icons.Outlined.KeyboardVoice,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -221,13 +221,13 @@ fun ChannelNameBar(
                     .height(24.dp),
                 contentDescription = stringResource(id = R.string.search)
             )
-            // End speaking icon
+            // "End speaking" icon
             Icon(
                 imageVector = Icons.Outlined.VolumeOff,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier
                     .clickable(onClick = {
-                        Log.i("LLM", "")
+                        Log.i("LLM", "onStopTalkingPressed")
                         onStopTalkingPressed()
                     })
                     .padding(horizontal = 12.dp, vertical = 16.dp)

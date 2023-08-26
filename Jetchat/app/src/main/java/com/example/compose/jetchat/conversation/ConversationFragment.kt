@@ -180,10 +180,10 @@ class ConversationFragment : Fragment(), RecognitionListener, TextToSpeech.OnIni
         }
     }
 
+    private lateinit var tts: TextToSpeech
     /**
      * Implement speech output
      */
-    private lateinit var tts: TextToSpeech
     override fun onInit(p0: Int) {
         Log.d("LLM", "onInit (TTS)")
         if (p0 == TextToSpeech.SUCCESS) {
