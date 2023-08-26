@@ -49,7 +49,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.KeyboardVoice
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.VolumeOff
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -205,7 +207,7 @@ fun ChannelNameBar(
             // Search icon
             // TODO: temporary microphone
             Icon(
-                imageVector = Icons.Outlined.Search,
+                imageVector = Icons.Outlined.KeyboardVoice,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier
                     .clickable(onClick = {
@@ -219,7 +221,7 @@ fun ChannelNameBar(
             )
             // Info icon
             Icon(
-                imageVector = Icons.Outlined.Info,
+                imageVector = Icons.Outlined.VolumeOff,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier
                     .clickable(onClick = { functionalityNotAvailablePopupShown = true })
