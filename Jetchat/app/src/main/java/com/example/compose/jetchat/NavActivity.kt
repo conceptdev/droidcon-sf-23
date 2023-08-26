@@ -51,9 +51,18 @@ import kotlinx.coroutines.launch
 import java.util.Locale
 
 /**
- * Main activity for the app.
+ * Main activity for the app
+ *
+ * ConversationFragment.kt implements
+ * - Text to Speech
+ * - Speech to Text
+ * which is used in MainViewModel.kt
+ *
+ * Permissions for audio recording are requested in this class though
+ *
+ * The context is also set in the MainViewModel for the Sqlite database
  */
-class NavActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
+class NavActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -127,17 +136,6 @@ class NavActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
         ) {
             checkPermission()
         }
-
-        // --------------
-        // Text to Speech
-        tts = TextToSpeech(this, this)
-        Log.d("LLM", "start text to speech")
-        viewModel.setSpeechGenerator (tts)
-        //tts.speak("Welcome to Jetchat AI", TextToSpeech.QUEUE_FLUSH, null,"")
-
-        // --------------
-        // Speech to Text
-        // is implemented in ConversationFragment.kt
     }
     val RecordAudioRequestCode = 1
     /** Check permission for speech recording */
@@ -161,32 +159,4 @@ class NavActivity : AppCompatActivity(), TextToSpeech.OnInitListener {
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         return navHostFragment.navController
     }
-
-    /**
-     * Implement speech output
-     */
-    private lateinit var tts: TextToSpeech
-    override fun onInit(p0: Int) {
-        Log.d("LLM", "onInit (TTS)")
-        if (p0 == TextToSpeech.SUCCESS) {
-            val result = tts!!.setLanguage(Locale.US)
-
-            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Log.e("LLM","language not supported...")
-            } else {
-                // can speak! wait to get called...
-            }
-        } else {
-            Log.e("LLM","Some TTS error $p0")
-        }
-    }
-    public override fun onDestroy() {
-        // Shutdown TTS when activity is destroyed
-        if (tts != null) {
-            tts!!.stop()
-            tts!!.shutdown()
-        }
-        super.onDestroy()
-    }
-
 }

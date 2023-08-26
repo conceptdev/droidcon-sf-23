@@ -114,7 +114,8 @@ fun ConversationContent(
     onNavIconPressed: () -> Unit = { },
     onMessageSent: (String) -> Unit,
     botIsTyping: Boolean,
-    onListenPressed: () -> Unit = { }
+    onListenPressed: () -> Unit = { },
+    onStopTalkingPressed: () -> Unit = { }
 ) {
     val scrollState = rememberLazyListState()
     val topBarState = rememberTopAppBarState()
@@ -128,7 +129,8 @@ fun ConversationContent(
                 channelMembers = uiState.channelMembers,
                 onNavIconPressed = onNavIconPressed,
                 scrollBehavior = scrollBehavior,
-                onListenPressed = onListenPressed
+                onListenPressed = onListenPressed,
+                onStopTalkingPressed = onStopTalkingPressed
             )
         },
         // Exclude ime and navigation bar padding so this can be added by the UserInput composable
@@ -178,7 +180,8 @@ fun ChannelNameBar(
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior? = null,
     onNavIconPressed: () -> Unit = { },
-    onListenPressed: () -> Unit = { }
+    onListenPressed: () -> Unit = { },
+    onStopTalkingPressed: () -> Unit = { }
 ) {
     var functionalityNotAvailablePopupShown by remember { mutableStateOf(false) }
     if (functionalityNotAvailablePopupShown) {
@@ -204,8 +207,7 @@ fun ChannelNameBar(
             }
         },
         actions = {
-            // Search icon
-            // TODO: temporary microphone
+            // Microphone icon
             Icon(
                 imageVector = Icons.Outlined.KeyboardVoice,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -219,12 +221,15 @@ fun ChannelNameBar(
                     .height(24.dp),
                 contentDescription = stringResource(id = R.string.search)
             )
-            // Info icon
+            // End speaking icon
             Icon(
                 imageVector = Icons.Outlined.VolumeOff,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier
-                    .clickable(onClick = { functionalityNotAvailablePopupShown = true })
+                    .clickable(onClick = {
+                        Log.i("LLM", "")
+                        onStopTalkingPressed()
+                    })
                     .padding(horizontal = 12.dp, vertical = 16.dp)
                     .height(24.dp),
                 contentDescription = stringResource(id = R.string.info)

@@ -21,6 +21,7 @@ import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
+import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -36,8 +37,9 @@ import com.example.compose.jetchat.MainViewModel
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.Channel
 import com.example.compose.jetchat.theme.JetchatTheme
+import java.util.Locale
 
-class ConversationFragment : Fragment(), RecognitionListener {
+class ConversationFragment : Fragment(), RecognitionListener, TextToSpeech.OnInitListener {
 
     private val activityViewModel: MainViewModel by activityViewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,8 +54,16 @@ class ConversationFragment : Fragment(), RecognitionListener {
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, "US-en")
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3)
-        // speech.startListening(recognizerIntent);
-        // speech.stopListening();
+        //speechToText.startListening(recognizerIntent);
+        // speechToText.stopListening();
+
+        // --------------
+        // Text to Speech
+        tts = TextToSpeech(this.context, this)
+        Log.d("LLM", "start text to speech")
+        activityViewModel.setSpeechGenerator (tts)
+        //tts.speak("Welcome to Jetchat AI", TextToSpeech.QUEUE_FLUSH, null,"")
+
     }
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -86,10 +96,18 @@ class ConversationFragment : Fragment(), RecognitionListener {
                     onListenPressed = {
                         Log.i("LLM", "SpeechToText start listening...")
                         listen()
+                    },
+                    onStopTalkingPressed = {
+                        Log.i("LLM", "Stop talking...")
+                        stopTalking()
                     }
                 )
             }
         }
+    }
+
+    private fun stopTalking () {
+        tts.stop()
     }
 
     private fun listen () {
@@ -160,5 +178,32 @@ class ConversationFragment : Fragment(), RecognitionListener {
             SpeechRecognizer.ERROR_SPEECH_TIMEOUT -> "Speech timeout error"
             else -> "Unknown speech recognizer error"
         }
+    }
+
+    /**
+     * Implement speech output
+     */
+    private lateinit var tts: TextToSpeech
+    override fun onInit(p0: Int) {
+        Log.d("LLM", "onInit (TTS)")
+        if (p0 == TextToSpeech.SUCCESS) {
+            val result = tts!!.setLanguage(Locale.US)
+
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("LLM","language not supported...")
+            } else {
+                // can speak! wait to get called...
+            }
+        } else {
+            Log.e("LLM","Some TTS error $p0")
+        }
+    }
+    public override fun onDestroy() {
+        // Shutdown TTS when activity is destroyed
+        if (tts != null) {
+            tts!!.stop()
+            tts!!.shutdown()
+        }
+        super.onDestroy()
     }
 }
