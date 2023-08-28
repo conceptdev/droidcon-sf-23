@@ -22,6 +22,7 @@ import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
+import android.speech.tts.UtteranceProgressListener
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -72,6 +73,22 @@ class ConversationFragment : Fragment(), RecognitionListener, TextToSpeech.OnIni
         // --------------
         // Text to Speech
         tts = TextToSpeech(this.context, this)
+        tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+            override fun onStart(p0: String?) {
+                speechState.value = SpeechState.SPEAKING
+                Log.i("LLM", "tts onStart")
+            }
+
+            override fun onDone(p0: String?) {
+                speechState.value = SpeechState.IDLE
+                Log.i("LLM", "tts onDone")
+            }
+
+            override fun onError(p0: String?) {
+                speechState.value = SpeechState.IDLE
+                Log.i("LLM", "tts onError: $p0")
+            }
+        })
         Log.d("LLM", "start text to speech")
         activityViewModel.setSpeechGenerator(tts)
     }
@@ -142,7 +159,8 @@ class ConversationFragment : Fragment(), RecognitionListener, TextToSpeech.OnIni
     }
 
     override fun onRmsChanged(p0: Float) {
-        Log.d("LLM", "onRmsChanged")
+        // when sound level in audio stream changes - commented out because it's called frequently
+        // Log.d("LLM", "onRmsChanged")
     }
 
     override fun onBufferReceived(p0: ByteArray?) {
@@ -150,8 +168,6 @@ class ConversationFragment : Fragment(), RecognitionListener, TextToSpeech.OnIni
     }
 
     override fun onEndOfSpeech() {
-        speechState.value = SpeechState.IDLE
-
         Log.d("LLM", "onEndOfSpeech")
     }
 
@@ -163,7 +179,7 @@ class ConversationFragment : Fragment(), RecognitionListener, TextToSpeech.OnIni
     }
 
     override fun onResults(p0: Bundle?) {
-        speechState.value = SpeechState.SPEAKING
+        speechState.value = SpeechState.IDLE
 
         Log.i("LLM", "onResults")
         val matches = p0!!.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
