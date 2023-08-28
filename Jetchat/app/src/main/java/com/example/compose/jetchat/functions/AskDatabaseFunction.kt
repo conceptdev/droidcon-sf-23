@@ -116,7 +116,7 @@ class AskDatabaseFunction {
                             }
                         }
                     }
-                    out += ")"
+                    out += ")\n"
                     rowCount++
                 }
                 out += "]"
