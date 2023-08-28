@@ -28,6 +28,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -38,6 +39,9 @@ import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.Channel
 import com.example.compose.jetchat.theme.JetchatTheme
 import java.util.Locale
+
+enum class SpeechState { IDLE, LISTENING, SPEAKING }
+
 
 class ConversationFragment : Fragment(), RecognitionListener, TextToSpeech.OnInitListener {
 
@@ -97,6 +101,7 @@ class ConversationFragment : Fragment(), RecognitionListener, TextToSpeech.OnIni
                         Log.i("LLM", "SpeechToText start listening...")
                         listen()
                     },
+                    speechState = speechState.value,
                     onStopTalkingPressed = {
                         Log.i("LLM", "Stop talking...")
                         stopTalking()
@@ -106,11 +111,12 @@ class ConversationFragment : Fragment(), RecognitionListener, TextToSpeech.OnIni
         }
     }
 
-    private fun stopTalking () {
+    private fun stopTalking() {
+        speechState.value = SpeechState.IDLE
         tts.stop()
     }
 
-    private fun listen () {
+    private fun listen() {
         speechToText.startListening(recognizerIntent)
         // calls onResults() which calls activityViewModel.setSpeech()
     }
@@ -120,8 +126,11 @@ class ConversationFragment : Fragment(), RecognitionListener, TextToSpeech.OnIni
      */
     private lateinit var speechToText: SpeechRecognizer
     private lateinit var recognizerIntent: Intent
+    private var speechState = mutableStateOf(SpeechState.IDLE)
 
     override fun onReadyForSpeech(p0: Bundle?) {
+        speechState.value = SpeechState.LISTENING
+
         Log.i("LLM", "onReadyForSpeech")
     }
 
@@ -138,15 +147,21 @@ class ConversationFragment : Fragment(), RecognitionListener, TextToSpeech.OnIni
     }
 
     override fun onEndOfSpeech() {
+        speechState.value = SpeechState.IDLE
+
         Log.d("LLM", "onEndOfSpeech")
     }
 
     override fun onError(p0: Int) {
+        speechState.value = SpeechState.IDLE
+
         val errorMessage: String = getErrorMessage(p0)
         Log.e("LLM", "onError FAILED $errorMessage")
     }
 
     override fun onResults(p0: Bundle?) {
+        speechState.value = SpeechState.SPEAKING
+
         Log.i("LLM", "onResults")
         val matches = p0!!.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
         var text = ""
