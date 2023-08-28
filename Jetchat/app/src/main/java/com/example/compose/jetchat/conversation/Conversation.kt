@@ -19,7 +19,6 @@
 package com.example.compose.jetchat.conversation
 
 import TypingBubbleAnimation
-import android.speech.SpeechRecognizer
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -48,10 +47,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.filled.KeyboardVoice
 import androidx.compose.material.icons.outlined.KeyboardVoice
-import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.VolumeOff
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -317,7 +314,7 @@ fun Messages(
         val jumpToBottomButtonEnabled by remember {
             derivedStateOf {
                 scrollState.firstVisibleItemIndex != 0 ||
-                    scrollState.firstVisibleItemScrollOffset > jumpThreshold
+                        scrollState.firstVisibleItemScrollOffset > jumpThreshold
             }
         }
 
@@ -521,13 +518,20 @@ fun ChatItemBubble(
 }
 
 @Composable
-fun ImageMessage(backgroundBubbleColor: Color, imageContent: @Composable (Modifier, ContentScale, String) -> Unit) {
+fun ImageMessage(
+    backgroundBubbleColor: Color,
+    imageContent: @Composable (Modifier, ContentScale, String) -> Unit
+) {
     Spacer(modifier = Modifier.height(4.dp))
     Surface(
         color = backgroundBubbleColor,
         shape = ChatBubbleShape
     ) {
-        imageContent(Modifier.size(300.dp), ContentScale.Fit, stringResource(id = R.string.attached_image))
+        imageContent(
+            Modifier.size(300.dp),
+            ContentScale.Fit,
+            stringResource(id = R.string.attached_image)
+        )
     }
 }
 
