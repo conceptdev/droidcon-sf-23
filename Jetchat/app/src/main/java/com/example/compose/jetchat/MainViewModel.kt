@@ -17,6 +17,9 @@
 package com.example.compose.jetchat
 
 import android.content.Context
+import android.content.Intent
+import android.speech.SpeechRecognizer
+import android.speech.tts.TextToSpeech
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -48,6 +51,16 @@ class MainViewModel : ViewModel() {
     private val _drawerShouldBeOpened = MutableStateFlow(false)
     val drawerShouldBeOpened = _drawerShouldBeOpened.asStateFlow()
 
+    private lateinit var textToSpeech: TextToSpeech
+
+    /** Send transcribed speech to model */
+    fun setSpeech (text: String) {
+        onMessageSent(text)
+    }
+    /** TextToSpeech class for reading out bot responses */
+    fun setSpeechGenerator (tts: TextToSpeech){
+        textToSpeech = tts
+    }
     /** Cache the context for passing to objects wanting
      * to instantiate database helper classes */
     private lateinit var context: Context
@@ -56,6 +69,7 @@ class MainViewModel : ViewModel() {
         context = ctx
         droidconWrapper = DroidconEmbeddingsWrapper(context)
     }
+
     fun openDrawer() {
         _drawerShouldBeOpened.value = true
     }
@@ -147,6 +161,8 @@ class MainViewModel : ViewModel() {
 
                 botIsTyping = false
                 addMessage(author = uiState.channelBotProfile, content = chatResponse)
+
+                textToSpeech.speak(chatResponse, TextToSpeech.QUEUE_FLUSH, null,"")
             }
         }
     }

@@ -16,8 +16,16 @@
 
 package com.example.compose.jetchat
 
-import android.content.Context
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.speech.RecognitionListener
+import android.speech.RecognizerIntent
+import android.speech.SpeechRecognizer
+import android.speech.tts.TextToSpeech
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -30,6 +38,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.viewinterop.AndroidViewBinding
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -38,9 +48,19 @@ import androidx.navigation.fragment.NavHostFragment
 import com.example.compose.jetchat.components.JetchatDrawer
 import com.example.compose.jetchat.databinding.ContentMainBinding
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 /**
- * Main activity for the app.
+ * Main activity for the app
+ *
+ * ConversationFragment.kt implements
+ * - Text to Speech
+ * - Speech to Text
+ * which is used in MainViewModel.kt
+ *
+ * Permissions for audio recording are requested in this class though
+ *
+ * The context is also set in the MainViewModel for the Sqlite database
  */
 class NavActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
@@ -108,8 +128,25 @@ class NavActivity : AppCompatActivity() {
 
         // Pass `context` to viewModel so that DroiconEmbeddingsWrapper can use it for Sqlite database helper
         viewModel.setContext (this)
-    }
 
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.RECORD_AUDIO
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            checkPermission()
+        }
+    }
+    val RecordAudioRequestCode = 1
+    /** Check permission for speech recording */
+    private fun checkPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf<String>(Manifest.permission.RECORD_AUDIO), RecordAudioRequestCode
+            )
+        }
+    }
     override fun onSupportNavigateUp(): Boolean {
         return findNavController().navigateUp() || super.onSupportNavigateUp()
     }
