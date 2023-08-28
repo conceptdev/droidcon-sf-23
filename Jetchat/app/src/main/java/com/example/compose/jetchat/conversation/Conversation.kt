@@ -19,7 +19,6 @@
 package com.example.compose.jetchat.conversation
 
 import TypingBubbleAnimation
-import android.speech.SpeechRecognizer
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -48,13 +47,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.filled.KeyboardVoice
 import androidx.compose.material.icons.outlined.KeyboardVoice
-import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.VolumeOff
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -115,6 +114,7 @@ fun ConversationContent(
     onMessageSent: (String) -> Unit,
     botIsTyping: Boolean,
     onListenPressed: () -> Unit = { },
+    speechState: SpeechState = SpeechState.IDLE,
     onStopTalkingPressed: () -> Unit = { }
 ) {
     val scrollState = rememberLazyListState()
@@ -130,6 +130,7 @@ fun ConversationContent(
                 onNavIconPressed = onNavIconPressed,
                 scrollBehavior = scrollBehavior,
                 onListenPressed = onListenPressed,
+                speechState = speechState,
                 onStopTalkingPressed = onStopTalkingPressed
             )
         },
@@ -181,6 +182,7 @@ fun ChannelNameBar(
     scrollBehavior: TopAppBarScrollBehavior? = null,
     onNavIconPressed: () -> Unit = { },
     onListenPressed: () -> Unit = { },
+    speechState: SpeechState = SpeechState.IDLE,
     onStopTalkingPressed: () -> Unit = { }
 ) {
     var functionalityNotAvailablePopupShown by remember { mutableStateOf(false) }
@@ -208,32 +210,40 @@ fun ChannelNameBar(
         },
         actions = {
             // "Microphone" icon
-            Icon(
-                imageVector = Icons.Outlined.KeyboardVoice,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier
-                    .clickable(onClick = {
-                        //functionalityNotAvailablePopupShown = true
-                        Log.i("LLM", "onListenPressed")
-                        onListenPressed()
-                    })
-                    .padding(horizontal = 12.dp, vertical = 16.dp)
-                    .height(24.dp),
-                contentDescription = stringResource(id = R.string.search)
-            )
+            IconButton(onClick = {
+                Log.i("LLM", "onListenPressed")
+                onListenPressed()
+            }) {
+                Icon(
+                    imageVector = when (speechState) {
+                        SpeechState.LISTENING -> Icons.Filled.KeyboardVoice
+                        else -> Icons.Outlined.KeyboardVoice
+                    },
+                    tint = when (speechState) {
+                        SpeechState.LISTENING -> MaterialTheme.colorScheme.primary
+                        else -> MaterialTheme.colorScheme.onSurfaceVariant
+                    },
+                    modifier = Modifier.clip(CircleShape),
+                    contentDescription = stringResource(id = R.string.enable_mic)
+                )
+            }
             // "End speaking" icon
-            Icon(
-                imageVector = Icons.Outlined.VolumeOff,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier
-                    .clickable(onClick = {
-                        Log.i("LLM", "onStopTalkingPressed")
-                        onStopTalkingPressed()
-                    })
-                    .padding(horizontal = 12.dp, vertical = 16.dp)
-                    .height(24.dp),
-                contentDescription = stringResource(id = R.string.info)
-            )
+            IconButton(
+                onClick = {
+                    Log.i("LLM", "onStopTalkingPressed")
+                    onStopTalkingPressed()
+                },
+                enabled = when (speechState) {
+                    SpeechState.SPEAKING -> true
+                    else -> false
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.VolumeOff,
+                    modifier = Modifier.clip(CircleShape),
+                    contentDescription = stringResource(id = R.string.mute_tts)
+                )
+            }
         }
     )
 }
@@ -304,7 +314,7 @@ fun Messages(
         val jumpToBottomButtonEnabled by remember {
             derivedStateOf {
                 scrollState.firstVisibleItemIndex != 0 ||
-                    scrollState.firstVisibleItemScrollOffset > jumpThreshold
+                        scrollState.firstVisibleItemScrollOffset > jumpThreshold
             }
         }
 
@@ -508,13 +518,20 @@ fun ChatItemBubble(
 }
 
 @Composable
-fun ImageMessage(backgroundBubbleColor: Color, imageContent: @Composable (Modifier, ContentScale, String) -> Unit) {
+fun ImageMessage(
+    backgroundBubbleColor: Color,
+    imageContent: @Composable (Modifier, ContentScale, String) -> Unit
+) {
     Spacer(modifier = Modifier.height(4.dp))
     Surface(
         color = backgroundBubbleColor,
         shape = ChatBubbleShape
     ) {
-        imageContent(Modifier.size(300.dp), ContentScale.Fit, stringResource(id = R.string.attached_image))
+        imageContent(
+            Modifier.size(300.dp),
+            ContentScale.Fit,
+            stringResource(id = R.string.attached_image)
+        )
     }
 }
 

@@ -22,12 +22,14 @@ import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
+import android.speech.tts.UtteranceProgressListener
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
@@ -39,9 +41,19 @@ import com.example.compose.jetchat.components.Channel
 import com.example.compose.jetchat.theme.JetchatTheme
 import java.util.Locale
 
+enum class SpeechState { IDLE, LISTENING, SPEAKING }
+
+
 class ConversationFragment : Fragment(), RecognitionListener, TextToSpeech.OnInitListener {
 
     private val activityViewModel: MainViewModel by activityViewModels()
+
+    // Speech-to-text and text-to-speech fields
+    private lateinit var speechToText: SpeechRecognizer
+    private lateinit var tts: TextToSpeech
+    private lateinit var recognizerIntent: Intent
+    private var speechState = mutableStateOf(SpeechState.IDLE)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // --------------
@@ -52,19 +64,35 @@ class ConversationFragment : Fragment(), RecognitionListener, TextToSpeech.OnIni
         speechToText.setRecognitionListener(this)
         recognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, "US-en")
-        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+        recognizerIntent.putExtra(
+            RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+            RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+        )
         recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3)
-        //speechToText.startListening(recognizerIntent);
-        // speechToText.stopListening();
 
         // --------------
         // Text to Speech
         tts = TextToSpeech(this.context, this)
-        Log.d("LLM", "start text to speech")
-        activityViewModel.setSpeechGenerator (tts)
-        //tts.speak("Welcome to Jetchat AI", TextToSpeech.QUEUE_FLUSH, null,"")
+        tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+            override fun onStart(p0: String?) {
+                speechState.value = SpeechState.SPEAKING
+                Log.i("LLM", "tts onStart")
+            }
 
+            override fun onDone(p0: String?) {
+                speechState.value = SpeechState.IDLE
+                Log.i("LLM", "tts onDone")
+            }
+
+            override fun onError(p0: String?) {
+                speechState.value = SpeechState.IDLE
+                Log.i("LLM", "tts onError: $p0")
+            }
+        })
+        Log.d("LLM", "start text to speech")
+        activityViewModel.setSpeechGenerator(tts)
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -97,6 +125,7 @@ class ConversationFragment : Fragment(), RecognitionListener, TextToSpeech.OnIni
                         Log.i("LLM", "SpeechToText start listening...")
                         listen()
                     },
+                    speechState = speechState.value,
                     onStopTalkingPressed = {
                         Log.i("LLM", "Stop talking...")
                         stopTalking()
@@ -106,11 +135,12 @@ class ConversationFragment : Fragment(), RecognitionListener, TextToSpeech.OnIni
         }
     }
 
-    private fun stopTalking () {
+    private fun stopTalking() {
+        speechState.value = SpeechState.IDLE
         tts.stop()
     }
 
-    private fun listen () {
+    private fun listen() {
         speechToText.startListening(recognizerIntent)
         // calls onResults() which calls activityViewModel.setSpeech()
     }
@@ -118,10 +148,9 @@ class ConversationFragment : Fragment(), RecognitionListener, TextToSpeech.OnIni
     /**
      * Implement `RecognitionListener`
      */
-    private lateinit var speechToText: SpeechRecognizer
-    private lateinit var recognizerIntent: Intent
-
     override fun onReadyForSpeech(p0: Bundle?) {
+        speechState.value = SpeechState.LISTENING
+
         Log.i("LLM", "onReadyForSpeech")
     }
 
@@ -130,7 +159,8 @@ class ConversationFragment : Fragment(), RecognitionListener, TextToSpeech.OnIni
     }
 
     override fun onRmsChanged(p0: Float) {
-        //Log.d("LLM", "onRmsChanged")
+        // when sound level in audio stream changes - commented out because it's called frequently
+        // Log.d("LLM", "onRmsChanged")
     }
 
     override fun onBufferReceived(p0: ByteArray?) {
@@ -142,11 +172,15 @@ class ConversationFragment : Fragment(), RecognitionListener, TextToSpeech.OnIni
     }
 
     override fun onError(p0: Int) {
+        speechState.value = SpeechState.IDLE
+
         val errorMessage: String = getErrorMessage(p0)
         Log.e("LLM", "onError FAILED $errorMessage")
     }
 
     override fun onResults(p0: Bundle?) {
+        speechState.value = SpeechState.IDLE
+
         Log.i("LLM", "onResults")
         val matches = p0!!.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
         var text = ""
@@ -180,7 +214,6 @@ class ConversationFragment : Fragment(), RecognitionListener, TextToSpeech.OnIni
         }
     }
 
-    private lateinit var tts: TextToSpeech
     /**
      * Implement speech output
      */
@@ -190,19 +223,20 @@ class ConversationFragment : Fragment(), RecognitionListener, TextToSpeech.OnIni
             val result = tts!!.setLanguage(Locale.US)
 
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Log.e("LLM","language not supported...")
+                Log.e("LLM", "language not supported...")
             } else {
                 // can speak! wait to get called...
             }
         } else {
-            Log.e("LLM","Some TTS error $p0")
+            Log.e("LLM", "Some TTS error $p0")
         }
     }
-    public override fun onDestroy() {
+
+    override fun onDestroy() {
         // Shutdown TTS when activity is destroyed
         if (tts != null) {
-            tts!!.stop()
-            tts!!.shutdown()
+            tts.stop()
+            tts.shutdown()
         }
         super.onDestroy()
     }
