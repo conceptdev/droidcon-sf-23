@@ -30,4 +30,7 @@ internal object Constants {
 
     /** Embedding model: models/embedding-gecko-001 */
     internal const val PALM_EMBED_MODEL = "models/embedding-gecko-001"
+
+    /** Enable or disable the speech functions (mainly for emulator debugging) */
+    internal const val ENABLE_SPEECH = false
 }
