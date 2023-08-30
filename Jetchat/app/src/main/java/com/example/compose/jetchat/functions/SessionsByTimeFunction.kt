@@ -19,7 +19,7 @@ class SessionsByTimeFunction {
             return "sessionsByTime"
         }
         fun description(): String {
-            return "Given a date and time or time range, return the sessions that start on that date, during that time."
+            return "Given a date and specific time or time range, return the sessions that start on that date, during that time."
         }
         fun params(): Parameters {
             val params = Parameters.buildJsonObject {

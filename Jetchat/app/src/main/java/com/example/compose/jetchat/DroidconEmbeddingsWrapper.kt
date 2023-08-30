@@ -96,14 +96,10 @@ class DroidconEmbeddingsWrapper(val context: Context?) {
             messages = chatWindowMessages //  previously sent the entire conversation
             // hardcoding functions every time (for now)
             functions {
-                if (messagePreamble.isEmpty()) {
-                    // only enable this function if no embedding matches
-                    // resolves issue where empty function result overrides embeddings
-                    function {
-                        name = SessionsByTimeFunction.name()
-                        description = SessionsByTimeFunction.description()
-                        parameters = SessionsByTimeFunction.params()
-                    }
+                function {
+                    name = SessionsByTimeFunction.name()
+                    description = SessionsByTimeFunction.description()
+                    parameters = SessionsByTimeFunction.params()
                 }
                 function {
                     name = AddFavoriteFunction.name()
