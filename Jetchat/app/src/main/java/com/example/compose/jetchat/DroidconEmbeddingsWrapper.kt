@@ -20,7 +20,7 @@ import com.example.compose.jetchat.data.DroidconContract
 import com.example.compose.jetchat.data.DroidconDbHelper
 import com.example.compose.jetchat.data.DroidconSessionData
 import com.example.compose.jetchat.data.SlidingWindow
-import com.example.compose.jetchat.data.TokenizerHelper
+import com.example.compose.jetchat.data.Tokenizer
 import com.example.compose.jetchat.functions.AddFavoriteFunction
 import com.example.compose.jetchat.functions.AskDatabaseFunction
 import com.example.compose.jetchat.functions.ListFavoritesFunction

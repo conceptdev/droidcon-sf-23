@@ -52,6 +52,7 @@ class SlidingWindow {
                         Log.v("LLM-SW", "        added. Still available: ${tokenMax - tokensUsed}")
                     } else {
                         Log.v("LLM-SW", "        NOT ADDED. Still available: ${tokenMax - tokensUsed} (inc response quota ${expectedResponseSizeTokens}) ")
+                        break // could optionally keep adding subsequent, smaller messages to context up until token limit
                     }
                 }
             }
