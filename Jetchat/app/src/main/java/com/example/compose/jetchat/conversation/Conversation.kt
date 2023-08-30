@@ -86,6 +86,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
+import com.example.compose.jetchat.Constants
 import com.example.compose.jetchat.FunctionalityNotAvailablePopup
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.JetchatAppBar
@@ -213,7 +214,7 @@ fun ChannelNameBar(
             IconButton(onClick = {
                 Log.i("LLM", "onListenPressed")
                 onListenPressed()
-            }) {
+            }, enabled = Constants.ENABLE_SPEECH) {
                 Icon(
                     imageVector = when (speechState) {
                         SpeechState.LISTENING -> Icons.Filled.KeyboardVoice

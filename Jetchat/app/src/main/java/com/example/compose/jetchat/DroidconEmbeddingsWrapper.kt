@@ -210,28 +210,22 @@ class DroidconEmbeddingsWrapper(val context: Context?) {
             }
             if (handled) {
                 // add the 'call a function' response to the history
-                val funcCall = ChatMessage(
+                conversation.add(ChatMessage(
                     role = completionMessage.role,
                     content = completionMessage.content
                         ?: "", // required to not be empty in this case
                     functionCall = completionMessage.functionCall
+                    )
                 )
-                //Log.v("LLM-SW", "-- message ${completionMessage.role.role}: ${completionMessage.functionCall?.arguments}")
-                //Log.v("LLM", "        contains tokens: ${TokenizerHelper.countTokensIn(completionMessage.functionCall?.arguments)}")
-
-                conversation.add(funcCall)
 
                 // add the response to the 'function' call to the history
                 // so that the LLM can form the final user-response
-                val funcResp = ChatMessage(
-                    role = ChatRole.Function,
-                    name = function.name,
-                    content = functionResponse
+                conversation.add(ChatMessage(
+                        role = ChatRole.Function,
+                        name = function.name,
+                        content = functionResponse
+                    )
                 )
-                //Log.v("LLM", "-- message function ${function.name}: ${functionResponse.take(50)}")
-                //Log.v("LLM", "        contains tokens: ${TokenizerHelper.countTokensIn(functionResponse)}")
-
-                conversation.add(funcResp)
 
                 // sliding window - with the function call messages,
                 // we might need to remove more from the history
