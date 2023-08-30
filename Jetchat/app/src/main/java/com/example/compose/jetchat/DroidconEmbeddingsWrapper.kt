@@ -20,7 +20,6 @@ import com.example.compose.jetchat.data.DroidconContract
 import com.example.compose.jetchat.data.DroidconDbHelper
 import com.example.compose.jetchat.data.DroidconSessionData
 import com.example.compose.jetchat.data.SlidingWindow
-import com.example.compose.jetchat.data.Tokenizer
 import com.example.compose.jetchat.functions.AddFavoriteFunction
 import com.example.compose.jetchat.functions.AskDatabaseFunction
 import com.example.compose.jetchat.functions.ListFavoritesFunction
@@ -94,7 +93,7 @@ class DroidconEmbeddingsWrapper(val context: Context?) {
         // build the OpenAI network request
         val chatCompletionRequest = chatCompletionRequest {
             model = ModelId(Constants.OPENAI_CHAT_MODEL)
-            messages = chatWindowMessages
+            messages = chatWindowMessages //  previously sent the entire conversation
             // hardcoding functions every time (for now)
             functions {
                 if (messagePreamble.isEmpty()) {
@@ -210,17 +209,19 @@ class DroidconEmbeddingsWrapper(val context: Context?) {
             }
             if (handled) {
                 // add the 'call a function' response to the history
-                conversation.add(ChatMessage(
-                    role = completionMessage.role,
-                    content = completionMessage.content
-                        ?: "", // required to not be empty in this case
-                    functionCall = completionMessage.functionCall
+                conversation.add(
+                    ChatMessage(
+                        role = completionMessage.role,
+                        content = completionMessage.content
+                            ?: "", // required to not be empty in this case
+                        functionCall = completionMessage.functionCall
                     )
                 )
 
                 // add the response to the 'function' call to the history
                 // so that the LLM can form the final user-response
-                conversation.add(ChatMessage(
+                conversation.add(
+                    ChatMessage(
                         role = ChatRole.Function,
                         name = function.name,
                         content = functionResponse
@@ -234,7 +235,7 @@ class DroidconEmbeddingsWrapper(val context: Context?) {
                 // send the function request/response back to the model
                 val functionCompletionRequest = chatCompletionRequest {
                     model = ModelId(Constants.OPENAI_CHAT_MODEL)
-                    messages = functionChatWindowMessages //conversation
+                    messages = functionChatWindowMessages // previously sent the entire conversation
                 }
                 val functionCompletion: ChatCompletion =
                     openAI.chatCompletion(functionCompletionRequest)
