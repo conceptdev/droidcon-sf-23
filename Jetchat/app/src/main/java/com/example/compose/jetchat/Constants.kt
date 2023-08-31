@@ -4,7 +4,11 @@ internal object Constants {
     internal const val OPENAI_TOKEN = "{OPENAI_KEY}"
 
     /** Chat model: "gpt-4-32k" or "gpt-3.5-turbo-16k" */
-    internal const val OPENAI_CHAT_MODEL = "gpt-3.5-turbo-16k"
+    internal const val OPENAI_CHAT_MODEL = "gpt-3.5-turbo" // 4096 tokens for Sliding Window testing
+
+    /** Maximum token limit for model: 4,096 for "gpt-3.5-turbo"
+     * (used in Sliding Window calculations) */
+    internal const val OPENAI_MAX_TOKENS = 4096
 
     /** Embedding model: text-embedding-ada-002 */
     internal const val OPENAI_EMBED_MODEL = "text-embedding-ada-002"
@@ -30,4 +34,7 @@ internal object Constants {
 
     /** Embedding model: models/embedding-gecko-001 */
     internal const val PALM_EMBED_MODEL = "models/embedding-gecko-001"
+
+    /** Enable or disable the speech functions (mainly for emulator debugging) */
+    internal const val ENABLE_SPEECH = false
 }

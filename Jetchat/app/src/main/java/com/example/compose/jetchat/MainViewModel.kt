@@ -162,7 +162,9 @@ class MainViewModel : ViewModel() {
                 botIsTyping = false
                 addMessage(author = uiState.channelBotProfile, content = chatResponse)
 
-                textToSpeech.speak(chatResponse, TextToSpeech.QUEUE_FLUSH, null,"")
+                if (Constants.ENABLE_SPEECH) {
+                    textToSpeech.speak(chatResponse, TextToSpeech.QUEUE_FLUSH, null, "")
+                }
             }
         }
     }

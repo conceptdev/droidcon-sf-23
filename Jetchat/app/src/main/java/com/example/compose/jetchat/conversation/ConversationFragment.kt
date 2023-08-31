@@ -35,6 +35,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
+import com.example.compose.jetchat.Constants
 import com.example.compose.jetchat.MainViewModel
 import com.example.compose.jetchat.R
 import com.example.compose.jetchat.components.Channel
@@ -56,41 +57,43 @@ class ConversationFragment : Fragment(), RecognitionListener, TextToSpeech.OnIni
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // --------------
-        // Speech to Text
-        speechToText = SpeechRecognizer.createSpeechRecognizer(this.context)
-        val isOkay = this.context?.let { SpeechRecognizer.isRecognitionAvailable(it) }
-        Log.i("LLM", "isRecognitionAvailable: $isOkay")
-        speechToText.setRecognitionListener(this)
-        recognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-        recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, "US-en")
-        recognizerIntent.putExtra(
-            RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-            RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
-        )
-        recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3)
+        if (Constants.ENABLE_SPEECH) {
+            // --------------
+            // Speech to Text
+            speechToText = SpeechRecognizer.createSpeechRecognizer(this.context)
+            val isOkay = this.context?.let { SpeechRecognizer.isRecognitionAvailable(it) }
+            Log.i("LLM", "isRecognitionAvailable: $isOkay")
+            speechToText.setRecognitionListener(this)
+            recognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+            recognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, "US-en")
+            recognizerIntent.putExtra(
+                RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+            )
+            recognizerIntent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3)
 
-        // --------------
-        // Text to Speech
-        tts = TextToSpeech(this.context, this)
-        tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
-            override fun onStart(p0: String?) {
-                speechState.value = SpeechState.SPEAKING
-                Log.i("LLM", "tts onStart")
-            }
+            // --------------
+            // Text to Speech
+            tts = TextToSpeech(this.context, this)
+            tts.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+                override fun onStart(p0: String?) {
+                    speechState.value = SpeechState.SPEAKING
+                    Log.i("LLM", "tts onStart")
+                }
 
-            override fun onDone(p0: String?) {
-                speechState.value = SpeechState.IDLE
-                Log.i("LLM", "tts onDone")
-            }
+                override fun onDone(p0: String?) {
+                    speechState.value = SpeechState.IDLE
+                    Log.i("LLM", "tts onDone")
+                }
 
-            override fun onError(p0: String?) {
-                speechState.value = SpeechState.IDLE
-                Log.i("LLM", "tts onError: $p0")
-            }
-        })
-        Log.d("LLM", "start text to speech")
-        activityViewModel.setSpeechGenerator(tts)
+                override fun onError(p0: String?) {
+                    speechState.value = SpeechState.IDLE
+                    Log.i("LLM", "tts onError: $p0")
+                }
+            })
+            Log.d("LLM", "start text to speech")
+            activityViewModel.setSpeechGenerator(tts)
+        }
     }
 
     override fun onCreateView(
@@ -122,13 +125,17 @@ class ConversationFragment : Fragment(), RecognitionListener, TextToSpeech.OnIni
                     onMessageSent = activityViewModel::onMessageSent,
                     botIsTyping = activityViewModel.botIsTyping,
                     onListenPressed = {
-                        Log.i("LLM", "SpeechToText start listening...")
-                        listen()
+                        if (Constants.ENABLE_SPEECH) {
+                            Log.i("LLM", "SpeechToText start listening...")
+                            listen()
+                        }
                     },
                     speechState = speechState.value,
                     onStopTalkingPressed = {
-                        Log.i("LLM", "Stop talking...")
-                        stopTalking()
+                        if (Constants.ENABLE_SPEECH) {
+                            Log.i("LLM", "Stop talking...")
+                            stopTalking()
+                        }
                     }
                 )
             }
@@ -136,13 +143,17 @@ class ConversationFragment : Fragment(), RecognitionListener, TextToSpeech.OnIni
     }
 
     private fun stopTalking() {
-        speechState.value = SpeechState.IDLE
-        tts.stop()
+        if (Constants.ENABLE_SPEECH) {
+            speechState.value = SpeechState.IDLE
+            tts.stop()
+        }
     }
 
     private fun listen() {
-        speechToText.startListening(recognizerIntent)
-        // calls onResults() which calls activityViewModel.setSpeech()
+        if (Constants.ENABLE_SPEECH) {
+            speechToText.startListening(recognizerIntent)
+            // calls onResults() which calls activityViewModel.setSpeech()
+        }
     }
 
     /**
@@ -233,10 +244,12 @@ class ConversationFragment : Fragment(), RecognitionListener, TextToSpeech.OnIni
     }
 
     override fun onDestroy() {
-        // Shutdown TTS when activity is destroyed
-        if (tts != null) {
-            tts.stop()
-            tts.shutdown()
+        if (Constants.ENABLE_SPEECH) {
+            // Shutdown TTS when activity is destroyed
+            if (tts != null) {
+                tts.stop()
+                tts.shutdown()
+            }
         }
         super.onDestroy()
     }

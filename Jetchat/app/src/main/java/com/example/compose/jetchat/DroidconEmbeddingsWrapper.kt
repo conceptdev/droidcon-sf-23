@@ -3,7 +3,6 @@ package com.example.compose.jetchat
 import android.content.ContentValues
 import android.content.Context
 import android.os.Build
-import android.provider.BaseColumns
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.aallam.openai.api.BetaOpenAI
@@ -20,7 +19,7 @@ import com.aallam.openai.client.OpenAI
 import com.example.compose.jetchat.data.DroidconContract
 import com.example.compose.jetchat.data.DroidconDbHelper
 import com.example.compose.jetchat.data.DroidconSessionData
-import com.example.compose.jetchat.data.DroidconSessionObjects
+import com.example.compose.jetchat.data.SlidingWindow
 import com.example.compose.jetchat.functions.AddFavoriteFunction
 import com.example.compose.jetchat.functions.AskDatabaseFunction
 import com.example.compose.jetchat.functions.ListFavoritesFunction
@@ -48,7 +47,7 @@ infix fun DoubleArray.dot(other: DoubleArray): Double {
 @OptIn(BetaOpenAI::class)
 class DroidconEmbeddingsWrapper(val context: Context?) {
     private val openAIToken: String = Constants.OPENAI_TOKEN
-    private var conversation: MutableList<ChatMessage>
+    private var conversation: MutableList<ChatMessage> = mutableListOf()
     private var openAI: OpenAI = OpenAI(openAIToken)
     /** Sqlite access for favorites, embeddings, and SQL queries */
     private val dbHelper = DroidconDbHelper(context)
@@ -56,11 +55,12 @@ class DroidconEmbeddingsWrapper(val context: Context?) {
      * via web API and stored locally in a Sqlite database,
      * then loaded into memory on first use */
     private var vectorCache: MutableMap<String, DoubleArray> = mutableMapOf()
+
+    private var systemMessage: ChatMessage
     init {
-        conversation = mutableListOf(
-            ChatMessage(
-                role = ChatRole.System,
-                content = """You are a personal assistant called JetchatAI. 
+        systemMessage = ChatMessage(
+            role = ChatRole.System,
+            content = """You are a personal assistant called JetchatAI. 
                     You will answer questions about the speakers and sessions at the droidcon SF conference.
                     The conference is on June 8th and 9th, 2023 on the UCSF campus in Mission Bay. 
                     It starts at 8am and finishes by 6pm.
@@ -69,8 +69,8 @@ class DroidconEmbeddingsWrapper(val context: Context?) {
                     When showing session information, always include the subject, speaker, location, and time. 
                     ONLY show the description when responding about a single session.
                     Only use the functions you have been provided with.""".trimMargin()
-            )
         )
+        conversation.add(systemMessage)
     }
 
     suspend fun chat(message: String): String {
@@ -87,10 +87,13 @@ class DroidconEmbeddingsWrapper(val context: Context?) {
             )
         )
 
+        // implement sliding window
+        val chatWindowMessages = SlidingWindow.chatHistoryToWindow(conversation)
+
         // build the OpenAI network request
         val chatCompletionRequest = chatCompletionRequest {
             model = ModelId(Constants.OPENAI_CHAT_MODEL)
-            messages = conversation
+            messages = chatWindowMessages //  previously sent the entire conversation
             // hardcoding functions every time (for now)
             functions {
                 function {
@@ -120,7 +123,7 @@ class DroidconEmbeddingsWrapper(val context: Context?) {
                 }
             }
             functionCall = FunctionMode.Auto
-    }
+        }
         val completion: ChatCompletion = openAI.chatCompletion(chatCompletionRequest)
         val completionMessage = completion.choices.first().message ?: error("no response found!")
 
@@ -129,14 +132,14 @@ class DroidconEmbeddingsWrapper(val context: Context?) {
 
         if (completionMessage.functionCall == null) {
             // no function, add the response to the conversation history
-            Log.i("LLM", "No function call was made")
+            Log.i("LLM", "No function call was made, showing LLM response")
             conversation.add(
                 ChatMessage(
                     role = ChatRole.Assistant,
                     content = chatResponse
                 )
             )
-        } else { // handle function
+        } else { // handle function call
             val function = completionMessage.functionCall
             Log.i("LLM", "Function ${function!!.name} was called")
 
@@ -210,7 +213,9 @@ class DroidconEmbeddingsWrapper(val context: Context?) {
                         functionCall = completionMessage.functionCall
                     )
                 )
+
                 // add the response to the 'function' call to the history
+                // so that the LLM can form the final user-response
                 conversation.add(
                     ChatMessage(
                         role = ChatRole.Function,
@@ -218,15 +223,21 @@ class DroidconEmbeddingsWrapper(val context: Context?) {
                         content = functionResponse
                     )
                 )
+
+                // sliding window - with the function call messages,
+                // we might need to remove more from the history
+                val functionChatWindowMessages = SlidingWindow.chatHistoryToWindow(conversation)
+
                 // send the function request/response back to the model
                 val functionCompletionRequest = chatCompletionRequest {
                     model = ModelId(Constants.OPENAI_CHAT_MODEL)
-                    messages = conversation
+                    messages = functionChatWindowMessages // previously sent the entire conversation
                 }
                 val functionCompletion: ChatCompletion =
                     openAI.chatCompletion(functionCompletionRequest)
                 // show the interpreted function response as chat completion
                 chatResponse = functionCompletion.choices.first().message?.content!!
+                // ignore trimmedConversation, will be recreated
                 conversation.add(
                     ChatMessage(
                         role = ChatRole.Assistant,
@@ -265,7 +276,8 @@ class DroidconEmbeddingsWrapper(val context: Context?) {
         for (session in vectorCache) {
             val v = messageVector dot session.value
             sortedVectors[v] = session.key
-            Log.v("LLM", "Comparing input to ${session.key} dot $v")
+        // uncomment to examine vector comparison scores
+        //  Log.v("LLM", "Comparing input to ${session.key} dot $v")
         }
         if (sortedVectors.lastKey() > 0.8) { // arbitrary match threshold
             Log.i("LLM", "Top match is ${sortedVectors.lastKey()}")
