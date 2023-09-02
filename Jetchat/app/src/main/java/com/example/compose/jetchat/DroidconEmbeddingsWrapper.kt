@@ -296,17 +296,20 @@ class DroidconEmbeddingsWrapper(val context: Context?) {
             Log.i("LLM", "Top match was ${sortedVectors.lastKey()} which was below 0.8 and failed to meet criteria for grounding data")
         }
 
-        // ALWAYS add the date and time to every prompt
-        var date = Constants.TEST_DATE
-        var time = Constants.TEST_TIME
-        if (date == "") {
-            date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+        if (messagePreamble.isNullOrEmpty()) {
+            // ONLY show date/time when embeddings are empty, as it triggers the SessionsByTime function (I THINK)
+            // ALWAYS add the date and time to every prompt
+            var date = Constants.TEST_DATE
+            var time = Constants.TEST_TIME
+            if (date == "") {
+                date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+            }
+            if (time == "") {
+                time = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))
+            }
+            messagePreamble =
+                "The current date is $date and the time (in 24 hour format) is $time.\n\n$messagePreamble"
         }
-        if (time == "") {
-            time  = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))
-        }
-        messagePreamble =
-            "The current date is $date and the time (in 24 hour format) is $time.\n\n$messagePreamble"
         return messagePreamble
     }
 
