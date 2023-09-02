@@ -16,6 +16,7 @@ import com.aallam.openai.api.image.ImageCreation
 import com.aallam.openai.api.image.ImageURL
 import com.aallam.openai.api.model.ModelId
 import com.aallam.openai.client.OpenAI
+import com.example.compose.jetchat.data.CustomChatMessage
 import com.example.compose.jetchat.data.DroidconContract
 import com.example.compose.jetchat.data.DroidconDbHelper
 import com.example.compose.jetchat.data.DroidconSessionData
@@ -25,6 +26,7 @@ import com.example.compose.jetchat.functions.AskDatabaseFunction
 import com.example.compose.jetchat.functions.ListFavoritesFunction
 import com.example.compose.jetchat.functions.RemoveFavoriteFunction
 import com.example.compose.jetchat.functions.SessionsByTimeFunction
+import kotlinx.serialization.json.JsonNull.content
 import kotlinx.serialization.json.jsonPrimitive
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -47,7 +49,7 @@ infix fun DoubleArray.dot(other: DoubleArray): Double {
 @OptIn(BetaOpenAI::class)
 class DroidconEmbeddingsWrapper(val context: Context?) {
     private val openAIToken: String = Constants.OPENAI_TOKEN
-    private var conversation: MutableList<ChatMessage> = mutableListOf()
+    private var conversation: MutableList<CustomChatMessage> = mutableListOf()
     private var openAI: OpenAI = OpenAI(openAIToken)
     /** Sqlite access for favorites, embeddings, and SQL queries */
     private val dbHelper = DroidconDbHelper(context)
@@ -56,11 +58,11 @@ class DroidconEmbeddingsWrapper(val context: Context?) {
      * then loaded into memory on first use */
     private var vectorCache: MutableMap<String, DoubleArray> = mutableMapOf()
 
-    private var systemMessage: ChatMessage
+    private var systemMessage: CustomChatMessage
     init {
-        systemMessage = ChatMessage(
+        systemMessage = CustomChatMessage (
             role = ChatRole.System,
-            content = """You are a personal assistant called JetchatAI. 
+            grounding = """You are a personal assistant called JetchatAI. 
                     You will answer questions about the speakers and sessions at the droidcon SF conference.
                     The conference is on June 8th and 9th, 2023 on the UCSF campus in Mission Bay. 
                     It starts at 8am and finishes by 6pm.
@@ -81,9 +83,10 @@ class DroidconEmbeddingsWrapper(val context: Context?) {
 
         // add the user's message to the chat history
         conversation.add(
-            ChatMessage(
+            CustomChatMessage(
                 role = ChatRole.User,
-                content = messagePreamble + message
+                grounding = messagePreamble,
+                userContent = message
             )
         )
 
@@ -134,9 +137,9 @@ class DroidconEmbeddingsWrapper(val context: Context?) {
             // no function, add the response to the conversation history
             Log.i("LLM", "No function call was made, showing LLM response")
             conversation.add(
-                ChatMessage(
+                CustomChatMessage(
                     role = ChatRole.Assistant,
-                    content = chatResponse
+                    userContent = chatResponse
                 )
             )
         } else { // handle function call
@@ -196,9 +199,9 @@ class DroidconEmbeddingsWrapper(val context: Context?) {
                     handled = false
                     chatResponse += " " + function.name + " " + function.arguments
                     conversation.add(
-                        ChatMessage(
+                        CustomChatMessage(
                             role = ChatRole.Assistant,
-                            content = chatResponse
+                            userContent = chatResponse
                         )
                     )
                 }
@@ -206,9 +209,9 @@ class DroidconEmbeddingsWrapper(val context: Context?) {
             if (handled) {
                 // add the 'call a function' response to the history
                 conversation.add(
-                    ChatMessage(
+                    CustomChatMessage(
                         role = completionMessage.role,
-                        content = completionMessage.content
+                        userContent = completionMessage.content
                             ?: "", // required to not be empty in this case
                         functionCall = completionMessage.functionCall
                     )
@@ -217,10 +220,10 @@ class DroidconEmbeddingsWrapper(val context: Context?) {
                 // add the response to the 'function' call to the history
                 // so that the LLM can form the final user-response
                 conversation.add(
-                    ChatMessage(
+                    CustomChatMessage(
                         role = ChatRole.Function,
                         name = function.name,
-                        content = functionResponse
+                        userContent = functionResponse
                     )
                 )
 
@@ -239,9 +242,9 @@ class DroidconEmbeddingsWrapper(val context: Context?) {
                 chatResponse = functionCompletion.choices.first().message?.content!!
                 // ignore trimmedConversation, will be recreated
                 conversation.add(
-                    ChatMessage(
+                    CustomChatMessage(
                         role = ChatRole.Assistant,
-                        content = chatResponse
+                        userContent = chatResponse
                     )
                 )
             }

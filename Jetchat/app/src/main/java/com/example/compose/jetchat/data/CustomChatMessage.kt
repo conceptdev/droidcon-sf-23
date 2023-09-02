@@ -5,14 +5,17 @@ import com.aallam.openai.api.chat.ChatMessage
 import com.aallam.openai.api.chat.ChatRole
 import com.aallam.openai.api.chat.FunctionCall
 
-
-
+/**
+ * Wrapper for the final `ChatMessage` class so that we
+ * can count tokens and split the grounding from the
+ * user query for embedding-supported (RAG) requests
+ */
 class CustomChatMessage @OptIn(BetaOpenAI::class) constructor(
-    val role: ChatRole,
-    val grounding: String? = null,
-    val userContent: String? = null,
-    val name: String? = null,
-    val functionCall: FunctionCall? = null
+    public val role: ChatRole,
+    public val grounding: String? = null,
+    public val userContent: String? = null,
+    public val name: String? = null,
+    public val functionCall: FunctionCall? = null
     ) {
 
     public fun summary(): String? {
@@ -26,8 +29,16 @@ class CustomChatMessage @OptIn(BetaOpenAI::class) constructor(
         }
     }
 
-    public fun getTokenCount() : Int {
-        var messageContent = grounding + userContent ?: ""
+    /**
+     * Count the number of tokens in the user query PLUS the additional
+     * embedding dato for grounding OR the functions when userContent is empty
+     */
+    public fun getTokenCount(includeGrounding: Boolean = true) : Int {
+        var messageContent = userContent ?: ""
+        if (includeGrounding) {
+            messageContent = grounding + userContent ?: ""
+        }
+
         if (userContent.isNullOrEmpty()) {
             messageContent = "" + functionCall?.name + functionCall?.arguments
         }
@@ -36,9 +47,15 @@ class CustomChatMessage @OptIn(BetaOpenAI::class) constructor(
         return messageTokens
     }
 
+    /**
+     * Create `ChatMessage` instance to add to completion request
+     */
     @OptIn(BetaOpenAI::class)
-    public fun getChatMessage () : ChatMessage {
-        val content = grounding + userContent
+    public fun getChatMessage (includeGrounding: Boolean = true) : ChatMessage {
+        var content = userContent
+        if (includeGrounding) {
+            content += grounding
+        }
         return ChatMessage(role = role, content = content, name = name, functionCall = functionCall)
     }
 }
