@@ -44,18 +44,17 @@ class SlidingWindow {
             }
 
             // loop through other messages
-            for (message in conversation.reversed()) {
-                if (message.role != ChatRole.System) {
-                    var m = CustomChatMessage(message.role, message.grounding, message.userContent, message.name, message.functionCall)
+            for (m in conversation.reversed()) {
+                if (m.role != ChatRole.System) {
 
                     Log.v("LLM-SW", "-- message (${m.role.role}) ${m.summary()}")
                     Log.v("LLM-SW", "        contains tokens: ${m.getTokenCount(includeGrounding)}")
                     val tokensRemaining = tokenMax - tokensUsed
                     if (m.canFitInTokenLimit(includeGrounding, tokensRemaining)) {
-                        messagesInWindow.add(message.getChatMessage(includeGrounding, tokensRemaining))
+                        messagesInWindow.add(m.getChatMessage(includeGrounding, tokensRemaining))
                         tokensUsed += m.getTokenCount(includeGrounding, tokensRemaining)
 
-                        if (message.role == ChatRole.User) {
+                        if (m.role == ChatRole.User) {
                             Log.v("LLM-SW", "        added (grounding:$includeGrounding). Still available: ${tokenMax - tokensUsed}")
                             // stop subsequent user messages from including grounding
                             includeGrounding = false
