@@ -31,12 +31,22 @@ class CustomChatMessage @OptIn(BetaOpenAI::class) constructor(
 
     /**
      * Count the number of tokens in the user query PLUS the additional
-     * embedding dato for grounding OR the functions when userContent is empty
+     * embedding data for grounding OR the functions when userContent is empty
+     *
+     * `userContent` can never be larger than `tokensAllowed` - if this happens in
+     * message history, the message will be dropped from the window. In theory
+     * it could happen if a user entered maxTokens worth of text in their
+     * chat query, but in practice that seems unlikely (and should probably
+     * be a validation error on the UI)
      */
-    public fun getTokenCount(includeGrounding: Boolean = true) : Int {
+    public fun getTokenCount(includeGrounding: Boolean = true, tokensAllowed: Int = -1) : Int {
         var messageContent = userContent ?: ""
         if (includeGrounding) {
-            messageContent = grounding + userContent ?: ""
+            messageContent = if (tokensAllowed < 0) {
+                grounding + userContent ?: ""
+            } else { // only include as much of the grounding as will fit
+                Tokenizer.trimToTokenLimit(grounding, tokensAllowed) + userContent ?: ""
+            }
         }
 
         if (userContent.isNullOrEmpty()) {
@@ -48,13 +58,28 @@ class CustomChatMessage @OptIn(BetaOpenAI::class) constructor(
     }
 
     /**
+     *
+     */
+    public fun canFitInTokenLimit(includeGrounding: Boolean = true, tokensAllowed: Int = -1): Boolean {
+        if (tokensAllowed < 0) return true
+        if (getTokenCount(includeGrounding, tokensAllowed) <= tokensAllowed) return true
+        return false
+    }
+
+    /**
      * Create `ChatMessage` instance to add to completion request
      */
     @OptIn(BetaOpenAI::class)
-    public fun getChatMessage (includeGrounding: Boolean = true) : ChatMessage {
+    public fun getChatMessage (includeGrounding: Boolean = true, tokensAllowed: Int = -1) : ChatMessage {
         var content = userContent
         if (includeGrounding) {
-            content += grounding
+            content += if (tokensAllowed < 0) {
+                grounding
+            } else {
+                // only include as much of the grounding as will fit
+                // TODO: preserve leading and trailing grounding instructions
+                Tokenizer.trimToTokenLimit(grounding, tokensAllowed)
+            }
         }
         return ChatMessage(role = role, content = content, name = name, functionCall = functionCall)
     }

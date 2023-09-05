@@ -51,14 +51,14 @@ class SlidingWindow {
                     Log.v("LLM-SW", "-- message (${m.role.role}) ${m.summary()}")
                     Log.v("LLM-SW", "        contains tokens: ${m.getTokenCount(includeGrounding)}")
                     val tokensRemaining = tokenMax - tokensUsed
-                    if ((tokensUsed + m.getTokenCount(includeGrounding)) < tokenMax) {
-                        messagesInWindow.add(message.getChatMessage(includeGrounding))
-                        tokensUsed += m.getTokenCount(includeGrounding)
+                    if (m.canFitInTokenLimit(includeGrounding, tokensRemaining)) {
+                        messagesInWindow.add(message.getChatMessage(includeGrounding, tokensRemaining))
+                        tokensUsed += m.getTokenCount(includeGrounding, tokensRemaining)
 
                         if (message.role == ChatRole.User) {
                             Log.v("LLM-SW", "        added (grounding:$includeGrounding). Still available: ${tokenMax - tokensUsed}")
-                            // only User messages will have grounding prepended
-                            includeGrounding = false // stop subsequent user messages from including grounding
+                            // stop subsequent user messages from including grounding
+                            includeGrounding = false
                         } else {
                             Log.v("LLM-SW", "        added. Still available: ${tokenMax - tokensUsed}")
                         }
