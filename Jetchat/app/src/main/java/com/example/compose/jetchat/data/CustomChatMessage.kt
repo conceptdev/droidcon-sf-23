@@ -43,9 +43,9 @@ class CustomChatMessage @OptIn(BetaOpenAI::class) constructor(
         var messageContent = userContent ?: ""
         if (includeGrounding) {
             messageContent = if (tokensAllowed < 0) {
-                grounding + userContent ?: ""
+                grounding + messageContent
             } else { // only include as much of the grounding as will fit
-                Tokenizer.trimToTokenLimit(grounding, tokensAllowed) + userContent ?: ""
+                Tokenizer.trimToTokenLimit(grounding, tokensAllowed) + messageContent
             }
         }
 
