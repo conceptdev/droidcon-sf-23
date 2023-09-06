@@ -31,7 +31,7 @@ class Tokenizer {
          */
         fun trimToTokenLimit (text: String?, tokenLimit: Int): String? {
             // TODO: limit by tokens instead of the rough character approximation
-            val charLimit = tokenLimit * 4
+            val charLimit = (tokenLimit * 3.5).toInt() // extra cautious
             val length = text?.length
             return if (length != null && length <= charLimit) {
                 text

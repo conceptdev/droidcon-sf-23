@@ -72,12 +72,14 @@ class CustomChatMessage @OptIn(BetaOpenAI::class) constructor(
     fun getChatMessage (includeGrounding: Boolean = true, tokensAllowed: Int = -1) : ChatMessage {
         var content = userContent
         if (includeGrounding) {
-            content += if (tokensAllowed < 0) {
-                grounding
+            content = if (tokensAllowed < 0) {
+                grounding + userContent
             } else {
                 // only include as much of the grounding as will fit
+                // allow for user query length in max allowed
+                val maxTokens = tokensAllowed - Tokenizer.countTokensIn(userContent)
                 // TODO: preserve leading and trailing grounding instructions
-                Tokenizer.trimToTokenLimit(grounding, tokensAllowed)
+                Tokenizer.trimToTokenLimit(grounding, maxTokens) + "\n\n" + userContent
             }
         }
         return ChatMessage(role = role, content = content, name = name, functionCall = functionCall)

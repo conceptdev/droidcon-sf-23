@@ -46,10 +46,11 @@ class SlidingWindow {
             // loop through other messages
             for (m in conversation.reversed()) {
                 if (m.role != ChatRole.System) {
+                    val tokensRemaining = tokenMax - tokensUsed
 
                     Log.v("LLM-SW", "-- message (${m.role.role}) ${m.summary()}")
-                    Log.v("LLM-SW", "        contains tokens: ${m.getTokenCount(includeGrounding)}")
-                    val tokensRemaining = tokenMax - tokensUsed
+                    Log.v("LLM-SW", "        contains tokens: ${m.getTokenCount(includeGrounding, tokensRemaining)}")
+
                     if (m.canFitInTokenLimit(includeGrounding, tokensRemaining)) {
                         messagesInWindow.add(m.getChatMessage(includeGrounding, tokensRemaining))
                         tokensUsed += m.getTokenCount(includeGrounding, tokensRemaining)
