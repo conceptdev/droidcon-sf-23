@@ -62,8 +62,7 @@ class CustomChatMessage @OptIn(BetaOpenAI::class) constructor(
      */
     public fun canFitInTokenLimit(includeGrounding: Boolean = true, tokensAllowed: Int = -1): Boolean {
         if (tokensAllowed < 0) return true
-        if (getTokenCount(includeGrounding, tokensAllowed) <= tokensAllowed) return true
-        return false
+        return getTokenCount(includeGrounding, tokensAllowed) <= tokensAllowed
     }
 
     /**
