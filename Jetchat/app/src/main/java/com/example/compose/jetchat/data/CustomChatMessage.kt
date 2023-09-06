@@ -11,14 +11,14 @@ import com.aallam.openai.api.chat.FunctionCall
  * user query for embedding-supported (RAG) requests
  */
 class CustomChatMessage @OptIn(BetaOpenAI::class) constructor(
-    public val role: ChatRole,
-    public val grounding: String? = null,
-    public val userContent: String? = null,
-    public val name: String? = null,
-    public val functionCall: FunctionCall? = null
+    val role: ChatRole,
+    val grounding: String? = null,
+    val userContent: String? = null,
+    val name: String? = null,
+    val functionCall: FunctionCall? = null
     ) {
 
-    public fun summary(): String? {
+    fun summary(): String? {
         return if (userContent.isNullOrEmpty()) {
             var func = functionCall?.name + " " + functionCall?.arguments
             func.replace('\n',' ')
@@ -39,7 +39,7 @@ class CustomChatMessage @OptIn(BetaOpenAI::class) constructor(
      * chat query, but in practice that seems unlikely (and should probably
      * be a validation error on the UI)
      */
-    public fun getTokenCount(includeGrounding: Boolean = true, tokensAllowed: Int = -1) : Int {
+    fun getTokenCount(includeGrounding: Boolean = true, tokensAllowed: Int = -1) : Int {
         var messageContent = userContent ?: ""
         if (includeGrounding) {
             messageContent = if (tokensAllowed < 0) {
@@ -58,9 +58,9 @@ class CustomChatMessage @OptIn(BetaOpenAI::class) constructor(
     }
 
     /**
-     *
+     * Whether this message can fit within the token limit specified
      */
-    public fun canFitInTokenLimit(includeGrounding: Boolean = true, tokensAllowed: Int = -1): Boolean {
+    fun canFitInTokenLimit(includeGrounding: Boolean = true, tokensAllowed: Int = -1): Boolean {
         if (tokensAllowed < 0) return true
         return getTokenCount(includeGrounding, tokensAllowed) <= tokensAllowed
     }
@@ -69,7 +69,7 @@ class CustomChatMessage @OptIn(BetaOpenAI::class) constructor(
      * Create `ChatMessage` instance to add to completion request
      */
     @OptIn(BetaOpenAI::class)
-    public fun getChatMessage (includeGrounding: Boolean = true, tokensAllowed: Int = -1) : ChatMessage {
+    fun getChatMessage (includeGrounding: Boolean = true, tokensAllowed: Int = -1) : ChatMessage {
         var content = userContent
         if (includeGrounding) {
             content += if (tokensAllowed < 0) {
