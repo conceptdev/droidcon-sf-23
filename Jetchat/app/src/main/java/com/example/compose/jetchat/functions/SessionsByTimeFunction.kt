@@ -19,7 +19,7 @@ class SessionsByTimeFunction {
             return "sessionsByTime"
         }
         fun description(): String {
-            return "Given a date and specific time or time range, return the sessions that start on that date, during that time."
+            return "ONLY WHEN a date and time is specified, return the sessions that start on that date, during that time."
         }
         fun params(): Parameters {
             val params = Parameters.buildJsonObject {
@@ -31,7 +31,7 @@ class SessionsByTimeFunction {
                     }
                     putJsonObject("earliestTime") {
                         put("type", "string")
-                        put("description", "The earliest time that the conference sessions might start, eg. 09:00. Defaults to the current time.")
+                        put("description", "The earliest time that the conference sessions might start, eg. 09:00.")
                     }
                     putJsonObject("latestTime") {
                         put("type", "string")
@@ -40,6 +40,7 @@ class SessionsByTimeFunction {
                 }
                 putJsonArray("required") {
                     add("date")
+                    add("earliestTime")
                 }
             }
             return params

@@ -22,5 +22,22 @@ class Tokenizer {
 
             return tokens
         }
+
+        /**
+         * Trim the input text to be under the number of tokens specified
+         *
+         * @return substring of the text that's no longer than the
+         * specified number of tokens
+         */
+        fun trimToTokenLimit (text: String?, tokenLimit: Int): String? {
+            // TODO: limit by tokens instead of the rough character approximation
+            val charLimit = (tokenLimit * 3.5).toInt() // extra cautious
+            val length = text?.length
+            return if (length != null && length <= charLimit) {
+                text
+            } else {
+                text?.substring(0, charLimit)
+            }
+        }
     }
 }

@@ -11,9 +11,12 @@ class SlidingWindow {
         /**
          * Takes the conversation history and trims older ChatMessage
          * objects (except for System messasge) from the start
+         *
+         * Only includes the most recent embedding, omits the additional
+         * grounding information from older messages
          */
         @OptIn(BetaOpenAI::class)
-        fun chatHistoryToWindow (conversation: MutableList<ChatMessage>): MutableList<ChatMessage> {
+        fun chatHistoryToWindow (conversation: MutableList<CustomChatMessage>): MutableList<ChatMessage> {
             Log.v("LLM-SW", "-- chatHistoryToWindow() max tokens ${Constants.OPENAI_MAX_TOKENS}")
             // set parameters for sliding window
             val tokenLimit = Constants.OPENAI_MAX_TOKENS
@@ -24,6 +27,7 @@ class SlidingWindow {
             Log.v("LLM-SW", "-- tokens reserved for response $expectedResponseSizeTokens and functions $reservedForFunctionsTokens")
             var tokensUsed = 0
             var systemMessage: ChatMessage? = null
+            var includeGrounding = true
 
             /** maximum tokens for chat, after hardcoded functions and allowing for a given response size */
             val tokenMax = tokenLimit - expectedResponseSizeTokens - reservedForFunctionsTokens
@@ -33,23 +37,31 @@ class SlidingWindow {
 
             // check for system message
             if (conversation[0].role == ChatRole.System) {
-                systemMessage = conversation[0]
+                systemMessage = conversation[0].getChatMessage()
                 var systemMessageTokenCount = Tokenizer.countTokensIn(systemMessage.content)
                 tokensUsed += systemMessageTokenCount
                 Log.v("LLM-SW", "-- tokens used by system message: $tokensUsed")
             }
 
             // loop through other messages
-            for (message in conversation.reversed()) {
-                if (message.role != ChatRole.System) {
-                    var m = CustomChatMessage(message.role, "", message.content, message.name, message.functionCall)
+            for (m in conversation.reversed()) {
+                if (m.role != ChatRole.System) {
+                    val tokensRemaining = tokenMax - tokensUsed
 
                     Log.v("LLM-SW", "-- message (${m.role.role}) ${m.summary()}")
-                    Log.v("LLM-SW", "        contains tokens: ${m.getTokenCount()}")
-                    if ((tokensUsed + m.getTokenCount()) < tokenMax) {
-                        messagesInWindow.add(message)
-                        tokensUsed += m.getTokenCount()
-                        Log.v("LLM-SW", "        added. Still available: ${tokenMax - tokensUsed}")
+                    Log.v("LLM-SW", "        contains tokens: ${m.getTokenCount(includeGrounding, tokensRemaining)}")
+
+                    if (m.canFitInTokenLimit(includeGrounding, tokensRemaining)) {
+                        messagesInWindow.add(m.getChatMessage(includeGrounding, tokensRemaining))
+                        tokensUsed += m.getTokenCount(includeGrounding, tokensRemaining)
+
+                        if (m.role == ChatRole.User) {
+                            Log.v("LLM-SW", "        added (grounding:$includeGrounding). Still available: ${tokenMax - tokensUsed}")
+                            // stop subsequent user messages from including grounding
+                            includeGrounding = false
+                        } else {
+                            Log.v("LLM-SW", "        added. Still available: ${tokenMax - tokensUsed}")
+                        }
                     } else {
                         Log.v("LLM-SW", "        NOT ADDED. Still available: ${tokenMax - tokensUsed} (inc response quota ${expectedResponseSizeTokens}) ")
                         break // could optionally keep adding subsequent, smaller messages to context up until token limit
