@@ -169,7 +169,7 @@ Location: Fisher West"""
                 Log.v("LLM-SW", "History added as system message")
             }
             else
-            {
+            {   // check `history` NOT `historyContext` which has the prompt text
                 if (history.isNullOrEmpty()) {
                     messagesInWindow.add(systemMessage)
                 } else {
