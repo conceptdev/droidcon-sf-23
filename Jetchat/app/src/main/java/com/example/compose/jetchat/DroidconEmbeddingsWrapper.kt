@@ -98,34 +98,34 @@ class DroidconEmbeddingsWrapper(val context: Context?) {
             model = ModelId(Constants.OPENAI_CHAT_MODEL)
             messages = chatWindowMessages //  previously sent the entire conversation
             // hardcoding functions every time (for now)
-//            functions {
-//                function {
-//                    name = SessionsByTimeFunction.name()
-//                    description = SessionsByTimeFunction.description()
-//                    parameters = SessionsByTimeFunction.params()
-//                }
-//                function {
-//                    name = AddFavoriteFunction.name()
-//                    description = AddFavoriteFunction.description()
-//                    parameters = AddFavoriteFunction.params()
-//                }
-//                function {
-//                    name = RemoveFavoriteFunction.name()
-//                    description = RemoveFavoriteFunction.description()
-//                    parameters = RemoveFavoriteFunction.params()
-//                }
-//                function {
-//                    name = ListFavoritesFunction.name()
-//                    description = ListFavoritesFunction.description()
-//                    parameters = ListFavoritesFunction.params()
-//                }
-//                function {
-//                    name = AskDatabaseFunction.name()
-//                    description = AskDatabaseFunction.description()
-//                    parameters = AskDatabaseFunction.params(dbHelper)
-//                }
-//            }
-//            functionCall = FunctionMode.Auto
+            functions {
+                function {
+                    name = SessionsByTimeFunction.name()
+                    description = SessionsByTimeFunction.description()
+                    parameters = SessionsByTimeFunction.params()
+                }
+                function {
+                    name = AddFavoriteFunction.name()
+                    description = AddFavoriteFunction.description()
+                    parameters = AddFavoriteFunction.params()
+                }
+                function {
+                    name = RemoveFavoriteFunction.name()
+                    description = RemoveFavoriteFunction.description()
+                    parameters = RemoveFavoriteFunction.params()
+                }
+                function {
+                    name = ListFavoritesFunction.name()
+                    description = ListFavoritesFunction.description()
+                    parameters = ListFavoritesFunction.params()
+                }
+                function {
+                    name = AskDatabaseFunction.name()
+                    description = AskDatabaseFunction.description()
+                    parameters = AskDatabaseFunction.params(dbHelper)
+                }
+            }
+            functionCall = FunctionMode.Auto
         }
         val completion: ChatCompletion = openAI.chatCompletion(chatCompletionRequest)
         val completionMessage = completion.choices.first().message ?: error("no response found!")
