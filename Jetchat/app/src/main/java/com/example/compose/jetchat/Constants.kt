@@ -6,6 +6,9 @@ internal object Constants {
     /** Chat model: "gpt-4-32k" or "gpt-3.5-turbo-16k" */
     internal const val OPENAI_CHAT_MODEL = "gpt-3.5-turbo" // 4096 tokens for Sliding Window testing
 
+    /** Completion model: text-davinci-003 */
+    internal const val OPENAI_COMPLETION_MODEL = "text-davinci-003"
+
     /** Maximum token limit for model: 4,096 for "gpt-3.5-turbo"
      * (used in Sliding Window calculations) */
     internal const val OPENAI_MAX_TOKENS = 4096
