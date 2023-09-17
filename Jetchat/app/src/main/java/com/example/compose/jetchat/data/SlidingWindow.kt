@@ -14,16 +14,19 @@ class SlidingWindow {
          *
          * Only includes the most recent embedding, omits the additional
          * grounding information from older messages
+         *
+         * @param conversation entire conversation as `CustomChatMessage` objects (which have grounding and token counting helpers)
+         * @param reservedForFunctionsTokens manually calculated token count for the function definitions
+         *
+         * @return subset of the conversation as a `MutableList` of `ChatMessage` that can be passed to OpenAI
          */
         @OptIn(BetaOpenAI::class)
-        suspend fun chatHistoryToWindow (conversation: MutableList<CustomChatMessage>): MutableList<ChatMessage> {
+        suspend fun chatHistoryToWindow (conversation: MutableList<CustomChatMessage>, reservedForFunctionsTokens: Int = 0): MutableList<ChatMessage> {
             Log.v("LLM-SW", "-- chatHistoryToWindow() max tokens ${Constants.OPENAI_MAX_TOKENS}")
             // set parameters for sliding window
             val tokenLimit = Constants.OPENAI_MAX_TOKENS
             /** save room for response */
             val expectedResponseSizeTokens = 500
-            /** reserved for function definitions (manually calculated) */
-            val reservedForFunctionsTokens = 200
             Log.v("LLM-SW", "-- tokens reserved for response $expectedResponseSizeTokens and functions $reservedForFunctionsTokens")
             var tokensUsed = 0
             var systemMessage: ChatMessage? = null
@@ -57,8 +60,6 @@ class SlidingWindow {
                     Log.v("LLM-SW", "-- message (${m.role.role}) ${m.summary()}")
                     Log.v("LLM-SW", "        contains tokens: ${m.getTokenCount(includeGrounding, tokensRemaining)}")
 
-
-
                     if (addToWindow && m.canFitInTokenLimit(includeGrounding, tokensRemaining)) {
                         messagesInWindow.add(m.getChatMessage(includeGrounding, tokensRemaining))
                         tokensUsed += m.getTokenCount(includeGrounding, tokensRemaining)
@@ -88,10 +89,9 @@ class SlidingWindow {
                 
                 Only use this information if requested.""".trimIndent()
             // We can add the history in a few places:
-            // 1. system message
+            // 1. system message (implemented below)
             // 2. first message 'grounding'
             // 3. last message 'grounding'
-
 
             // set system message
             if (systemMessage == null) {
