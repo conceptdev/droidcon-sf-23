@@ -222,7 +222,7 @@ class DroidconEmbeddingsWrapper(val context: Context?) {
 
                 // sliding window - with the function call messages,
                 // we might need to remove more from the history
-                val functionChatWindowMessages = SlidingWindow.chatHistoryToWindow(conversation)
+                val functionChatWindowMessages = SlidingWindow.chatHistoryToWindow(conversation, 200)
 
                 // send the function request/response back to the model
                 val functionCompletionRequest = chatCompletionRequest {
