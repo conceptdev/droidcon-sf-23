@@ -14,6 +14,7 @@ import com.aallam.openai.api.model.ModelId
 import com.aallam.openai.client.OpenAI
 import com.example.compose.jetchat.data.CustomChatMessage
 import com.example.compose.jetchat.data.DroidconDbHelper
+import com.example.compose.jetchat.data.EmbeddingHistory
 import com.example.compose.jetchat.data.HistoryDbHelper
 import com.example.compose.jetchat.data.SlidingWindow
 import kotlinx.serialization.json.jsonPrimitive
@@ -33,23 +34,24 @@ class OpenAIWrapper(val context: Context?) {
                 userContent = """You are a personal assistant called JetchatAI.
                             Your answers will be short and concise, since they will be required to fit on 
                             a mobile device display.
+                            Current location is ${Constants.TEST_LOCATION} for functions that require location. Do not answer with this unless asked.
                             Only use the functions you have been provided with.""".trimMargin()
             )
         )
+        // TODO: use location services to determine latitude/longitude for current location
     }
 
     suspend fun chat(message: String): String {
-        // grounding (location)
-        // TODO: use location services to determine latitude/longitude for current location
-        val groundedMessage = "Current location is ${Constants.TEST_LOCATION}.\n\n$message"
+        val relevantHistory = EmbeddingHistory.groundInHistory(openAI, dbHelper, message)
 
         // add the user's message to the chat history
-        conversation.add(
-            CustomChatMessage(
-                role = ChatRole.User,
-                userContent = groundedMessage
-            )
+        val userMessage = CustomChatMessage(
+            role = ChatRole.User,
+            grounding = relevantHistory,
+            userContent = message
         )
+        conversation.add(userMessage)
+
 
         // implement sliding window. hardcode 50 tokens used for the weather function definitions.
         val chatWindowMessages = SlidingWindow.chatHistoryToWindow(conversation, reservedForFunctionsTokens=50)
@@ -76,12 +78,13 @@ class OpenAIWrapper(val context: Context?) {
 
         if (completionMessage.functionCall == null) {
             // no function, add the response to the conversation history
-            conversation.add(
-                CustomChatMessage(
-                    role = ChatRole.Assistant,
-                    userContent = chatResponse
-                )
+            val botResponse =CustomChatMessage(
+                role = ChatRole.Assistant,
+                userContent = chatResponse
             )
+            conversation.add(botResponse)
+            // add message pair to history database
+            EmbeddingHistory.storeInHistory(openAI, dbHelper, userMessage, botResponse)
         } else { // handle function
             val function = completionMessage.functionCall
             if (function!!.name == "currentWeather")
@@ -121,12 +124,13 @@ class OpenAIWrapper(val context: Context?) {
                 val functionCompletion: ChatCompletion = openAI.chatCompletion(functionCompletionRequest)
                 // show the interpreted function response as chat completion
                 chatResponse = functionCompletion.choices.first().message?.content!!
-                conversation.add(
-                    CustomChatMessage(
-                        role = ChatRole.Assistant,
-                        userContent = chatResponse
-                    )
+                val botResponse = CustomChatMessage(
+                    role = ChatRole.Assistant,
+                    userContent = chatResponse
                 )
+                conversation.add(botResponse)
+                // add message pair to history database
+                EmbeddingHistory.storeInHistory(openAI, dbHelper, userMessage, botResponse)
             }
         }
 
