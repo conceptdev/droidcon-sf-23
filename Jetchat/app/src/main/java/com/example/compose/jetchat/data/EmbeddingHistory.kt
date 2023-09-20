@@ -2,7 +2,6 @@ package com.example.compose.jetchat.data
 
 import android.content.ContentValues
 import android.util.Log
-import androidx.compose.runtime.Composable
 import com.aallam.openai.api.embedding.EmbeddingRequest
 import com.aallam.openai.api.model.ModelId
 import com.aallam.openai.client.OpenAI
@@ -10,11 +9,20 @@ import com.example.compose.jetchat.Constants
 import com.example.compose.jetchat.dot
 import java.util.SortedMap
 
+/**
+ * Store and retrieve messages from the conversation
+ * calculating an embedding vector when they're saved
+ * for later retrieval
+ */
 class EmbeddingHistory {
     companion object {
         /** key'd map of vector to message chunk */
         private var historyCache: MutableMap<DoubleArray, String> = mutableMapOf()
 
+        /**
+         * Calculate an embedding vector for this message pair (user query+assistant reply)
+         * and save it to database/memory cache
+         */
         suspend fun storeInHistory (openAI: OpenAI, dbHelper: HistoryDbHelper, user: CustomChatMessage, bot: CustomChatMessage) {
 
             val contentToEmbed = user.userContent + " " + bot.userContent
@@ -39,7 +47,7 @@ class EmbeddingHistory {
             }
 
             // Create a new map of values, where column names are the keys
-            val values = ContentValues().apply {
+            val values = ContentValues(2).apply {
                 put(HistoryContract.EmbeddingEntry.COLUMN_NAME_MESSAGE, contentToEmbed)
                 put(HistoryContract.EmbeddingEntry.COLUMN_NAME_VECTOR, vectorString)
             }
@@ -50,7 +58,6 @@ class EmbeddingHistory {
             // Insert the new row, returning the primary key value of the row (would be -1 if error)
             val newRowId =
                 db?.insert(HistoryContract.EmbeddingEntry.TABLE_NAME, null, values)
-
             // add to in-memory version
             historyCache[vector] = contentToEmbed
             Log.v("LLM-EH", "insert into database ($newRowId) $contentToEmbed vector: $vector")
