@@ -32,13 +32,6 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.SortedMap
 
-/** dot product for comparing vector similarity */
-infix fun DoubleArray.dot(other: DoubleArray): Double {
-    var out = 0.0
-    for (i in indices) out += this[i] * other[i]
-    return out
-}
-
 /** THIS IS A COPY OF OpenAIWrapper
  *
  * Adds embeddings to allow grounding in droidcon SF 2023 conference data
@@ -90,8 +83,8 @@ class DroidconEmbeddingsWrapper(val context: Context?) {
             )
         )
 
-        // implement sliding window
-        val chatWindowMessages = SlidingWindow.chatHistoryToWindow(conversation)
+        // implement sliding window. hardcode 200 tokens used for functions definitions.
+        val chatWindowMessages = SlidingWindow.chatHistoryToWindow(conversation, reservedForFunctionsTokens=200)
 
         // build the OpenAI network request
         val chatCompletionRequest = chatCompletionRequest {
@@ -229,7 +222,7 @@ class DroidconEmbeddingsWrapper(val context: Context?) {
 
                 // sliding window - with the function call messages,
                 // we might need to remove more from the history
-                val functionChatWindowMessages = SlidingWindow.chatHistoryToWindow(conversation)
+                val functionChatWindowMessages = SlidingWindow.chatHistoryToWindow(conversation, 200)
 
                 // send the function request/response back to the model
                 val functionCompletionRequest = chatCompletionRequest {

@@ -20,6 +20,8 @@ class SummarizeHistory {
          * conversation history into a topic-dense string
          */
         suspend fun summarize(history: String): String {
+            if (history.isNullOrEmpty()) return ""
+
             val summarizePrompt = """Extract all the session names from this discussion:
                 |#####
                 |$history

@@ -1,5 +1,6 @@
 package com.example.compose.jetchat
 
+import android.content.Context
 import com.aallam.openai.api.BetaOpenAI
 import com.aallam.openai.api.chat.ChatCompletion
 import com.aallam.openai.api.chat.ChatCompletionRequest
@@ -11,44 +12,54 @@ import com.aallam.openai.api.image.ImageCreation
 import com.aallam.openai.api.image.ImageURL
 import com.aallam.openai.api.model.ModelId
 import com.aallam.openai.client.OpenAI
+import com.example.compose.jetchat.data.CustomChatMessage
+import com.example.compose.jetchat.data.DroidconDbHelper
+import com.example.compose.jetchat.data.EmbeddingHistory
+import com.example.compose.jetchat.data.HistoryDbHelper
+import com.example.compose.jetchat.data.SlidingWindow
 import kotlinx.serialization.json.jsonPrimitive
 
 /** Uses OpenAI Kotlin lib to call chat model */
 @OptIn(BetaOpenAI::class)
-class OpenAIWrapper {
+class OpenAIWrapper(val context: Context?) {
     private val openAIToken: String = Constants.OPENAI_TOKEN
-    private var conversation: MutableList<ChatMessage>
+    private var conversation: MutableList<CustomChatMessage>
     private var openAI: OpenAI = OpenAI(openAIToken)
+    private val dbHelper = HistoryDbHelper(context)
 
     init {
         conversation = mutableListOf(
-            ChatMessage(
+            CustomChatMessage(
                 role = ChatRole.System,
-                content = """You are a personal assistant called JetchatAI.
+                userContent = """You are a personal assistant called JetchatAI.
                             Your answers will be short and concise, since they will be required to fit on 
                             a mobile device display.
+                            Current location is ${Constants.TEST_LOCATION} for functions that require location. Do not answer with this unless asked.
                             Only use the functions you have been provided with.""".trimMargin()
             )
         )
+        // TODO: use location services to determine latitude/longitude for current location
     }
 
     suspend fun chat(message: String): String {
-        // grounding (location)
-        // TODO: use location services to determine latitude/longitude for current location
-        val groundedMessage = "Current location is ${Constants.TEST_LOCATION}.\n\n$message"
+        val relevantHistory = EmbeddingHistory.groundInHistory(openAI, dbHelper, message)
 
         // add the user's message to the chat history
-        conversation.add(
-            ChatMessage(
-                role = ChatRole.User,
-                content = groundedMessage
-            )
+        val userMessage = CustomChatMessage(
+            role = ChatRole.User,
+            grounding = relevantHistory,
+            userContent = message
         )
+        conversation.add(userMessage)
+
+
+        // implement sliding window. hardcode 50 tokens used for the weather function definitions.
+        val chatWindowMessages = SlidingWindow.chatHistoryToWindow(conversation, reservedForFunctionsTokens=50)
 
         // build the OpenAI network request
         val chatCompletionRequest = chatCompletionRequest {
             model = ModelId(Constants.OPENAI_CHAT_MODEL)
-            messages = conversation
+            messages = chatWindowMessages
             // hardcoding weather function every time (for now)
             functions {
                 function {
@@ -67,12 +78,13 @@ class OpenAIWrapper {
 
         if (completionMessage.functionCall == null) {
             // no function, add the response to the conversation history
-            conversation.add(
-                ChatMessage(
-                    role = ChatRole.Assistant,
-                    content = chatResponse
-                )
+            val botResponse =CustomChatMessage(
+                role = ChatRole.Assistant,
+                userContent = chatResponse
             )
+            conversation.add(botResponse)
+            // add message pair to history database
+            EmbeddingHistory.storeInHistory(openAI, dbHelper, userMessage, botResponse)
         } else { // handle function
             val function = completionMessage.functionCall
             if (function!!.name == "currentWeather")
@@ -86,33 +98,39 @@ class OpenAIWrapper {
 
                 // add the 'call a function' response to the history
                 conversation.add(
-                    ChatMessage(
+                    CustomChatMessage(
                         role = completionMessage.role,
-                        content = completionMessage.content ?: "", // required to not be empty in this case
+                        userContent = completionMessage.content ?: "", // required to not be empty in this case
                         functionCall = completionMessage.functionCall
                     )
                 )
                 // add the response to the 'function' call to the history
                 conversation.add(
-                    ChatMessage(
+                    CustomChatMessage(
                         role = ChatRole.Function,
                         name = function.name,
-                        content = functionResponse
+                        userContent = functionResponse
                     )
                 )
+
+                // sliding window - with the function call messages,
+                // we might need to remove more from the history
+                val functionChatWindowMessages = SlidingWindow.chatHistoryToWindow(conversation, 50)
+
                 // send the function request/response back to the model
                 val functionCompletionRequest = chatCompletionRequest {
                     model = ModelId(Constants.OPENAI_CHAT_MODEL)
-                    messages = conversation }
+                    messages = functionChatWindowMessages }
                 val functionCompletion: ChatCompletion = openAI.chatCompletion(functionCompletionRequest)
                 // show the interpreted function response as chat completion
                 chatResponse = functionCompletion.choices.first().message?.content!!
-                conversation.add(
-                    ChatMessage(
-                        role = ChatRole.Assistant,
-                        content = chatResponse
-                    )
+                val botResponse = CustomChatMessage(
+                    role = ChatRole.Assistant,
+                    userContent = chatResponse
                 )
+                conversation.add(botResponse)
+                // add message pair to history database
+                EmbeddingHistory.storeInHistory(openAI, dbHelper, userMessage, botResponse)
             }
         }
 

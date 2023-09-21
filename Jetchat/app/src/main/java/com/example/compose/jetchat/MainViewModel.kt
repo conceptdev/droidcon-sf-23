@@ -64,10 +64,13 @@ class MainViewModel : ViewModel() {
     /** Cache the context for passing to objects wanting
      * to instantiate database helper classes */
     private lateinit var context: Context
-    /** Set `context` on the DroidconEmbeddingsWrapper for Sqlite database helper */
+    /** Set `context` for Sqlite database helper on
+     * OpenAI and Droidcon wrappers
+     */
     fun setContext (ctx: Context){
         context = ctx
         droidconWrapper = DroidconEmbeddingsWrapper(context)
+        openAIWrapper = OpenAIWrapper(context)
     }
 
     fun openDrawer() {
@@ -116,7 +119,7 @@ class MainViewModel : ViewModel() {
                 Channel.DROIDCON -> droidconUiState
             }
         }
-    private var openAIWrapper = OpenAIWrapper()
+    private var openAIWrapper = OpenAIWrapper(null)
     private var palmWrapper = PalmWrapper()
     /** Requires a `context` for database operations. Set post-init with `setContext` function call */
     private var droidconWrapper = DroidconEmbeddingsWrapper(null) // no context available for database functions in DroidconEmbeddingsWrapper, added later by `setContext` function
