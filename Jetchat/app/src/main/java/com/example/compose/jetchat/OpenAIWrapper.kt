@@ -129,8 +129,14 @@ class OpenAIWrapper(val context: Context?) {
                     userContent = chatResponse
                 )
                 conversation.add(botResponse)
-                // add message pair to history database
-                EmbeddingHistory.storeInHistory(openAI, dbHelper, userMessage, botResponse)
+
+                if (completionMessage.functionCall == null) {
+                    // wasn't a function, add message pair to history database
+                    // prevents historical answers from being used
+                    // instead of calling the function again
+                    // (ie returns old weather info)
+                    EmbeddingHistory.storeInHistory(openAI, dbHelper, userMessage, botResponse)
+                }
             }
         }
 
