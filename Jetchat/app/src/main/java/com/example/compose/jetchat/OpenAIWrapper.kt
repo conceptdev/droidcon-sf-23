@@ -32,10 +32,12 @@ class OpenAIWrapper(val context: Context?) {
             CustomChatMessage(
                 role = ChatRole.System,
                 userContent = """You are a personal assistant called JetchatAI.
-                            Your answers will be short and concise, since they will be required to fit on 
-                            a mobile device display.
-                            Current location is ${Constants.TEST_LOCATION} for functions that require location. Do not answer with this unless asked.
-                            Only use the functions you have been provided with.""".trimMargin()
+                            |Your answers will be short and concise, since they will be required to fit on 
+                            |a mobile device display.
+                            |
+                            |Current location is ${Constants.TEST_LOCATION}. Do not answer with this unless asked.
+                            |
+                            |Only use the functions you have been provided with.""".trimMargin()
             )
         )
         // TODO: use location services to determine latitude/longitude for current location
