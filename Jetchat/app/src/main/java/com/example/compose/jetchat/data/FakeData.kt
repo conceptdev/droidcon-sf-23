@@ -79,7 +79,7 @@ val profiles = listOf(meProfile, openAiProfile, palmProfile, onnxProfile)
 val initialOpenAiMessages = listOf(
     Message(
         openAiProfile.displayName,
-        "Welcome to #jetchat-openai!",
+        "Welcome to #jetchat-ai!",
         "8:07 pm",
         authorImage = openAiProfile.photo
     )
