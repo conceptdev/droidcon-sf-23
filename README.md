@@ -1,64 +1,34 @@
-# droidcon SF 2023
+# LLM chat demo for Android (using OpenAI)
 
-Android app demos for droidcon San Francisco, 9th June 2023.
+This repo was originally created for a talk at droidcon SF 2023. The [session page](droidcon-sf-23.md) has details of what was presented.
 
-There are four demos:
+The chat demo is based on the [Jetpack Compose _Jetchat_ sample from Google](https://github.com/android/compose-samples/raw/main/Jetchat/).
 
-- [Source Editor](SourceEditor/) - LLM Completion API
-- [JetchatAI](Jetchat/) - LLM Chat API and LLM Embeddings API, plus Function Calling
-- [ONNX Object Detection](ObjectDetection-ONNX/) - local image processing model
-- [ONNX Whisper](Whisper-ONNX/) - local version of OpenAI speech-to-text model
+[![Screenshot showing chat using the favorites functions](images/chat-favorites-250.png)](images/chat-favorites-original.png)
 
-The first two are included in this repo, the second two are linked to their original source.
+You'll need to add various service keys to **Constants.kt** to light everything up:
 
-## Source Editor (OpenAI)
+* jetchat-ai - open chat with weather function. Start message with "image of" to generate a picture.
+* droidcon-chat - guided chat with embeddings and functions based on the droidcon SF conference schedule.
+* There's also a PaLM-based chat channel hiding in there too 😉
 
-Summarization feature with HTML content.
+## History/documentation
 
-- [Completion documentation](https://platform.openai.com/docs/api-reference/completions)
-- [Complation API](https://platform.openai.com/docs/api-reference/completions/create)
-- Blog: [OpenAI API endpoints](https://devblogs.microsoft.com/surface-duo/android-openai-chatgpt-3/)
+The Jetchat-AI demo has been built up over a few months to be a 'first principles' demonstration of incorporating an LLM chat into an Android app using Kotlin. Over time it has grown to include image generation API, function calling, embeddings and RAG pattern, sliding window for token limit, and conversation memory.
 
-## JetchatAI
-
-Chat interface with LLM back-ends for OpenAI and PaLM. Originally blogged as [Jetchat with OpenAI on Android](https://devblogs.microsoft.com/surface-duo/android-openai-chatgpt-5/).
-
-### OpenAI
-
-Add an OpenAI key in **Constants.kt** to use the chat and embeddings endpoints.
-
-- [Introduction](https://platform.openai.com/docs/introduction)
-- [Chat documentation](https://platform.openai.com/docs/guides/chat)
-- [Chat API](https://platform.openai.com/docs/api-reference/chat)
-- [Chat Playground](https://platform.openai.com/playground?mode=chat)
-
-#### OpenAI Chat Functions
-
-Implements the OpenAI [Chat Function Calling](https://platform.openai.com/docs/guides/gpt/function-calling)
-feature using the [Weather.gov](https://www.weather.gov/documentation/services-web-api)
-web service endpoint. Add a unique identifier for the `WEATHER_USER_AGENT` in **Constants.kt**
-according to the requirements on the API information page.
-
-### Google PaLM
-
-Add a PaLM key in **Constants.kt** to use the chat and embeddings endpoints.
-
-- [Overview](https://developers.generativeai.google/guide/palm_api_overview)
-- [Chat quickstart](https://developers.generativeai.google/tutorials/chat_android_quickstart)
-- [REST API](https://developers.generativeai.google/api/rest/generativelanguage)
-- [Chat MakerSuite](https://makersuite.google.com/app/prompts/new_multiturn)
-
-### Blog
-
-Original project blogged at [Jetchat with OpenAI on Android](https://devblogs.microsoft.com/surface-duo/android-openai-chatgpt-5/) on [devblogs.microsoft.com](https://devblogs.microsoft.com/surface-duo/)
-
-### Forked from Jetpack Compose Samples
-
-Original source for the chat app can be found at:
-
-https://github.com/android/compose-samples/
-
-| Project | |
-|:-----|---------|
-|  <img src="https://github.com/android/compose-samples/raw/main/readme/jetchat.png" alt="Jetchat" width="240"></img> <br><br>A sample chat app that focuses on UI state patterns and text input.<br><br>• Low complexity<br>• Material Design 3 theme and Material You dynamic color<br>• Resource loading<br>• Back button handling<br>• Integration with Architecture Components: Navigation, Fragments, LiveData, ViewModel<br>• Animation<br>• UI Testing<br><br>**[> Browse](https://github.com/android/compose-samples/raw/main/Jetchat/)** <br><br> | <img src="https://github.com/android/compose-samples/raw/main/readme/screenshots/Jetchat.png" width="320" alt="Jetchat sample demo">|
-|  |  |
+| Blogpost | Notes |
+|------|-------|
+| [Jetchat with OpenAI on Android](https://devblogs.microsoft.com/surface-duo/android-openai-chatgpt-5/) | Build an OpenAI-powered chat with the _Jetchat_ Jetpack Compose sample using the `chat` and `image` APIs |
+| [JetchatAI improvements: error handling and animations](https://devblogs.microsoft.com/surface-duo/android-openai-chatgpt-6/) | Add error handling and useability tweaks to JetchatAI |
+| [JetchatAI gets smarter with embeddings](https://devblogs.microsoft.com/surface-duo/android-openai-chatgpt-7/) | Generate embeddings for an entire conference so we can chat about the schedule |
+| [OpenAI chat functions on Android](https://devblogs.microsoft.com/surface-duo/android-openai-chatgpt-9-functions/) | Implement the canonical `getWeather` chat function in Kotlin |
+| [Coming OpenAI function calls with embeddings](https://devblogs.microsoft.com/surface-duo/android-openai-chatgpt-10/) | Add date/time grounding and implement functions to return conference info by time |
+| [Chat memory with OpenAI functions](https://devblogs.microsoft.com/surface-duo/android-openai-chatgpt-11/) | Add a Sqlite database to store 'favorite sessions' and implement chat functions to store, delete, and retrieve the favorites list |
+| [Embedding vector caching](https://devblogs.microsoft.com/surface-duo/android-openai-chatgpt-12/) | Store embedding vectors in Sqlite on device |
+| [Dynamic Sqlite queries with OpenAI chat functions](https://devblogs.microsoft.com/surface-duo/android-openai-chatgpt-13/) | Implement the canonical `askDatabase` chat function using a simple conference sessions schema |
+| [Prompt engineering tips](https://devblogs.microsoft.com/surface-duo/android-openai-chatgpt-14/) | Some prompt engineering lessons learned on the JetchatAI project |
+| [OpenAI and token limits](https://devblogs.microsoft.com/surface-duo/android-openai-chatgpt-15/) | Brief discussion on tokens which leads into the next few posts on managing limited context |
+| [Infinite chat using a sliding window](https://devblogs.microsoft.com/surface-duo/android-openai-chatgpt-16/) | Avoid token limit errors with a sliding window on the chat history |
+| [De-duplicating context in the sliding window](https://devblogs.microsoft.com/surface-duo/android-openai-chatgpt-17/) | Make the sliding window a little more efficient by removing duplicate grounding info |
+| ["Infinite" chat with history summarization](https://devblogs.microsoft.com/surface-duo/android-openai-chatgpt-18/) | Squeeze more historical context in by summarizing the oldest messages to fit more in the window |
+| [Infinite chat with history embeddings](https://devblogs.microsoft.com/surface-duo/android-openai-chatgpt-19/) | Create embeddings of the messages to act as conversation memory |
