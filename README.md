@@ -6,7 +6,11 @@ The chat demo is based on the [Jetpack Compose _Jetchat_ sample from Google](htt
 
 [![Screenshot showing chat using the favorites functions](images/chat-favorites-250.png)](images/chat-favorites-original.png)
 
-There's also a PaLM-based chat channel hiding in there too 😉
+You'll need to add various service keys to **Constants.kt** to light everything up:
+
+* jetchat-ai - open chat with weather function. Start message with "image of" to generate a picture.
+* droidcon-chat - guided chat with embeddings and functions based on the droidcon SF conference schedule.
+* There's also a PaLM-based chat channel hiding in there too 😉
 
 ## History/documentation
 
