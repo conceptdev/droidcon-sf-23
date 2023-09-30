@@ -22,7 +22,8 @@ import com.knuddels.jtokkit.api.ModelType
 class Tokenizer {
     companion object {
 
-        var registry: EncodingRegistry = Encodings.newLazyEncodingRegistry()
+        // expensive to create, keep one copy
+        private val registry: EncodingRegistry = Encodings.newLazyEncodingRegistry()
 
         /**
          * Count the number of tokens in the input
@@ -34,14 +35,10 @@ class Tokenizer {
             if (text == null) return 0
 
             // Get encoding via type-safe enum
-            val encoding: Encoding = registry.getEncoding(EncodingType.CL100K_BASE)
-            //val encoding: Encoding = registry.getEncodingForModel(OPENAI_CHAT_TOKENIZER_MODEL)
+            val encoding: Encoding = registry.getEncodingForModel(OPENAI_CHAT_TOKENIZER_MODEL)
             val tokenCount = encoding.countTokens(text)
 
-            var chars = text.length
-            var tokens = chars / 4
-
-            Log.i("LLM-TK", "New: $tokenCount Old: $tokens Text: $text")
+            Log.i("LLM-TK", "tokenCount: $tokenCount for $text")
 
             return tokenCount
         }
@@ -56,22 +53,12 @@ class Tokenizer {
          */
         fun trimToTokenLimit (text: String?, tokenLimit: Int): String? {
             // https://jtokkit.knuddels.de/docs/getting-started/usage
-            val encoding = registry.getEncoding(EncodingType.CL100K_BASE)
-            //val encoding: Encoding = registry.getEncodingForModel(OPENAI_CHAT_TOKENIZER_MODEL)
+            val encoding: Encoding = registry.getEncodingForModel(OPENAI_CHAT_TOKENIZER_MODEL)
             val encoded = encoding.encodeOrdinary(text, tokenLimit)
             if (encoded.isTruncated) {
                 return encoding.decode(encoded.tokens)
             }
             return text // wasn't truncated
-
-            // TODO: limit by tokens instead of the rough character approximation
-            val charLimit = (tokenLimit * 3.5).toInt() // extra cautious
-            val length = text?.length
-            return if (length != null && length <= charLimit) {
-                text
-            } else {
-                text?.substring(0, charLimit)
-            }
         }
     }
 }
