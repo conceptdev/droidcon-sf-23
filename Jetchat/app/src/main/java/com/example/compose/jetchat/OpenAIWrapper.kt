@@ -1,6 +1,7 @@
 package com.example.compose.jetchat
 
 import android.content.Context
+import android.util.Log
 import com.aallam.openai.api.BetaOpenAI
 import com.aallam.openai.api.chat.ChatCompletion
 import com.aallam.openai.api.chat.ChatCompletionRequest
@@ -17,6 +18,8 @@ import com.example.compose.jetchat.data.DroidconDbHelper
 import com.example.compose.jetchat.data.EmbeddingHistory
 import com.example.compose.jetchat.data.HistoryDbHelper
 import com.example.compose.jetchat.data.SlidingWindow
+import com.example.compose.jetchat.functions.AddFavoriteFunction
+import com.example.compose.jetchat.functions.AskWikipediaFunction
 import kotlinx.serialization.json.jsonPrimitive
 
 /** Uses OpenAI Kotlin lib to call chat model */
@@ -69,6 +72,11 @@ class OpenAIWrapper(val context: Context?) {
                     description = "Get the current weather in a given location"
                     parameters = OpenAIFunctions.currentWeatherParams()
                 }
+                function {
+                    name = AskWikipediaFunction.name()
+                    description = AskWikipediaFunction.description()
+                    parameters = AskWikipediaFunction.params()
+                }
             }
             functionCall = FunctionMode.Auto
         }
@@ -88,16 +96,46 @@ class OpenAIWrapper(val context: Context?) {
             // add message pair to history database
             EmbeddingHistory.storeInHistory(openAI, dbHelper, userMessage, botResponse)
         } else { // handle function
-            val function = completionMessage.functionCall
-            if (function!!.name == "currentWeather")
-            {
-                val functionArgs = function.argumentsAsJson() ?: error("arguments field is missing")
-                val functionResponse = OpenAIFunctions.currentWeather(
-                    functionArgs.getValue("latitude").jsonPrimitive.content,
-                    functionArgs.getValue("longitude").jsonPrimitive.content,
-                    functionArgs["unit"]?.jsonPrimitive?.content ?: "fahrenheit"
-                )
 
+            val function = completionMessage.functionCall
+            Log.i("LLM", "Function ${function!!.name} was called")
+
+            var functionResponse = ""
+            var handled = true
+            when (function.name) {
+                "currentWeather" -> {
+                    val functionArgs = function.argumentsAsJson() ?: error("arguments field is missing")
+                    functionResponse = OpenAIFunctions.currentWeather(
+                        functionArgs.getValue("latitude").jsonPrimitive.content,
+                        functionArgs.getValue("longitude").jsonPrimitive.content,
+                        functionArgs["unit"]?.jsonPrimitive?.content ?: "fahrenheit"
+                    )
+                }
+                "askWikipedia" -> {
+                    val functionArgs =
+                        function.argumentsAsJson() ?: error("arguments field is missing")
+                    val query = functionArgs.getValue("query").jsonPrimitive.content
+
+                    Log.i("LLM-WK", "Argument $query ")
+
+                    functionResponse = AskWikipediaFunction.function(query)
+                }
+                else -> {
+                    Log.i("LLM", "Function ${function!!.name} does not exist")
+                    handled = false
+                    chatResponse += " " + function.name + " " + function.arguments
+                    conversation.add(
+                        CustomChatMessage(
+                            role = ChatRole.Assistant,
+                            userContent = chatResponse
+                        )
+                    )
+                }
+            }
+
+
+            if (handled)
+            {
                 // add the 'call a function' response to the history
                 conversation.add(
                     CustomChatMessage(
