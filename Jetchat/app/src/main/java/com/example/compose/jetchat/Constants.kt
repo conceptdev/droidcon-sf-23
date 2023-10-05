@@ -1,10 +1,16 @@
 package com.example.compose.jetchat
 
+import com.knuddels.jtokkit.api.EncodingType
+import com.knuddels.jtokkit.api.ModelType
+
 internal object Constants {
     internal const val OPENAI_TOKEN = "{OPENAI_KEY}"
 
     /** Chat model: "gpt-4-32k" or "gpt-3.5-turbo-16k" */
     internal const val OPENAI_CHAT_MODEL = "gpt-3.5-turbo" // 4096 tokens for Sliding Window testing
+
+    /** Tokenizer model: GPT_4_32K or GPT_3_5_TURBO_16K */
+    internal val OPENAI_CHAT_TOKENIZER_MODEL = ModelType.GPT_3_5_TURBO // to match above
 
     /** Completion model: text-davinci-003 */
     internal const val OPENAI_COMPLETION_MODEL = "text-davinci-003"

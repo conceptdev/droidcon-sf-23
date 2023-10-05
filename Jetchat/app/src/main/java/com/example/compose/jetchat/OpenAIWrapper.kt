@@ -32,10 +32,12 @@ class OpenAIWrapper(val context: Context?) {
             CustomChatMessage(
                 role = ChatRole.System,
                 userContent = """You are a personal assistant called JetchatAI.
-                            Your answers will be short and concise, since they will be required to fit on 
-                            a mobile device display.
-                            Current location is ${Constants.TEST_LOCATION} for functions that require location. Do not answer with this unless asked.
-                            Only use the functions you have been provided with.""".trimMargin()
+                            |Your answers will be short and concise, since they will be required to fit on 
+                            |a mobile device display.
+                            |
+                            |Current location is ${Constants.TEST_LOCATION}. Do not answer with this unless asked.
+                            |
+                            |Only use the functions you have been provided with.""".trimMargin()
             )
         )
         // TODO: use location services to determine latitude/longitude for current location
@@ -129,8 +131,14 @@ class OpenAIWrapper(val context: Context?) {
                     userContent = chatResponse
                 )
                 conversation.add(botResponse)
-                // add message pair to history database
-                EmbeddingHistory.storeInHistory(openAI, dbHelper, userMessage, botResponse)
+
+                if (completionMessage.functionCall == null) {
+                    // wasn't a function, add message pair to history database
+                    // prevents historical answers from being used
+                    // instead of calling the function again
+                    // (ie returns old weather info)
+                    EmbeddingHistory.storeInHistory(openAI, dbHelper, userMessage, botResponse)
+                }
             }
         }
 

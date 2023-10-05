@@ -71,7 +71,7 @@ class CustomChatMessage @OptIn(BetaOpenAI::class) constructor(
     @OptIn(BetaOpenAI::class)
     fun getChatMessage (includeGrounding: Boolean = true, tokensAllowed: Int = -1) : ChatMessage {
         var content = userContent
-        if (includeGrounding) {
+        if (includeGrounding && grounding != null) {
             content = if (tokensAllowed < 0) {
                 grounding + userContent
             } else {

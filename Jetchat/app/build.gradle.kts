@@ -133,4 +133,6 @@ dependencies {
     implementation("com.google.api:gax-grpc:2.25.0")
     implementation("com.google.api:gax-httpjson:0.110.0")
     implementation("io.grpc:grpc-okhttp:1.53.0")
+    // tokenizer
+    implementation("com.knuddels:jtokkit:0.6.1")
 }
