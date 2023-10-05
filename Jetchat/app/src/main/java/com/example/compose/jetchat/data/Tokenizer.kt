@@ -39,7 +39,7 @@ class Tokenizer {
             val encoding: Encoding = registry.getEncodingForModel(OPENAI_CHAT_TOKENIZER_MODEL)
             val tokenCount = encoding.countTokens(text)
 
-            Log.i("LLM-TK", "tokenCount: $tokenCount for $text")
+            // Log.i("LLM-TK", "tokenCount: $tokenCount for $text")
 
             return tokenCount
         }
