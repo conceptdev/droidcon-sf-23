@@ -7,6 +7,7 @@ import com.knuddels.jtokkit.api.Encoding
 import com.knuddels.jtokkit.api.EncodingRegistry
 import com.knuddels.jtokkit.api.EncodingType
 import com.knuddels.jtokkit.api.ModelType
+import org.apache.http.annotation.Obsolete
 
 /**
  * Count tokens so that we can understand how close we are
@@ -59,6 +60,24 @@ class Tokenizer {
                 return encoding.decode(encoded.tokens)
             }
             return text // wasn't truncated
+        }
+
+        /**
+         * Visualize the tokens in the string for debugging
+         * i.e. comparing to the visualizer on
+         * https://platform.openai.com/tokenizer
+         */
+        @Obsolete
+        fun toDebugTokenString (text: String?): String? {
+            if (text == null) return ""
+
+            val encoding: Encoding = registry.getEncodingForModel(OPENAI_CHAT_TOKENIZER_MODEL)
+            val encoded = encoding.encodeOrdinary(text)
+            var debugString = ""
+            for (token in encoded) {
+                debugString += encoding.decode(listOf(token)) + "|"
+            }
+            return debugString
         }
     }
 }
