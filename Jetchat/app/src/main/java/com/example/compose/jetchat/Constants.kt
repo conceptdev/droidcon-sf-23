@@ -4,7 +4,7 @@ import com.knuddels.jtokkit.api.EncodingType
 import com.knuddels.jtokkit.api.ModelType
 
 internal object Constants {
-    internal const val OPENAI_TOKEN = "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"
+    internal const val OPENAI_TOKEN = "{OPENAI_KEY}"
 
     /** Chat model: "gpt-4-32k" or "gpt-3.5-turbo-16k" */
     internal const val OPENAI_CHAT_MODEL = "gpt-3.5-turbo" // 4096 tokens for Sliding Window testing
@@ -34,7 +34,7 @@ internal object Constants {
      * each application submit a unique user-agent to help with tracking and
      * security issues. Try to include a contact email address.
      * NOTE: weather.gov is for US locations only. */
-    internal const val WEATHER_USER_AGENT = "net.conceptdevelopment.jetchat.demo"
+    internal const val WEATHER_USER_AGENT = ""
 
     internal const val PALM_TOKEN = "{PALM_TOKEN}"
 
