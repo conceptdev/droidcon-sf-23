@@ -23,8 +23,12 @@ import kotlinx.serialization.json.put
 import kotlinx.serialization.json.putJsonArray
 import kotlinx.serialization.json.putJsonObject
 
+/** Function that extracts intent from a user-query and searches
+ *  Wikipedia to answer questions with up-to-date information
+ *  beyond the model's training data */
 class AskWikipediaFunction {
     companion object {
+        /** `askWikipedia` */
         fun name(): String {
             return "askWikipedia"
         }
@@ -64,6 +68,9 @@ class AskWikipediaFunction {
                 Log.i("LLM-WK", "Search JSON result: $wikiSearchUrl")
                 val wikiSearchResponse = httpClient.get(wikiSearchUrl) {
                     contentType(ContentType.Application.Json)
+                    headers{
+                        append(HttpHeaders.UserAgent,Constants.WIKIPEDIA_USER_AGENT)
+                    }
                 }
                 if (wikiSearchResponse.status == HttpStatusCode.OK) {
                     val responseText = wikiSearchResponse.bodyAsText()
@@ -88,6 +95,9 @@ class AskWikipediaFunction {
 
                 val wikiTitleResponse = httpClient.get(wikiTitleUrl) {
                     contentType(ContentType.Application.Json)
+                    headers{
+                        append(HttpHeaders.UserAgent,Constants.WIKIPEDIA_USER_AGENT)
+                    }
                 }
                 if (wikiTitleResponse.status == HttpStatusCode.OK) {
                     val responseText = wikiTitleResponse.bodyAsText()
