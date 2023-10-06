@@ -34,7 +34,7 @@ class AskWikipediaFunction {
         }
 
         fun description(): String {
-            return "ONLY call this function if the user requests an answer from Wikipedia. Answer user questions by querying the wikipedia knowledge website."
+            return "Answer user questions by querying the wikipedia knowledge website."
         }
 
         fun params(): Parameters {
@@ -113,6 +113,8 @@ class AskWikipediaFunction {
                     val extract = itemPageElement?.get("extract")?.jsonPrimitive?.content
 
                     wikipediaText = extract ?: ""
+                    if (!wikipediaText.isNullOrEmpty())
+                        wikipediaText += "\n\nIf this information is used in the response, add [sourced from Wikipedia] to the end of the response."
                 }
             } catch (e: Exception) {
                 Log.e("LLM", "Error: ${e.message} in `askWikipedia` function")
