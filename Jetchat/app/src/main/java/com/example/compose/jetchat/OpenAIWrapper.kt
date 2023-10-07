@@ -111,7 +111,7 @@ class OpenAIWrapper(val context: Context?) {
                         functionArgs["unit"]?.jsonPrimitive?.content ?: "fahrenheit"
                     )
                 }
-                "askWikipedia" -> {
+                AskWikipediaFunction.name() -> {
                     val functionArgs =
                         function.argumentsAsJson() ?: error("arguments field is missing")
                     val query = functionArgs.getValue("query").jsonPrimitive.content
