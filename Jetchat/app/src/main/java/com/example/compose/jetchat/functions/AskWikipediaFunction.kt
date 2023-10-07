@@ -34,7 +34,7 @@ class AskWikipediaFunction {
         }
 
         fun description(): String {
-            return "Answer user questions by querying the wikipedia knowledge website."
+            return "Answer user questions by querying the Wikipedia website. Don't call this function if you can answer from your training data."
         }
 
         fun params(): Parameters {
@@ -114,7 +114,7 @@ class AskWikipediaFunction {
 
                     wikipediaText = extract ?: ""
                     if (!wikipediaText.isNullOrEmpty())
-                        wikipediaText += "\n\nIf this information is used in the response, add [sourced from Wikipedia] to the end of the response."
+                        wikipediaText = "\n\nIf the information below is used in the response, add [sourced from Wikipedia] to the end of the response.\n\n#####\n\n$wikipediaText\n\n#####"
                 }
             } catch (e: Exception) {
                 Log.e("LLM", "Error: ${e.message} in `askWikipedia` function")
