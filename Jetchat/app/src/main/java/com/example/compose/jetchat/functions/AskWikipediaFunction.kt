@@ -113,7 +113,7 @@ class AskWikipediaFunction {
                     val extract = itemPageElement?.get("extract")?.jsonPrimitive?.content
 
                     wikipediaText = extract ?: ""
-                    if (!wikipediaText.isNullOrEmpty())
+                    if (wikipediaText.isNotEmpty())
                         wikipediaText = "\n\nIf the information below is used in the response, add [sourced from Wikipedia] to the end of the response.\n\n#####\n\n$wikipediaText\n\n#####"
                 }
             } catch (e: Exception) {
