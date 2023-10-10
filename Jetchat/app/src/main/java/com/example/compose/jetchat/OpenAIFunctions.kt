@@ -32,7 +32,11 @@ import kotlin.random.Random
 */
 /** Helper class for chat-function-related code
  * based on the Kotlin example
- * https://github.com/aallam/openai-kotlin/blob/main/guides/ChatFunctionCall.md */
+ * https://github.com/aallam/openai-kotlin/blob/main/guides/ChatFunctionCall.md
+ *
+ * NOTE: Other functions have been refactored into the /functions/
+ * folder (eg. `AskWikipediaFunction`) but this code is left here to
+ * match the public documentation (blog post) about it. */
 class OpenAIFunctions {
 
     @Serializable

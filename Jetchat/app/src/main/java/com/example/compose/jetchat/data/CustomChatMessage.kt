@@ -41,7 +41,7 @@ class CustomChatMessage @OptIn(BetaOpenAI::class) constructor(
      */
     fun getTokenCount(includeGrounding: Boolean = true, tokensAllowed: Int = -1) : Int {
         var messageContent = userContent ?: ""
-        if (includeGrounding) {
+        if (includeGrounding && grounding != null) {
             messageContent = if (tokensAllowed < 0) {
                 grounding + messageContent
             } else { // only include as much of the grounding as will fit
@@ -50,7 +50,7 @@ class CustomChatMessage @OptIn(BetaOpenAI::class) constructor(
         }
 
         if (userContent.isNullOrEmpty()) {
-            messageContent = "" + functionCall?.name + functionCall?.arguments
+            messageContent = "" + functionCall?.name ?: "" + functionCall?.arguments ?: ""
         }
         var messageTokens = Tokenizer.countTokensIn(messageContent)
 
