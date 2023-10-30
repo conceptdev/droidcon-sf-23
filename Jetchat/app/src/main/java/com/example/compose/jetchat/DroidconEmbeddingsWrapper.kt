@@ -19,7 +19,7 @@ import com.aallam.openai.client.OpenAI
 import com.example.compose.jetchat.data.CustomChatMessage
 import com.example.compose.jetchat.data.DroidconContract
 import com.example.compose.jetchat.data.DroidconDbHelper
-import com.example.compose.jetchat.data.DroidconSessionData
+import com.example.compose.jetchat.data.DroidconSessionObjects
 import com.example.compose.jetchat.data.SlidingWindow
 import com.example.compose.jetchat.functions.AddFavoriteFunction
 import com.example.compose.jetchat.functions.AskDatabaseFunction
@@ -283,7 +283,7 @@ class DroidconEmbeddingsWrapper(val context: Context?) {
             for (dpKey in sortedVectors.tailMap(0.8)) {
                 Log.i("LLM", "Add to preamble: ${dpKey.key} -> ${dpKey.value}")
 
-                messagePreamble += DroidconSessionData.droidconSessions[dpKey.value] + "\n\n"
+                messagePreamble += DroidconSessionObjects.droidconSessions[dpKey.value]?.toRagString() + "\n\n"
 
             }
             messagePreamble += "\n\nUse the above information to answer the following question. Summarize and provide date/time and location if appropriate.\n\n"
@@ -361,10 +361,10 @@ class DroidconEmbeddingsWrapper(val context: Context?) {
                 Log.i("LLM", "Database $rowCount rows already exist - not loaded again")
             } else {
                 Log.i("LLM", "Start embedding requests (database is empty)")
-                for (session in DroidconSessionData.droidconSessions) {
+                for (session in DroidconSessionObjects.droidconSessions) {
                     val embeddingRequest = EmbeddingRequest(
                         model = ModelId(Constants.OPENAI_EMBED_MODEL),
-                        input = listOf(session.value)
+                        input = listOf(session.value.forEmbedding())
                     )
                     val embedding = openAI.embeddings(embeddingRequest)
                     val vector = embedding.embeddings[0].embedding.toDoubleArray()

@@ -7,17 +7,19 @@ internal object Constants {
     internal const val OPENAI_TOKEN = "{OPENAI_KEY}"
 
     /** Chat model: "gpt-4-32k" or "gpt-3.5-turbo-16k" */
-    internal const val OPENAI_CHAT_MODEL = "gpt-3.5-turbo" // 4096 tokens for Sliding Window testing
+    internal const val OPENAI_CHAT_MODEL = "gpt-3.5-turbo-16k" // 4096 tokens for Sliding Window testing
 
     /** Tokenizer model: GPT_4_32K or GPT_3_5_TURBO_16K */
-    internal val OPENAI_CHAT_TOKENIZER_MODEL = ModelType.GPT_3_5_TURBO // to match above
+    internal val OPENAI_CHAT_TOKENIZER_MODEL = ModelType.GPT_3_5_TURBO_16K // to match above
 
     /** Completion model: text-davinci-003 */
     internal const val OPENAI_COMPLETION_MODEL = "text-davinci-003"
 
     /** Maximum token limit for model: 4,096 for "gpt-3.5-turbo"
+     * 16,384 for gpt-3.5-turbo-16k
+     * 32,768 for gpt-4-32k
      * (used in Sliding Window calculations) */
-    internal const val OPENAI_MAX_TOKENS = 4096
+    internal const val OPENAI_MAX_TOKENS = 16384
 
     /** Embedding model: text-embedding-ada-002 */
     internal const val OPENAI_EMBED_MODEL = "text-embedding-ada-002"

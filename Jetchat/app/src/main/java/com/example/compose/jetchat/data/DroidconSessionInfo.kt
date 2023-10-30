@@ -15,6 +15,26 @@ data class SessionInfo(
     val subject: String,
     val description: String = "" // TODO: don't have this optional
 ) {
+    /**
+     * Embed JUST the information that contains relevant context for vector similarity searching
+     */
+    fun forEmbedding () : String {
+        return "Speaker role: $role\nSubject: $subject\nDescription:$description"
+    }
+
+    /** Mimic the old way that the code added session information to the prompt
+     * (from DroidconSessionData.kt) */
+    fun toRagString () : String {
+        return """
+            Speaker: $speaker
+            Role: $role
+            Location: $location
+            Date: $date
+            Time: $time
+            Subject: $subject
+            Description: $description""".trimIndent()
+    }
+
     /** Simple JSON hack, TODO: add Json compiler extension for @Serializable */
     fun toJson () : String {
         // hit some bugs in the past where long text sneaks " double-quotes in.
