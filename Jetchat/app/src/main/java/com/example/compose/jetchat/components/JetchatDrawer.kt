@@ -60,6 +60,7 @@ enum class Channel(val label: String) {
     OPENAI("#jetchat-ai"),
     PALM("#jetchat-palm"),
     DROIDCON("#droidcon-chat"),
+    DOCUMENT("#document-chat")
 }
 
 @Composable

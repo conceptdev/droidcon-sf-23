@@ -28,6 +28,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.compose.jetchat.components.Channel
 import com.example.compose.jetchat.conversation.ConversationUiState
 import com.example.compose.jetchat.conversation.Message
+import com.example.compose.jetchat.data.initialDocumentMessages
 import com.example.compose.jetchat.data.initialDroidconMessages
 import com.example.compose.jetchat.data.initialOpenAiMessages
 import com.example.compose.jetchat.data.initialPalmMessages
@@ -71,6 +72,7 @@ class MainViewModel : ViewModel() {
         context = ctx
         droidconWrapper = DroidconEmbeddingsWrapper(context)
         openAIWrapper = OpenAIWrapper(context)
+        documentWrapper = DocumentChatWrapper(context)
     }
 
     fun openDrawer() {
@@ -109,6 +111,15 @@ class MainViewModel : ViewModel() {
         )
     )
 
+    private val documentUiState by mutableStateOf(
+        ConversationUiState(
+            initialMessages = initialDocumentMessages,
+            channelName = Channel.DOCUMENT.label,
+            channelMembers = 2,
+            channelBotProfile = openAiProfile
+        )
+    )
+
     var currentChannel by mutableStateOf(Channel.OPENAI)
 
     val uiState: ConversationUiState
@@ -117,12 +128,14 @@ class MainViewModel : ViewModel() {
                 Channel.PALM -> palmUiState
                 Channel.OPENAI -> openAiUiState
                 Channel.DROIDCON -> droidconUiState
+                Channel.DOCUMENT -> documentUiState
             }
         }
     private var openAIWrapper = OpenAIWrapper(null)
     private var palmWrapper = PalmWrapper()
     /** Requires a `context` for database operations. Set post-init with `setContext` function call */
     private var droidconWrapper = DroidconEmbeddingsWrapper(null) // no context available for database functions in DroidconEmbeddingsWrapper, added later by `setContext` function
+    private var documentWrapper = DocumentChatWrapper(null)
 
     var botIsTyping by mutableStateOf(false)
         private set
@@ -156,6 +169,7 @@ class MainViewModel : ViewModel() {
                     when (currentChannel) {
                         Channel.PALM -> palmWrapper.chat(content)
                         Channel.DROIDCON -> droidconWrapper.chat(content)
+                        Channel.DOCUMENT -> documentWrapper.chat(content)
                         else -> openAIWrapper.chat(content)
                     }
                 } catch (e: Exception) {
