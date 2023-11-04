@@ -220,7 +220,7 @@ class DocumentChatWrapper(val context: Context?) {
 
             var matchesEmitted = 0
             messagePreamble =
-                "The following information is extract from Contoso employee handbooks and help plans:\n\n"
+                "The following information is extract from Contoso employee handbooks and health plans:\n\n"
             for (dpKey in sortedVectors.tailMap(0.8)) {
                 Log.i("LLM", "Add to preamble: ${dpKey.key} -> ${dpKey.value}")
 
