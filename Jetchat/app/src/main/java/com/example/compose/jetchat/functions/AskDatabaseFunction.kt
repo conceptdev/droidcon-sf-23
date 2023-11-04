@@ -118,6 +118,8 @@ class AskDatabaseFunction {
                     }
                     out += ")\n"
                     rowCount++
+
+                    if (rowCount > 8) break // HACK: to control size
                 }
                 out += "]"
                 Log.i("LLM", "askDatabase rowCount: $rowCount")

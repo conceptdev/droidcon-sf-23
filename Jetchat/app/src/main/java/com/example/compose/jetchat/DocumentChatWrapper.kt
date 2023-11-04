@@ -218,6 +218,7 @@ class DocumentChatWrapper(val context: Context?) {
         if (sortedVectors.lastKey() > 0.8) { // arbitrary match threshold
             Log.i("LLM", "Top match is ${sortedVectors.lastKey()}")
 
+            var matchesEmitted = 0
             messagePreamble =
                 "The following information is extract from Contoso employee handbooks and help plans:\n\n"
             for (dpKey in sortedVectors.tailMap(0.8)) {
@@ -225,6 +226,8 @@ class DocumentChatWrapper(val context: Context?) {
 
                 messagePreamble += documentCache[dpKey.value]+ "\n\n"
 
+                matchesEmitted++
+                if (matchesEmitted > 8) break  // HACK: to control size
             }
             messagePreamble += "\n\nUse the above information to answer the following question:\n\n"
             Log.v("LLM", "$messagePreamble")
