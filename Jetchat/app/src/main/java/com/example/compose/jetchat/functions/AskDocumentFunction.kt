@@ -3,7 +3,7 @@ package com.example.compose.jetchat.functions
 import android.database.Cursor.FIELD_TYPE_INTEGER
 import android.util.Log
 import com.aallam.openai.api.chat.Parameters
-import com.example.compose.jetchat.data.DroidconDbHelper
+import com.example.compose.jetchat.data.DocumentDbHelper
 import kotlinx.serialization.json.add
 import kotlinx.serialization.json.put
 import kotlinx.serialization.json.putJsonArray
@@ -15,19 +15,19 @@ import kotlinx.serialization.json.putJsonObject
 * Uses
 * https://developer.android.com/training/data-storage/sqlite
 * */
-/** Function that exposes conference database schema and lets the model query it
+/** Function that exposes documents info database schema and lets the model query it
  * directly with SQL and then parse the results to answer questions */
-class AskDatabaseFunction {
+class AskDocumentFunction {
     companion object {
         fun name(): String {
             return "askDatabase"
         }
 
         fun description(): String {
-            return "Answer user questions about conference sessions like what room sessions are presented in. Output should be a fully formed SQL query."
+            return "Answer user questions about document contents by searching for a keyword in the document database. Output should be a fully formed SQL query."
         }
 
-        fun params(db: DroidconDbHelper): Parameters {
+        fun params(db: DocumentDbHelper): Parameters {
             val schema = db.generateSimpleSchema()
             //Log.v("LLM", "params db schema:\n$schema")
             val params = Parameters.buildJsonObject {
@@ -42,7 +42,7 @@ class AskDatabaseFunction {
                             
                             $schema
                             
-                            The query should be returned in plain text, not in JSON.
+                            The query should be valid SQL returned in plain text, not in JSON.
                             """.trimIndent()
                         )
                     }
@@ -90,7 +90,7 @@ class AskDatabaseFunction {
         /**
          * Execute arbitrary queries against a local database
          */
-        fun function(dbHelper: DroidconDbHelper, query: String): String {
+        fun function(dbHelper: DocumentDbHelper, query: String): String {
             Log.i("LLM", "askDatabase ($query)")
 
             val db = dbHelper.readableDatabase
@@ -118,8 +118,6 @@ class AskDatabaseFunction {
                     }
                     out += ")\n"
                     rowCount++
-
-                    if (rowCount > 8) break // HACK: to control size
                 }
                 out += "]"
                 Log.i("LLM", "askDatabase rowCount: $rowCount")

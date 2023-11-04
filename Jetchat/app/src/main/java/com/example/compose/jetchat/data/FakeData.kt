@@ -103,6 +103,16 @@ val initialDroidconMessages =
         )
     )
 
+val initialDocumentMessages =
+    listOf(
+        Message(
+            openAiProfile.displayName,
+            "Welcome to #document-chat! Ask questions about Contoso employee policy documents...",
+            "9:00 am",
+            authorImage = openAiProfile.photo
+        )
+    )
+
 private val initialMessages = listOf(
     Message(
         "me",
