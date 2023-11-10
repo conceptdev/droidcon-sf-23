@@ -17,6 +17,7 @@ object DocumentContract {
     object EmbeddingEntry : BaseColumns {
         const val TABLE_NAME = "embedding"
         const val COLUMN_NAME_CHUNKID = "chunk_id"
+        const val COLUMN_NAME_FILENAME = "filename"
         const val COLUMN_NAME_CONTENT = "content"
         const val COLUMN_NAME_VECTOR = "vector"
     }
@@ -26,6 +27,7 @@ object DocumentContract {
 private const val SQL_CREATE_EMBEDDING_ENTRIES =
     "CREATE TABLE ${DocumentContract.EmbeddingEntry.TABLE_NAME} (" +
             "${DocumentContract.EmbeddingEntry.COLUMN_NAME_CHUNKID} TEXT PRIMARY KEY," +
+            "${DocumentContract.EmbeddingEntry.COLUMN_NAME_FILENAME} TEXT," +
             "${DocumentContract.EmbeddingEntry.COLUMN_NAME_CONTENT} TEXT," +
             "${DocumentContract.EmbeddingEntry.COLUMN_NAME_VECTOR} TEXT)"
 
@@ -53,7 +55,7 @@ class DocumentDbHelper(var context: Context?) : SQLiteOpenHelper(context, DATABA
 
     companion object {
         // If you change the database schema, you must increment the database version.
-        const val DATABASE_VERSION = 2
+        const val DATABASE_VERSION = 3
         const val DATABASE_NAME = "DocumentChat.db"
     }
 

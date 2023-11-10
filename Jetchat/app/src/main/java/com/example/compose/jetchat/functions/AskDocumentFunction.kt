@@ -37,7 +37,7 @@ class AskDocumentFunction {
                         put("type", "string")
                         put(
                             "description", """
-                            SQL query extracting info to answer the user's question.
+                            SQL query extracting info to answer the user's question, including the filename that contains the answer.
                             SQL should be written using this database schema:
                             
                             $schema
