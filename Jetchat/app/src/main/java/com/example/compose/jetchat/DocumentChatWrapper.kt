@@ -247,14 +247,14 @@ class DocumentChatWrapper(val context: Context?) {
             }
 
             messagePreamble =
-                "The following information is extracted from Contoso employee handbooks and health plan documents:"
+                "The following information is extracted from Contoso employee handbooks and health plan documents. The filename is given before the relevant information."
             for (file in sortedMatches) {
                 Log.i("LLM", "Add to preamble: ${file.key} -> ${file.value}")
 
-                messagePreamble += "\n\n# ${file.key}\n\n${file.value}"
+                messagePreamble += "\n\n# ${file.key}\n\n${file.value}\n\n#####\n\n"
 
             }
-            messagePreamble += "\n\nUse the above information to answer the following question, providing numbered citations for document sources used (mention the cited documents at the end by number). Synthesize the information into a summary paragraph:\n\n"
+            messagePreamble += "\n\nUse the above information to answer the following question, providing numbered citations for individual document sources used (mention the cited documents at the end by number). Synthesize the information into a summary paragraph:\n\n"
             Log.v("LLM", "$messagePreamble")
         } else {
             Log.i("LLM", "Top match was ${sortedVectors.lastKey()} which was below 0.8 and failed to meet criteria for grounding data")
