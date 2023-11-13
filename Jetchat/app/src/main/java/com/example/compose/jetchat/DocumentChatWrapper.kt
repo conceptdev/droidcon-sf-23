@@ -49,6 +49,7 @@ class DocumentChatWrapper(val context: Context?) {
     /** key'd map of document sentence, so we can match to
      * embedding vectors */
     private var documentCache: MutableMap<String, String> = mutableMapOf()
+    private var documentNameCache: MutableMap<String, String> = mutableMapOf()
 
     private var systemMessage: CustomChatMessage
     init {
@@ -57,9 +58,15 @@ class DocumentChatWrapper(val context: Context?) {
             grounding = """
                     You are a personal assistant for Contoso employees. 
                     You will answer questions about Contoso employee benefits from various employee manuals.
-                    Your answers will be short and concise, since they will be required to fit on 
-                    a mobile device display.
-                    Only use the functions you have been provided with.""".trimMargin()
+                    Your answers will be short and concise. 
+                    
+                    Only use the functions you have been provided with.
+                    
+                    The user has Northwind Standard health plan.
+                    
+                    For each piece of information you provide, cite the source in brackets like so: [1].
+                    
+                    At the end of the answer, always list each source with its corresponding number and provide the document name, like so [1] Filename.doc""".trimMargin()
         )
         conversation.add(systemMessage)
     }
@@ -218,18 +225,36 @@ class DocumentChatWrapper(val context: Context?) {
         if (sortedVectors.lastKey() > 0.8) { // arbitrary match threshold
             Log.i("LLM", "Top match is ${sortedVectors.lastKey()}")
 
-            var matchesEmitted = 0
-            messagePreamble =
-                "The following information is extract from Contoso employee handbooks and health plans:\n\n"
-            for (dpKey in sortedVectors.tailMap(0.8)) {
-                Log.i("LLM", "Add to preamble: ${dpKey.key} -> ${dpKey.value}")
+            var matches = sortedVectors.tailMap(0.8)
 
-                messagePreamble += documentCache[dpKey.value]+ "\n\n"
+            // re-sort based on key, to group by filename
+            var matchesEmitted = 0
+            var sortedMatches: SortedMap<String, String> = sortedMapOf()
+            for (dpKey in sortedVectors.tailMap(0.8)) {
+                val fileId = dpKey.value.split('-')[0]
+                val filename = documentNameCache[fileId]!!
+                val content = documentCache[dpKey.value]!!
+                if (sortedMatches.contains(filename))
+                {
+                    sortedMatches[filename] += "\n\n$content"
+                } else {
+                    matchesEmitted = 0
+                    sortedMatches[filename] = content
+                }
 
                 matchesEmitted++
-                if (matchesEmitted > 8) break  // HACK: to control size
+                //if (matchesEmitted > 10) break  // HACK: to control size, per file
             }
-            messagePreamble += "\n\nUse the above information to answer the following question:\n\n"
+
+            messagePreamble =
+                "The following information is extracted from Contoso employee handbooks and health plan documents. The filename is given before the relevant information."
+            for (file in sortedMatches) {
+                Log.i("LLM", "Add to preamble: ${file.key} -> ${file.value}")
+
+                messagePreamble += "\n\n# ${file.key}\n\n${file.value}\n\n#####\n\n"
+
+            }
+            messagePreamble += "\n\nUse the above information to answer the following question, providing numbered citations for individual document sources used (mention the cited documents at the end by number). Synthesize the information into a summary paragraph:\n\n"
             Log.v("LLM", "$messagePreamble")
         } else {
             Log.i("LLM", "Top match was ${sortedVectors.lastKey()} which was below 0.8 and failed to meet criteria for grounding data")
@@ -312,10 +337,12 @@ class DocumentChatWrapper(val context: Context?) {
                 var documentId = -1
                 //val rawResources = listOf(R.raw.employee_handbook, R.raw.perks_plus, R.raw.role_library, R.raw.benefit_options, R.raw.northwind_standard_benefits_details, R.raw.northwind_health_plus_benefits_details)
 
-                val rawResources = listOf(R.raw.benefit_options)
+                val rawResources = listOf(R.raw.benefit_options, R.raw.northwind_standard_benefits_details)
+                val rawFilenames = listOf<String>("Benefit-options.pdf", "Northwind-Standard-benefits-details.pdf")
 
                 for (resId in rawResources) {
                     documentId++
+                    documentCache["$documentId"] = rawFilenames[documentId]
                     val inputStream = context.resources.openRawResource(resId)
                     val documentText = inputStream.bufferedReader().use { it.readText() }
 
@@ -352,6 +379,7 @@ class DocumentChatWrapper(val context: Context?) {
                             // Create a new map of values, where column names are the keys
                             val values = ContentValues().apply {
                                 put(DocumentContract.EmbeddingEntry.COLUMN_NAME_CHUNKID, "$documentId-$sentenceId")
+                                put(DocumentContract.EmbeddingEntry.COLUMN_NAME_FILENAME, rawFilenames[documentId])
                                 put(DocumentContract.EmbeddingEntry.COLUMN_NAME_CONTENT, s)
                                 put(DocumentContract.EmbeddingEntry.COLUMN_NAME_VECTOR, vectorString)
                             }
@@ -377,6 +405,7 @@ class DocumentChatWrapper(val context: Context?) {
 
         val projection = arrayOf(
             DocumentContract.EmbeddingEntry.COLUMN_NAME_CHUNKID,
+            DocumentContract.EmbeddingEntry.COLUMN_NAME_FILENAME,
             DocumentContract.EmbeddingEntry.COLUMN_NAME_CONTENT,
             DocumentContract.EmbeddingEntry.COLUMN_NAME_VECTOR)
 
@@ -393,6 +422,7 @@ class DocumentChatWrapper(val context: Context?) {
         with(cursor) {
             while (moveToNext()) {
                 val chunkId = getString(getColumnIndexOrThrow(DocumentContract.EmbeddingEntry.COLUMN_NAME_CHUNKID))
+                val filename = getString(getColumnIndexOrThrow(DocumentContract.EmbeddingEntry.COLUMN_NAME_FILENAME))
                 val content = getString(getColumnIndexOrThrow(DocumentContract.EmbeddingEntry.COLUMN_NAME_CONTENT))
                 val vectorString = getString(getColumnIndexOrThrow(DocumentContract.EmbeddingEntry.COLUMN_NAME_VECTOR))
                 // deserialize vector
@@ -404,7 +434,10 @@ class DocumentChatWrapper(val context: Context?) {
                 // add to in-memory cache
                 vectorCache[chunkId] = vector.toDoubleArray()
                 documentCache[chunkId] = content
-                Log.v("LLM", "load from database $chunkId vector: ${vector.toDoubleArray()} sentence: $content")
+                var docId = chunkId.split('-')[0]
+                if (!documentNameCache.contains(docId))
+                    documentNameCache[docId] = filename
+                Log.v("LLM", "load from database $chunkId filename: $filename vector: ${vector.toDoubleArray()} sentence: $content")
                 rowCount++
             }
         }
