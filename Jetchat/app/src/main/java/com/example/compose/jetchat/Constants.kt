@@ -7,7 +7,7 @@ internal object Constants {
     internal const val OPENAI_TOKEN = "{OPENAI_KEY}"
 
     /** Chat model: "gpt-4-32k" or "gpt-3.5-turbo-16k" */
-    internal const val OPENAI_CHAT_MODEL = "gpt-3.5-turbo-16k" // 4096 tokens for Sliding Window testing
+    internal const val OPENAI_CHAT_MODEL = "gpt-4-1106-preview" // 4096 tokens for Sliding Window testing
 
     /** Tokenizer model: GPT_4_32K or GPT_3_5_TURBO_16K */
     internal val OPENAI_CHAT_TOKENIZER_MODEL = ModelType.GPT_3_5_TURBO_16K // to match above

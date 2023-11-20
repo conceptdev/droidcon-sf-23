@@ -32,6 +32,9 @@ dependencyResolutionManagement {
 
         google()
         mavenCentral()
+
+        // for aallam latest OpenAI stuff
+        maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
     }
 }
 rootProject.name = "Jetchat"
