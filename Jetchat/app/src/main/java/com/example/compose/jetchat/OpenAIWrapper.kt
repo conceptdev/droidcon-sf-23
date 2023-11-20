@@ -184,7 +184,7 @@ class OpenAIWrapper(val context: Context?) {
     }
 
     suspend fun imageURL(prompt: String): String {
-        val imageRequest = ImageCreation(prompt)
+        val imageRequest = ImageCreation(prompt = prompt, model = ModelId("dall-e-3"))
 
         // OpenAI network request
         val images: List<ImageURL> = openAI.imageURL(imageRequest)
