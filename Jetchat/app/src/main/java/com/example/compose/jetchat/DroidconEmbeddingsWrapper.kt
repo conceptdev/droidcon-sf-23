@@ -314,7 +314,7 @@ class DroidconEmbeddingsWrapper(val context: Context?) {
      * rendered from the URL (no bytes returned from API)
      * @return image URL or empty string */
     suspend fun imageURL(prompt: String): String {
-        val imageRequest = ImageCreation(prompt)
+        val imageRequest = ImageCreation(prompt = prompt, model = ModelId(Constants.OPENAI_IMAGE_MODEL))
 
         // OpenAI network request
         val images: List<ImageURL> = openAI.imageURL(imageRequest)

@@ -183,8 +183,12 @@ class OpenAIWrapper(val context: Context?) {
         return chatResponse
     }
 
+    /** OpenAI generate image from prompt text.
+     * Returns a URL to the image, must be downloaded or
+     * rendered from the URL (no bytes returned from API)
+     * @return image URL or empty string */
     suspend fun imageURL(prompt: String): String {
-        val imageRequest = ImageCreation(prompt)
+        val imageRequest = ImageCreation(prompt = prompt, model = ModelId(Constants.OPENAI_IMAGE_MODEL))
 
         // OpenAI network request
         val images: List<ImageURL> = openAI.imageURL(imageRequest)
