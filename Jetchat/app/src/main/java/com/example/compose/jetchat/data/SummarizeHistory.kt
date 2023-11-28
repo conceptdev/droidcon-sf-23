@@ -1,6 +1,7 @@
 package com.example.compose.jetchat.data
 
 import android.util.Log
+import com.aallam.openai.api.LegacyOpenAI
 import com.aallam.openai.api.chat.ChatCompletion
 import com.aallam.openai.api.chat.chatCompletionRequest
 import com.aallam.openai.api.completion.TextCompletion
@@ -19,6 +20,7 @@ class SummarizeHistory {
          * Use the OpenAI completion endpoint to summarize the
          * conversation history into a topic-dense string
          */
+        @OptIn(LegacyOpenAI::class)
         suspend fun summarize(history: String): String {
             if (history.isNullOrEmpty()) return ""
 
