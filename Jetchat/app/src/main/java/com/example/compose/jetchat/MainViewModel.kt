@@ -28,6 +28,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.compose.jetchat.components.Channel
 import com.example.compose.jetchat.conversation.ConversationUiState
 import com.example.compose.jetchat.conversation.Message
+import com.example.compose.jetchat.data.initialAssistantMessages
 import com.example.compose.jetchat.data.initialDocumentMessages
 import com.example.compose.jetchat.data.initialDroidconMessages
 import com.example.compose.jetchat.data.initialOpenAiMessages
@@ -73,6 +74,7 @@ class MainViewModel : ViewModel() {
         droidconWrapper = DroidconEmbeddingsWrapper(context)
         openAIWrapper = OpenAIWrapper(context)
         documentWrapper = DocumentChatWrapper(context)
+        assistantWrapper = AssistantWrapper(context)
     }
 
     fun openDrawer() {
@@ -120,6 +122,15 @@ class MainViewModel : ViewModel() {
         )
     )
 
+    private val assistantUiState by mutableStateOf(
+        ConversationUiState(
+            initialMessages = initialAssistantMessages,
+            channelName = Channel.ASSISTANT.label,
+            channelMembers = 2,
+            channelBotProfile = openAiProfile
+        )
+    )
+
     var currentChannel by mutableStateOf(Channel.OPENAI)
 
     val uiState: ConversationUiState
@@ -129,6 +140,7 @@ class MainViewModel : ViewModel() {
                 Channel.OPENAI -> openAiUiState
                 Channel.DROIDCON -> droidconUiState
                 Channel.DOCUMENT -> documentUiState
+                Channel.ASSISTANT -> assistantUiState
             }
         }
     private var openAIWrapper = OpenAIWrapper(null)
@@ -136,6 +148,7 @@ class MainViewModel : ViewModel() {
     /** Requires a `context` for database operations. Set post-init with `setContext` function call */
     private var droidconWrapper = DroidconEmbeddingsWrapper(null) // no context available for database functions in DroidconEmbeddingsWrapper, added later by `setContext` function
     private var documentWrapper = DocumentChatWrapper(null)
+    private var assistantWrapper = AssistantWrapper(null)
 
     var botIsTyping by mutableStateOf(false)
         private set
@@ -170,6 +183,7 @@ class MainViewModel : ViewModel() {
                         Channel.PALM -> palmWrapper.chat(content)
                         Channel.DROIDCON -> droidconWrapper.chat(content)
                         Channel.DOCUMENT -> documentWrapper.chat(content)
+                        Channel.ASSISTANT -> assistantWrapper.chat(content)
                         else -> openAIWrapper.chat(content)
                     }
                 } catch (e: Exception) {

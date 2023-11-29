@@ -113,6 +113,16 @@ val initialDocumentMessages =
         )
     )
 
+val initialAssistantMessages =
+    listOf(
+        Message(
+            openAiProfile.displayName,
+            "Welcome to #assistant-chat! Ask questions about Contoso employee policy documents...",
+            "10:00 am",
+            authorImage = openAiProfile.photo
+        )
+    )
+
 private val initialMessages = listOf(
     Message(
         "me",
