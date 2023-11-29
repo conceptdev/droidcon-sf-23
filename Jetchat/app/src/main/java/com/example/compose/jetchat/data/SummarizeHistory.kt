@@ -22,7 +22,8 @@ class SummarizeHistory {
         suspend fun summarize(history: String): String {
             if (history.isNullOrEmpty()) return ""
 
-            val summarizePrompt = """Extract all the session names from this discussion:
+            val summarizePrompt = """
+                |Extract all the session names from this discussion:
                 |#####
                 |$history
                 |#####""".trimMargin()
