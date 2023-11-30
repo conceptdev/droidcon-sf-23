@@ -117,7 +117,7 @@ val initialAssistantMessages =
     listOf(
         Message(
             openAiProfile.displayName,
-            "Welcome to #assistant-chat! Ask questions about Contoso employee policy documents...",
+            "Welcome to #assistant-chat! Ask questions about Contoso employee policy documents using the Assistant API...",
             "10:00 am",
             authorImage = openAiProfile.photo
         )

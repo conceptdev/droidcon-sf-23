@@ -12,6 +12,9 @@ internal object Constants {
     /** Image model: "dall-e-3" or "dall-e-2" */
     internal const val OPENAI_IMAGE_MODEL = "dall-e-3"
 
+    /** Image model: create on playground.openai.com */
+    internal const val OPENAI_ASSISTANT_ID = "asst_bykuslT6y2DWikNORnzl3ZTE"
+
     /** Tokenizer model: GPT_4_32K or GPT_3_5_TURBO_16K */
     internal val OPENAI_CHAT_TOKENIZER_MODEL = ModelType.GPT_4_32K // to match above
 

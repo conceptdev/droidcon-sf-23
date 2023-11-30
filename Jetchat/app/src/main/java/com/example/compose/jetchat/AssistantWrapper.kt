@@ -16,6 +16,7 @@ import com.aallam.openai.api.core.Role
 import com.aallam.openai.api.core.Status
 import com.aallam.openai.api.image.ImageCreation
 import com.aallam.openai.api.image.ImageURL
+import com.aallam.openai.api.message.FileCitationAnnotation
 import com.aallam.openai.api.message.MessageContent
 import com.aallam.openai.api.message.MessageRequest
 import com.aallam.openai.api.model.ModelId
@@ -28,6 +29,7 @@ import com.example.compose.jetchat.data.HistoryDbHelper
 import com.example.compose.jetchat.data.SlidingWindow
 import com.example.compose.jetchat.functions.AddFavoriteFunction
 import com.example.compose.jetchat.functions.AskWikipediaFunction
+import kotlinx.coroutines.delay
 import kotlinx.serialization.json.jsonPrimitive
 
 /** Uses OpenAI Kotlin lib to call chat model */
@@ -39,20 +41,14 @@ class AssistantWrapper(val context: Context?) {
     private var assistant: Assistant? =null
     private var thread: com.aallam.openai.api.thread.Thread? = null
 
-    init {
-
-    }
-
     suspend fun chat(message: String): String {
 
         if (assistant == null) {
-            assistant = openAI.assistant(id = AssistantId("asst_bykuslT6y2DWikNORnzl3ZTE"))
-
-
+            // open assistant and create a new thread
+            // every app-start
+            assistant = openAI.assistant(id = AssistantId(Constants.OPENAI_ASSISTANT_ID))
             thread = openAI.thread()
         }
-
-
 
         val userMessage = openAI.message (
             threadId = thread!!.id,
@@ -67,10 +63,9 @@ class AssistantWrapper(val context: Context?) {
             request = RunRequest(assistantId = assistant!!.id)
         )
 
-
         do
         {
-            Thread.sleep(1_000)
+            delay(1_000)
             val runTest = openAI.getRun(thread!!.id, run.id)
 
         } while (runTest.status != Status.Completed)
@@ -79,133 +74,20 @@ class AssistantWrapper(val context: Context?) {
         val message =messages.first()
         val messageContent = message.content[0]
         if (messageContent is MessageContent.Text) {
-            return messageContent.text.value
+            var cites = ""
+            if (messageContent.text.annotations.isNotEmpty()) {
+                for (annot in messageContent.text.annotations) {
+                    if (annot is FileCitationAnnotation) {
+                        cites += "\n" + annot.text + " fileId: " + annot.fileCitation.fileId + ""
+                    }
+                }
+            }
+            return messageContent.text.value + cites
         }
         if (messageContent is MessageContent.Image) {
             return "TODO: image file id:" + messageContent.fileId
         }
-        return ""
-
-//        // build the OpenAI network request
-//        val chatCompletionRequest = chatCompletionRequest {
-//            model = ModelId(Constants.OPENAI_CHAT_MODEL)
-//            messages = chatWindowMessages
-//            // hardcoding weather function every time (for now)
-//            functions {
-//                function {
-//                    name = "currentWeather"
-//                    description = "Get the current weather in a given location"
-//                    parameters = OpenAIFunctions.currentWeatherParams()
-//                }
-//                function {
-//                    name = AskWikipediaFunction.name()
-//                    description = AskWikipediaFunction.description()
-//                    parameters = AskWikipediaFunction.params()
-//                }
-//            }
-//            functionCall = FunctionMode.Auto
-//        }
-//        val completion: ChatCompletion = openAI.chatCompletion(chatCompletionRequest)
-//        val completionMessage = completion.choices.first().message ?: error("no response found!")
-//
-//        // extract the response to show in the app
-//        var chatResponse = completionMessage.content ?: ""
-//
-//        if (completionMessage.functionCall == null) {
-//            // no function, add the response to the conversation history
-//            val botResponse =CustomChatMessage(
-//                role = ChatRole.Assistant,
-//                userContent = chatResponse
-//            )
-//            conversation.add(botResponse)
-//            // add message pair to history database
-//            EmbeddingHistory.storeInHistory(openAI, dbHelper, userMessage, botResponse)
-//        } else { // handle function
-//
-//            val function = completionMessage.functionCall
-//            Log.i("LLM", "Function ${function!!.name} was called")
-//
-//            var functionResponse = ""
-//            var handled = true
-//            when (function.name) {
-//                "currentWeather" -> {
-//                    val functionArgs = function.argumentsAsJson() ?: error("arguments field is missing")
-//                    functionResponse = OpenAIFunctions.currentWeather(
-//                        functionArgs.getValue("latitude").jsonPrimitive.content,
-//                        functionArgs.getValue("longitude").jsonPrimitive.content,
-//                        functionArgs["unit"]?.jsonPrimitive?.content ?: "fahrenheit"
-//                    )
-//                }
-//                AskWikipediaFunction.name() -> {
-//                    val functionArgs =
-//                        function.argumentsAsJson() ?: error("arguments field is missing")
-//                    val query = functionArgs.getValue("query").jsonPrimitive.content
-//
-//                    Log.i("LLM-WK", "Argument $query ")
-//
-//                    functionResponse = AskWikipediaFunction.function(query)
-//                }
-//                else -> {
-//                    Log.i("LLM", "Function ${function!!.name} does not exist")
-//                    handled = false
-//                    chatResponse += " " + function.name + " " + function.arguments
-//                    conversation.add(
-//                        CustomChatMessage(
-//                            role = ChatRole.Assistant,
-//                            userContent = chatResponse
-//                        )
-//                    )
-//                }
-//            }
-//
-//
-//            if (handled)
-//            {
-//                // add the 'call a function' response to the history
-//                conversation.add(
-//                    CustomChatMessage(
-//                        role = completionMessage.role,
-//                        userContent = completionMessage.content ?: "", // required to not be empty in this case
-//                        functionCall = completionMessage.functionCall
-//                    )
-//                )
-//                // add the response to the 'function' call to the history
-//                conversation.add(
-//                    CustomChatMessage(
-//                        role = ChatRole.Function,
-//                        name = function.name,
-//                        userContent = functionResponse
-//                    )
-//                )
-//
-//                // sliding window - with the function call messages,
-//                // we might need to remove more from the history
-//                val functionChatWindowMessages = SlidingWindow.chatHistoryToWindow(conversation, 50)
-//
-//                // send the function request/response back to the model
-//                val functionCompletionRequest = chatCompletionRequest {
-//                    model = ModelId(Constants.OPENAI_CHAT_MODEL)
-//                    messages = functionChatWindowMessages }
-//                val functionCompletion: ChatCompletion = openAI.chatCompletion(functionCompletionRequest)
-//                // show the interpreted function response as chat completion
-//                chatResponse = functionCompletion.choices.first().message?.content!!
-//                val botResponse = CustomChatMessage(
-//                    role = ChatRole.Assistant,
-//                    userContent = chatResponse
-//                )
-//                conversation.add(botResponse)
-//
-//                if (completionMessage.functionCall == null) {
-//                    // wasn't a function, add message pair to history database
-//                    // prevents historical answers from being used
-//                    // instead of calling the function again
-//                    // (ie returns old weather info)
-//                    EmbeddingHistory.storeInHistory(openAI, dbHelper, userMessage, botResponse)
-//                }
-//            }
-//        }
-//
-//        return chatResponse
+        return "<Assistant Error>"
     }
 
     /** OpenAI generate image from prompt text.
