@@ -11,6 +11,8 @@ import com.aallam.openai.api.chat.ChatCompletionRequest
 import com.aallam.openai.api.chat.ChatMessage
 import com.aallam.openai.api.chat.ChatRole
 import com.aallam.openai.api.chat.FunctionMode
+import com.aallam.openai.api.chat.FunctionTool
+import com.aallam.openai.api.chat.ToolId
 import com.aallam.openai.api.chat.chatCompletionRequest
 import com.aallam.openai.api.core.Role
 import com.aallam.openai.api.core.Status
@@ -20,7 +22,12 @@ import com.aallam.openai.api.message.FileCitationAnnotation
 import com.aallam.openai.api.message.MessageContent
 import com.aallam.openai.api.message.MessageRequest
 import com.aallam.openai.api.model.ModelId
+import com.aallam.openai.api.run.FunctionToolCallStep
 import com.aallam.openai.api.run.RunRequest
+import com.aallam.openai.api.run.ToolCallStep
+import com.aallam.openai.api.run.ToolCallStepDetails
+import com.aallam.openai.api.run.ToolOutputBuilder
+import com.aallam.openai.api.run.toolOutput
 import com.aallam.openai.client.OpenAI
 import com.example.compose.jetchat.data.CustomChatMessage
 import com.example.compose.jetchat.data.DroidconDbHelper
@@ -30,7 +37,11 @@ import com.example.compose.jetchat.data.SlidingWindow
 import com.example.compose.jetchat.functions.AddFavoriteFunction
 import com.example.compose.jetchat.functions.AskWikipediaFunction
 import kotlinx.coroutines.delay
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import kotlin.math.log
 
 /** Uses OpenAI Kotlin lib to call chat model */
 @OptIn(BetaOpenAI::class)
@@ -67,7 +78,39 @@ class AssistantWrapper(val context: Context?) {
         {
             delay(1_000)
             val runTest = openAI.getRun(thread!!.id, run.id)
+            Log.v("LLM-A", "Status: " + runTest.status)
 
+            if (runTest.status == Status.RequiresAction){
+                val steps = openAI.runSteps(thread!!.id, run.id)
+                val stepDetails = steps[0].stepDetails
+                if (stepDetails is ToolCallStepDetails) {
+                    val toolCallStep = stepDetails.toolCalls!![0]
+                    if (toolCallStep is ToolCallStep.FunctionTool) {
+                        var function = toolCallStep.function
+                        Log.i("LLM-A", "${toolCallStep.id} ${function.name} ${function.arguments}")
+                        var functionResponse = ""
+                        when (function.name) {
+                            AskWikipediaFunction.name() -> {
+                                var functionArgs = argumentsAsJson(function.arguments) ?: error("arguments field is missing")
+                                val query = functionArgs.getValue("query").jsonPrimitive.content
+                                // CALL THE FUNCTION!!
+                                functionResponse = AskWikipediaFunction.function(query)
+                            }
+                            else -> {
+                                Log.i("LLM-A", "Function ${function!!.name} does not exist")
+                                functionResponse = "Error: could not retrieve any information."
+                            }
+                        }
+                        // Send back to chat (submit_tool_outputs_
+                        val to = toolOutput {
+                            toolCallId = ToolId(toolCallStep.id.id)
+                            output = functionResponse
+                        }
+                        openAI.submitToolOutput(thread!!.id, run.id, listOf(to))
+                        delay(1_000) // wait before polling again
+                   }
+                }
+            }
         } while (runTest.status != Status.Completed)
 
         val messages = openAI.messages(thread!!.id)
@@ -102,4 +145,8 @@ class AssistantWrapper(val context: Context?) {
 
         return if (images.isEmpty()) "" else images[0].url
     }
+
+//    inline fun <reified T> decodeJson(jsonString: String): T = Json.decodeFromString(jsonString)
+
+    public fun argumentsAsJson(arguments:String, json: Json = Json): JsonObject = json.decodeFromString(arguments)
 }
