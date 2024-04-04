@@ -31,6 +31,7 @@ import com.example.compose.jetchat.conversation.Message
 import com.example.compose.jetchat.data.initialAssistantMessages
 import com.example.compose.jetchat.data.initialDocumentMessages
 import com.example.compose.jetchat.data.initialDroidconMessages
+import com.example.compose.jetchat.data.initialLearningDayMessages
 import com.example.compose.jetchat.data.initialOpenAiMessages
 import com.example.compose.jetchat.data.initialPalmMessages
 import com.example.compose.jetchat.data.meProfile
@@ -131,6 +132,15 @@ class MainViewModel : ViewModel() {
         )
     )
 
+    private val learningDayUiState by mutableStateOf(
+        ConversationUiState(
+            initialMessages = initialLearningDayMessages,
+            channelName = Channel.LEARNING_DAY.label,
+            channelMembers = 2,
+            channelBotProfile = openAiProfile
+        )
+    )
+
     var currentChannel by mutableStateOf(Channel.OPENAI)
 
     val uiState: ConversationUiState
@@ -141,6 +151,7 @@ class MainViewModel : ViewModel() {
                 Channel.DROIDCON -> droidconUiState
                 Channel.DOCUMENT -> documentUiState
                 Channel.ASSISTANT -> assistantUiState
+                Channel.LEARNING_DAY -> learningDayUiState
             }
         }
     private var openAIWrapper = OpenAIWrapper(null)
@@ -149,6 +160,7 @@ class MainViewModel : ViewModel() {
     private var droidconWrapper = DroidconEmbeddingsWrapper(null) // no context available for database functions in DroidconEmbeddingsWrapper, added later by `setContext` function
     private var documentWrapper = DocumentChatWrapper(null)
     private var assistantWrapper = AssistantWrapper(null)
+    private var learningWrapper = LearningDayWrapper(null)
 
     var botIsTyping by mutableStateOf(false)
         private set
@@ -184,6 +196,7 @@ class MainViewModel : ViewModel() {
                         Channel.DROIDCON -> droidconWrapper.chat(content)
                         Channel.DOCUMENT -> documentWrapper.chat(content)
                         Channel.ASSISTANT -> assistantWrapper.chat(content)
+                        Channel.LEARNING_DAY -> learningWrapper.chat(content)
                         else -> openAIWrapper.chat(content)
                     }
                 } catch (e: Exception) {

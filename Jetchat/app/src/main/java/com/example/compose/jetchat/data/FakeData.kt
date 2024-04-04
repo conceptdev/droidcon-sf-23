@@ -123,6 +123,15 @@ val initialAssistantMessages =
         )
     )
 
+val initialLearningDayMessages = listOf(
+    Message(
+        openAiProfile.displayName,
+        "Welcome to #learning-day!",
+        "3:15 pm",
+        authorImage = openAiProfile.photo
+    )
+)
+
 private val initialMessages = listOf(
     Message(
         "me",

@@ -61,7 +61,8 @@ enum class Channel(val label: String) {
     PALM("#jetchat-palm"),
     DROIDCON("#droidcon-chat"),
     DOCUMENT("#document-chat"),
-    ASSISTANT("#assistant-chat")
+    ASSISTANT("#assistant-chat"),
+    LEARNING_DAY("#learning-day-chat")
 }
 
 @Composable
